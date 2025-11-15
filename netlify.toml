@@ -4,6 +4,8 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_VERSION = "10"
+  # Allow Next.js public environment variables in build output
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
