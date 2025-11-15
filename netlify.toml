@@ -4,12 +4,15 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_VERSION = "10"
-  # Add Supabase environment variables for build time
-  NEXT_PUBLIC_SUPABASE_URL = "https://nmhopipqtxtirqvdepho.supabase.co"
-  # Note: Add NEXT_PUBLIC_SUPABASE_ANON_KEY in Netlify UI for security
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Handle client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 # Security headers
 [[headers]]
