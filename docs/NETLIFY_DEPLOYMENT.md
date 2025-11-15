@@ -9,7 +9,7 @@ Go to: **Netlify Dashboard → Your Site → Site settings → Environment varia
 
 Add these **exact** variables:
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://nmhopipqtxtirqvdepho.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_anon_key_from_supabase
 ```
 
@@ -22,8 +22,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_anon_key_from_supabase
 ### 2. Netlify Environment Variables (Required for Build)
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://nmhopipqtxtirqvdepho.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_anon_key_here
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_anon_key_from_supabase
 ```
 
 ## 2. Supabase Authentication Configuration
