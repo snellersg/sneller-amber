@@ -8,6 +8,18 @@ export async function middleware(req: NextRequest) {
     },
   })
 
+  // Check environment variables
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.error('Missing Supabase environment variables in middleware')
+    
+    // During build time, just continue without auth check
+    if (process.env.NODE_ENV === 'production' && !process.env.NEXT_RUNTIME) {
+      return NextResponse.next()
+    }
+    
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
