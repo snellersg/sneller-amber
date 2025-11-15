@@ -563,16 +563,36 @@ export default function ActiveAccountsPage() {
                 onClick={() => handlePropertyClick(account.id)}
               >
                 {/* Account Header */}
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                       {account.property_name}
                     </h3>
+                    
                     {account.parent_account && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Parent: {account.parent_account}
                       </p>
                     )}
+
+                    {/* Separator line */}
+                    <div className="border-t border-gray-200 dark:border-gray-600 my-3"></div>
+
+                    {/* Account Manager and Location on same line */}
+                    <div className="flex items-center gap-3 mb-1">
+                      {account.account_manager && (
+                        <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
+                          <User className="h-4 w-4 flex-shrink-0" />
+                          <span>{account.account_manager}</span>
+                        </div>
+                      )}
+                      {account.location && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                          <MapPin className="h-3 w-3 mr-1" />
+                          {account.location}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {account.boss_url && (
                     <a
@@ -588,21 +608,7 @@ export default function ActiveAccountsPage() {
                 </div>
 
                 {/* Account Details */}
-                <div className="space-y-3">
-                  {account.location && (
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                      <MapPin className="h-4 w-4 flex-shrink-0" />
-                      <span>{account.location}</span>
-                    </div>
-                  )}
-
-                  {account.account_manager && (
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                      <User className="h-4 w-4 flex-shrink-0" />
-                      <span>{account.account_manager}</span>
-                    </div>
-                  )}
-
+                <div className="space-y-2">
                   {account.phone && (
                     <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                       <Phone className="h-4 w-4 flex-shrink-0" />
@@ -627,26 +633,28 @@ export default function ActiveAccountsPage() {
                     </div>
                   )}
 
-                  {/* Additional Info */}
-                  <div className="pt-3 border-t border-gray-100">
-                    <div className="flex flex-wrap gap-2">
-                      {account.customer_type && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {account.customer_type}
-                        </span>
-                      )}
-                      {account.im_service_level && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          {account.im_service_level}
-                        </span>
-                      )}
-                      {account.irrigation_customer && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                          Irrigation
-                        </span>
-                      )}
+                  {/* Service badges - removed border and reduced spacing */}
+                  {(account.customer_type || account.im_service_level || account.irrigation_customer) && (
+                    <div className="pt-2">
+                      <div className="flex flex-wrap gap-2">
+                        {account.customer_type && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {account.customer_type}
+                          </span>
+                        )}
+                        {account.im_service_level && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {account.im_service_level}
+                          </span>
+                        )}
+                        {account.irrigation_customer && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                            Irrigation
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             ))}
