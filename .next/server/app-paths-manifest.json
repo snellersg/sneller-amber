@@ -1,8 +1,0 @@
-{
-  "/active-accounts/page": "app/active-accounts/page.js",
-  "/product-knowledge/page": "app/product-knowledge/page.js",
-  "/core-processes/page": "app/core-processes/page.js",
-  "/add-on-services/page": "app/add-on-services/page.js",
-  "/sheets-and-docs/page": "app/sheets-and-docs/page.js",
-  "/core-services/page": "app/core-services/page.js"
-}
