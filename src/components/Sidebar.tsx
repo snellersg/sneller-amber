@@ -98,7 +98,7 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
           return JSON.parse(saved);
         }
       } catch (error) {
-        console.error('Failed to load sidebar state:', error);
+        // Failed to load sidebar state, use defaults
       }
     }
 

@@ -28,15 +28,9 @@ export default function Layout({ children }: LayoutProps) {
           setUser(user)
           // Check if user is admin from metadata
           const adminStatus = user.user_metadata?.isAdmin || false
-          console.log('User metadata:', user.user_metadata)
-          console.log('Admin status:', adminStatus)
-          
-          // TEMPORARY: Always show admin panel for development/initial setup
-          // TODO: Remove this line once you've promoted your user to admin
-          setIsAdmin(true) // Change this to: setIsAdmin(adminStatus) once admin is set up
+          setIsAdmin(adminStatus)
         }
       } catch (error) {
-        console.error('Auth check error:', error)
         setUser(null)
         setIsAdmin(false)
       }

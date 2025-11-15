@@ -67,7 +67,6 @@ export default function UserProfile() {
         await fetchProfile(user.id)
 
       } catch (error) {
-        console.error('Auth error:', error)
         router.push('/login')
       }
     }
@@ -94,7 +93,6 @@ export default function UserProfile() {
         setPhone(data.phone || '')
       }
     } catch (err: any) {
-      console.error('Error fetching profile:', err)
       setError('Failed to load profile')
     }
   }

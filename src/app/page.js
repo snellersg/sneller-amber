@@ -24,7 +24,6 @@ export default function HomePage() {
           router.push('/login')
         }
       } catch (error) {
-        console.error('Auth check error:', error)
         // On error, redirect to login
         router.push('/login')
       }
