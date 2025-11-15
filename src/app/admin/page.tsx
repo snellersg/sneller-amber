@@ -7,7 +7,6 @@ import { User } from '@supabase/supabase-js'
 import Layout from '@/components/Layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Users,
   Shield,
@@ -355,7 +354,6 @@ export default function AdminPanel() {
 
   return (
     <Layout>
-      <TooltipProvider>
         <div className="space-y-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Admin Panel</h1>
@@ -483,8 +481,9 @@ export default function AdminPanel() {
                         </Button>
                         <Button
                           onClick={() => bulkActions('delete')}
-                          variant="destructive"
+                          variant="outline"
                           size="sm"
+                          className="border-red-300 text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
                           Delete
@@ -575,72 +574,49 @@ export default function AdminPanel() {
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex items-center space-x-2">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      onClick={() => toggleUserAdmin(
-                                        userData.id,
-                                        userData.email,
-                                        userData.is_admin || false
-                                      )}
-                                      variant="outline"
-                                      size="sm"
-                                    >
-                                      {userData.is_admin ? (
-                                        <ShieldOff className="h-4 w-4" />
-                                      ) : (
-                                        <Shield className="h-4 w-4" />
-                                      )}
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>{userData.is_admin ? 'Remove Admin Access' : 'Grant Admin Access'}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      onClick={() => sendPasswordReset(userData.email)}
-                                      variant="outline"
-                                      size="sm"
-                                    >
-                                      <Mail className="h-4 w-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Send Password Reset Email</p>
-                                  </TooltipContent>
-                                </Tooltip>
+                                <Button
+                                  onClick={() => toggleUserAdmin(
+                                    userData.id,
+                                    userData.email,
+                                    userData.is_admin || false
+                                  )}
+                                  variant="outline"
+                                  size="sm"
+                                  title={userData.is_admin ? 'Remove Admin Access' : 'Grant Admin Access'}
+                                >
+                                  {userData.is_admin ? (
+                                    <ShieldOff className="h-4 w-4" />
+                                  ) : (
+                                    <Shield className="h-4 w-4" />
+                                  )}
+                                </Button>
+                                <Button
+                                  onClick={() => sendPasswordReset(userData.email)}
+                                  variant="outline"
+                                  size="sm"
+                                  title="Send Password Reset Email"
+                                >
+                                  <RefreshCw className="h-4 w-4" />
+                                </Button>
                                 {!userData.email_confirmed_at && (
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        onClick={() => approveUser(userData.id, userData.email)}
-                                        variant="outline"
-                                        size="sm"
-                                      >
-                                        <Check className="h-4 w-4" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Approve User Account</p>
-                                    </TooltipContent>
-                                  </Tooltip>
+                                  <Button
+                                    onClick={() => approveUser(userData.id, userData.email)}
+                                    variant="outline"
+                                    size="sm"
+                                    title="Approve User Account"
+                                  >
+                                    <Check className="h-4 w-4" />
+                                  </Button>
                                 )}
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      onClick={() => deleteUser(userData.id, userData.email)}
-                                      variant="destructive"
-                                      size="sm"
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Delete User Account</p>
-                                  </TooltipContent>
-                                </Tooltip>
+                                <Button
+                                  onClick={() => deleteUser(userData.id, userData.email)}
+                                  variant="outline"
+                                  size="sm"
+                                  className="border-red-300 text-red-700 hover:bg-red-50"
+                                  title="Delete User Account"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
                             </td>
                           </tr>
@@ -830,8 +806,9 @@ export default function AdminPanel() {
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Button
                                 onClick={() => removeDomain(domain.id, domain.domain)}
-                                variant="destructive"
+                                variant="outline"
                                 size="sm"
+                                className="border-red-300 text-red-700 hover:bg-red-50"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -853,7 +830,6 @@ export default function AdminPanel() {
           </Card>
         )}
       </div>
-      </TooltipProvider>
     </Layout>
   )
 }

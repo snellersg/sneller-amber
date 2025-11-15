@@ -229,23 +229,6 @@ export default function CoreServicesPage() {
                       </div>
                     </div>
                   )}
-
-                  {/* Opportunities */}
-                  {service.opportunities && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                        Opportunity Indicators
-                      </h4>
-                      <ul className="space-y-2">
-                        {service.opportunities.map((opportunity, oppIdx) => (
-                          <li key={oppIdx} className="flex items-start">
-                            <span className="text-green-500 dark:text-green-400 mr-2">•</span>
-                            <span className="text-gray-600 dark:text-gray-300">{opportunity}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </section>
               ))}
             </div>
@@ -268,10 +251,6 @@ export default function CoreServicesPage() {
                       LM
                     </span>
                   </div>
-                >
-                  {service.badge}
-                </span>
-              </div>
 
               {/* Description */}
               <p className="text-gray-700 dark:text-gray-300 mb-6 text-base leading-relaxed">
@@ -354,6 +333,7 @@ export default function CoreServicesPage() {
             </section>
           ))}
         </div>
+          </div>
 
         {/* Footer Note */}
         <div className="mt-12 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
@@ -363,6 +343,7 @@ export default function CoreServicesPage() {
           </p>
         </div>
       </div>
+    </div>
     </Layout>
   )
 }
