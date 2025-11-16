@@ -21,7 +21,7 @@ const Badge = ({ children, variant = 'default', className = '' }) => {
 
 // Simple Button component
 const Button = ({ children, className = '', onClick, href, ...props }) => {
-  const baseClasses = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50'
+  const baseClasses = 'inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:opacity-50'
   const buttonClasses = `${baseClasses} bg-primary hover:bg-primary/90 text-white ${className}`
   
   if (href) {
@@ -41,31 +41,31 @@ const Button = ({ children, className = '', onClick, href, ...props }) => {
 
 // Simple Card components
 const Card = ({ children, className = '' }) => (
-  <div className={`rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm ${className}`}>
+  <div className={`rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-200 ${className}`}>
     {children}
   </div>
 )
 
 const CardHeader = ({ children, className = '' }) => (
-  <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>
+  <div className={`p-4 ${className}`}>
     {children}
   </div>
 )
 
 const CardTitle = ({ children, className = '' }) => (
-  <h3 className={`text-lg font-semibold leading-none tracking-tight ${className}`}>
+  <h3 className={`text-lg font-semibold leading-snug text-gray-900 dark:text-white ${className}`}>
     {children}
   </h3>
 )
 
 const CardDescription = ({ children, className = '' }) => (
-  <p className={`text-sm text-gray-600 dark:text-gray-400 ${className}`}>
+  <p className={`text-sm text-gray-600 dark:text-gray-400 leading-relaxed ${className}`}>
     {children}
   </p>
 )
 
 const CardContent = ({ children, className = '' }) => (
-  <div className={`p-6 pt-0 ${className}`}>
+  <div className={`px-4 pb-4 ${className}`}>
     {children}
   </div>
 )
@@ -231,70 +231,41 @@ export default function GuidesPage() {
                 </div>
 
                 {/* Guides Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {category.guides.map((guide) => (
-                    <Card 
-                      key={guide.slug} 
-                      className="group hover:shadow-lg transition-all duration-200"
-                    >
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="space-y-2 flex-1 min-w-0">
-                            <CardTitle className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                              {guide.title}
-                            </CardTitle>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm text-gray-500 dark:text-gray-400">
-                                Updated {guide.updated}
-                              </span>
-                            </div>
+                    <Card key={guide.slug} className="h-full flex flex-col">
+                      <CardHeader className="flex-shrink-0">
+                        <div className="space-y-3">
+                          <CardTitle className="leading-snug">
+                            {guide.title}
+                          </CardTitle>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              Updated {guide.updated}
+                            </span>
                           </div>
-                          {guide.hasContent ? (
-                            <Badge 
-                              variant="outline" 
-                              className="text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
-                            >
-                              Available
-                            </Badge>
-                          ) : (
-                            <Badge 
-                              variant="outline" 
-                              className="text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800"
-                            >
-                              Coming Soon
-                            </Badge>
-                          )}
                         </div>
                       </CardHeader>
 
-                      <CardContent className="space-y-4">
-                        <CardDescription className="leading-relaxed">
+                      <CardContent className="flex-1 flex flex-col justify-between space-y-3">
+                        <CardDescription className="flex-1">
                           {guide.description}
                         </CardDescription>
 
                         {guide.hasContent ? (
                           <Button 
                             href={`/guides/${guide.slug}`}
-                            className="w-full group/btn"
+                            className="w-full mt-auto"
                           >
-                            <FileText className="h-4 w-4 mr-2" />
+                            <FileText className="h-3 w-3" />
                             View Guide
-                            <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                            <ArrowRight className="h-3 w-3" />
                           </Button>
                         ) : (
-                          <div className="bg-accent dark:bg-accent/20 border border-accent/30 dark:border-accent/30 rounded-lg p-4">
-                            <div className="flex items-start gap-3">
-                              <Construction className="h-5 w-5 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
-                              <div>
-                                <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
-                                  Under Development
-                                </h4>
-                                <p className="text-xs text-yellow-700 dark:text-yellow-300 leading-relaxed">
-                                  This guide is being created. Check back soon for detailed step-by-step instructions.
-                                </p>
-                              </div>
-                            </div>
+                          <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
+                            <Construction className="h-3 w-3" />
+                            Under Development
                           </div>
                         )}
                       </CardContent>
@@ -307,16 +278,13 @@ export default function GuidesPage() {
         </div>
 
         {/* Footer Note */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg text-center">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
             Need a New Guide?
           </h3>
-          <p className="text-blue-700 dark:text-blue-300 mb-4">
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
             If you need a process guide that doesn't exist yet, or have suggestions for improvements,
-            please reach out to the team lead or submit a request through Asana.
-          </p>
-          <p className="text-sm text-blue-600 dark:text-blue-400">
-            All guides are regularly updated to reflect current best practices and system changes.
+            please reach out to brendon.dalaba@snellersg.com or submit a request through Asana.
           </p>
         </div>
       </div>

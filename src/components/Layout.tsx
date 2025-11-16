@@ -26,8 +26,8 @@ export default function Layout({ children }: LayoutProps) {
         
         if (user) {
           setUser(user)
-          // Check if user is admin from metadata
-          const adminStatus = user.user_metadata?.isAdmin || false
+          // Check if user is admin from metadata (support both property names)
+          const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
           setIsAdmin(adminStatus)
         }
       } catch (error) {

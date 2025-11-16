@@ -368,14 +368,6 @@ export default function AddOnServicesPage() {
             </section>
           ))}
         </div>
-
-        {/* Footer Note */}
-        <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong>Sales Tip:</strong> Add-on services are great opportunities to increase revenue while 
-            solving specific client problems. Look for the opportunity indicators during site visits.
-          </p>
-        </div>
       </div>
     </Layout>
   )

@@ -14,7 +14,8 @@ import {
   Phone, 
   Mail,
   ExternalLink,
-  Loader2
+  Loader2,
+  RotateCcw
 } from 'lucide-react'
 
 interface Account {
@@ -274,7 +275,7 @@ export default function ActiveAccountsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Active Accounts</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ACTIVE ACCOUNTS</h1>
             <p className="mt-2 text-sm text-gray-600">
               {isLoading ? 'Loading...' : `${filteredAccounts.length} of ${accounts.length} accounts`}
             </p>
@@ -289,7 +290,7 @@ export default function ActiveAccountsPage() {
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : (
-              <Search className="h-4 w-4" />
+              <RotateCcw className="h-4 w-4" />
             )}
             <span>{isLoading ? 'Refreshing...' : 'Refresh'}</span>
           </button>

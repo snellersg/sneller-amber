@@ -202,14 +202,6 @@ export default function CoreProcessesPage() {
             </section>
           ))}
         </div>
-
-        {/* Footer Note */}
-        <div className="mt-12 p-6 bg-secondary dark:bg-secondary/20 border border-primary/30 dark:border-primary/30 rounded-lg">
-          <p className="text-sm text-primary dark:text-primary">
-            <strong>Remember:</strong> These processes are the foundation of exceptional account management. 
-            Consistency in execution builds trust and delivers results.
-          </p>
-        </div>
       </div>
     </Layout>
   )

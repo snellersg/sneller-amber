@@ -334,14 +334,6 @@ export default function CoreServicesPage() {
           ))}
         </div>
           </div>
-
-        {/* Footer Note */}
-        <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <p className="text-sm text-green-800 dark:text-green-200">
-            <strong>Note:</strong> All services are delivered by licensed and insured professionals 
-            following industry best practices and client-specific requirements.
-          </p>
-        </div>
       </div>
     </div>
     </Layout>

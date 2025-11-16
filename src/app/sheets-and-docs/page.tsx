@@ -146,13 +146,6 @@ export default function SheetsDocsPage() {
             </div>
           ))}
         </div>
-
-        {/* Footer Note */}
-        <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <strong>Note:</strong> All links open in a new tab. Make sure you're logged into your Sneller Google account to access these documents.
-          </p>
-        </div>
       </div>
     </Layout>
   )

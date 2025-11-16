@@ -158,13 +158,6 @@ export default function ToolsPlatformsPage() {
             </div>
           ))}
         </div>
-
-        {/* Footer Note */}
-        <div className="mt-8 p-4 bg-secondary dark:bg-secondary/20 border border-primary/30 dark:border-primary/30 rounded-lg">
-          <p className="text-sm text-primary dark:text-primary">
-            <strong>Note:</strong> Many of these platforms have mobile apps available. Click "Open" to access the web version or download links.
-          </p>
-        </div>
       </div>
     </Layout>
   )

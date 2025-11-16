@@ -236,14 +236,6 @@ export default function ProductKnowledgePage() {
             </div>
           ))}
         </div>
-
-        {/* Footer Note */}
-        <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <strong>Important:</strong> Always refer to product labels and Safety Data Sheets (SDS) for complete 
-            application instructions, safety information, and regulatory compliance requirements.
-          </p>
-        </div>
       </div>
     </Layout>
   )
