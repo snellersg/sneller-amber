@@ -201,7 +201,7 @@ export default function UserProfile() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-indigo-600" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-lg text-gray-600">Loading profile...</p>
         </div>
       </div>
@@ -220,7 +220,7 @@ export default function UserProfile() {
 
         {/* Messages */}
         {message && (
-          <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg">
+          <div className="bg-secondary border border-primary/30 text-primary p-4 rounded-lg">
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2" />
               {message}
@@ -229,7 +229,7 @@ export default function UserProfile() {
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">
+          <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg">
             <div className="flex items-center">
               <XCircle className="h-4 w-4 mr-2" />
               {error}
@@ -287,7 +287,7 @@ export default function UserProfile() {
                   onChange={(e) => setFullName(e.target.value)}
                   disabled={!editing}
                   placeholder="Your full name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -303,7 +303,7 @@ export default function UserProfile() {
                   onChange={(e) => setDepartment(e.target.value)}
                   disabled={!editing}
                   placeholder="e.g., Operations, Sales, Admin"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -319,7 +319,7 @@ export default function UserProfile() {
                   onChange={(e) => setPhone(e.target.value)}
                   disabled={!editing}
                   placeholder="(123) 456-7890"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -383,7 +383,7 @@ export default function UserProfile() {
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
                       placeholder="Enter new password"
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <button
                       type="button"
@@ -408,7 +408,7 @@ export default function UserProfile() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     placeholder="Confirm new password"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
@@ -474,8 +474,8 @@ export default function UserProfile() {
                 <dd className="font-medium">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                     user.email_confirmed_at
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-secondary text-primary'
+                      : 'bg-accent text-accent-foreground'
                   }`}>
                     {user.email_confirmed_at ? 'Yes' : 'Pending'}
                   </span>

@@ -8,7 +8,7 @@ import { Construction, Calendar, ArrowRight, FileText, Users, Calculator, Briefc
 // Simple Badge component
 const Badge = ({ children, variant = 'default', className = '' }) => {
   const variants = {
-    default: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200',
+    default: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
     outline: 'border border-gray-300 dark:border-gray-600 bg-transparent text-gray-700 dark:text-gray-300'
   }
   
@@ -21,8 +21,8 @@ const Badge = ({ children, variant = 'default', className = '' }) => {
 
 // Simple Button component
 const Button = ({ children, className = '', onClick, href, ...props }) => {
-  const baseClasses = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50'
-  const buttonClasses = `${baseClasses} bg-blue-600 hover:bg-blue-700 text-white ${className}`
+  const baseClasses = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50'
+  const buttonClasses = `${baseClasses} bg-primary hover:bg-primary/90 text-white ${className}`
   
   if (href) {
     return (
@@ -99,8 +99,8 @@ const guideCategories = [
     title: 'Bidding',
     description: 'Estimating, work orders, and contract creation',
     icon: Calculator,
-    color: 'bg-green-500/10 text-green-700 dark:text-green-400',
-    iconColor: 'text-green-600 dark:text-green-400',
+    color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    iconColor: 'text-gray-600 dark:text-gray-400',
     guides: [
       {
         slug: 'identifying-pe-opportunities',
@@ -143,8 +143,8 @@ const guideCategories = [
     title: 'Workflows',
     description: 'Daily operations, customer communication, and process management',
     icon: Briefcase,
-    color: 'bg-purple-500/10 text-purple-700 dark:text-purple-400',
-    iconColor: 'text-purple-600 dark:text-purple-400',
+    color: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
+    iconColor: 'text-blue-600 dark:text-blue-400',
     guides: [
       {
         slug: 'working-a-snow-event',
@@ -180,8 +180,8 @@ const guideCategories = [
     title: 'Financial',
     description: 'Invoicing, purchase orders, and financial processes',
     icon: DollarSign,
-    color: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-600',
-    iconColor: 'text-yellow-600 dark:text-yellow-500',
+    color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    iconColor: 'text-gray-600 dark:text-gray-400',
     guides: [
       {
         slug: 'submitting-pos',
@@ -283,7 +283,7 @@ export default function GuidesPage() {
                             <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                           </Button>
                         ) : (
-                          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                          <div className="bg-accent dark:bg-accent/20 border border-accent/30 dark:border-accent/30 rounded-lg p-4">
                             <div className="flex items-start gap-3">
                               <Construction className="h-5 w-5 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
                               <div>

@@ -90,7 +90,7 @@ export default function ToolsPage() {
                       value={mulchArea}
                       onChange={(e) => setMulchArea(e.target.value)}
                       placeholder="0"
-                      className="w-full px-3 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary"
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-gray-500 dark:text-gray-400">
                       sq ft
@@ -108,7 +108,7 @@ export default function ToolsPage() {
                       value={mulchDepth}
                       onChange={(e) => setMulchDepth(e.target.value)}
                       placeholder="0"
-                      className="w-full px-3 py-2 pr-16 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 pr-16 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary"
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-gray-500 dark:text-gray-400">
                       inches
@@ -121,21 +121,21 @@ export default function ToolsPage() {
                 <button
                   onClick={calculateMulch}
                   disabled={!mulchArea || !mulchDepth}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Calculator className="h-4 w-4" />
                   Calculate Volume
                 </button>
                 <button
                   onClick={clearMulchCalculator}
-                  className="p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+                  className="p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
                 >
                   <RotateCcw className="h-4 w-4" />
                 </button>
               </div>
               
               {mulchResult && (
-                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="p-4 bg-secondary dark:bg-secondary/20 border border-primary/30 dark:border-primary/30 rounded-lg">
                   <div className="flex items-center gap-2">
                     <Calculator className="h-4 w-4 text-green-600 dark:text-green-400" />
                     <h3 className="font-medium text-green-800 dark:text-green-200">
@@ -173,7 +173,7 @@ export default function ToolsPage() {
                       value={stoneArea}
                       onChange={(e) => setStoneArea(e.target.value)}
                       placeholder="0"
-                      className="w-full px-3 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary"
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-gray-500 dark:text-gray-400">
                       sq ft
@@ -191,7 +191,7 @@ export default function ToolsPage() {
                       value={stoneDepth}
                       onChange={(e) => setStoneDepth(e.target.value)}
                       placeholder="0"
-                      className="w-full px-3 py-2 pr-16 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 pr-16 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary"
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-gray-500 dark:text-gray-400">
                       inches
@@ -208,7 +208,7 @@ export default function ToolsPage() {
                   id="stone-material"
                   value={stoneMaterial}
                   onChange={(e) => setStoneMaterial(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   {Object.keys(stoneDensities).map((material) => (
                     <option key={material} value={material}>
@@ -225,21 +225,21 @@ export default function ToolsPage() {
                 <button
                   onClick={calculateStone}
                   disabled={!stoneArea || !stoneDepth}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Calculator className="h-4 w-4" />
                   Calculate Volume
                 </button>
                 <button
                   onClick={clearStoneCalculator}
-                  className="p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+                  className="p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
                 >
                   <RotateCcw className="h-4 w-4" />
                 </button>
               </div>
               
               {stoneResult && (
-                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
                   <div className="flex items-center gap-2">
                     <Calculator className="h-4 w-4 text-green-600 dark:text-green-400" />
                     <h3 className="font-medium text-green-800 dark:text-green-200">

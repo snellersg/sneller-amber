@@ -126,8 +126,8 @@ export default function ProductKnowledgePage() {
                         <span
                           className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
                             product.badge === 'Snow'
-                              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 ring-blue-600/20'
-                              : 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 ring-green-600/20'
+                              ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                              : 'bg-secondary dark:bg-secondary/30 text-primary dark:text-primary ring-primary/20'
                           }`}
                         >
                           {product.badge}
@@ -199,7 +199,7 @@ export default function ProductKnowledgePage() {
                         <ul className="space-y-2">
                           {product.keyProperties.map((prop, propIdx) => (
                             <li key={propIdx} className="flex items-start">
-                              <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                              <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
                               <span className="text-gray-700 dark:text-gray-300">{prop}</span>
                             </li>
                           ))}
@@ -238,8 +238,8 @@ export default function ProductKnowledgePage() {
         </div>
 
         {/* Footer Note */}
-        <div className="mt-12 p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
+        <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             <strong>Important:</strong> Always refer to product labels and Safety Data Sheets (SDS) for complete 
             application instructions, safety information, and regulatory compliance requirements.
           </p>

@@ -504,7 +504,7 @@ export default function PropertyDetailPage() {
                   type="text"
                   value={editedAccount?.property_name || ''}
                   onChange={(e) => setEditedAccount({ ...editedAccount!, property_name: e.target.value })}
-                  className="text-3xl font-bold text-gray-900 dark:text-white bg-transparent border-b-2 border-indigo-500 focus:outline-none w-full"
+                  className="text-3xl font-bold text-gray-900 dark:text-white bg-transparent border-b-2 border-primary focus:outline-none w-full"
                   placeholder="Property Name"
                 />
               ) : (
@@ -527,11 +527,11 @@ export default function PropertyDetailPage() {
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
                   >
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary"></div>
                         Saving...
                       </>
                     ) : (
@@ -546,14 +546,14 @@ export default function PropertyDetailPage() {
                 <>
                   <button
                     onClick={handleDelete}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-destructive text-destructive rounded-lg hover:bg-destructive/10 dark:hover:bg-destructive/10 transition-colors"
                   >
                     <Trash2 className="h-3 w-3" />
                     Delete Account
                   </button>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     <Edit2 className="h-3 w-3" />
                     Edit Account
@@ -567,11 +567,8 @@ export default function PropertyDetailPage() {
         {/* Property Details Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                <ClipboardList className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-              </div>
-              Property Details
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+              PROPERTY DETAILS
             </h3>
             
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
@@ -579,8 +576,8 @@ export default function PropertyDetailPage() {
                 {/* Property Name */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-md">
-                      <Building className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <Building className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Property Name</span>
                   </div>
@@ -589,7 +586,7 @@ export default function PropertyDetailPage() {
                       type="text"
                       value={editedAccount?.property_name || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, property_name: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                       placeholder="Enter property name"
                     />
                   ) : (
@@ -600,8 +597,8 @@ export default function PropertyDetailPage() {
                 {/* Address */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-md">
-                      <MapPin className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <MapPin className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Address</span>
                   </div>
@@ -610,7 +607,7 @@ export default function PropertyDetailPage() {
                       type="text"
                       value={editedAccount?.address || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, address: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Enter property address"
                     />
                   ) : account.address ? (
@@ -630,8 +627,8 @@ export default function PropertyDetailPage() {
                 {/* Parent Account */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-md">
-                      <Building2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <Building2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Parent Account</span>
                   </div>
@@ -640,7 +637,7 @@ export default function PropertyDetailPage() {
                       type="text"
                       value={editedAccount?.parent_account || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, parent_account: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Enter parent account"
                     />
                   ) : (
@@ -651,8 +648,8 @@ export default function PropertyDetailPage() {
                 {/* Location */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-md">
-                      <MapPinned className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <MapPinned className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Location</span>
                   </div>
@@ -660,7 +657,7 @@ export default function PropertyDetailPage() {
                     <select
                       value={editedAccount?.location || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, location: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="GRR">GRR</option>
                       <option value="LAN">LAN</option>
@@ -668,17 +665,15 @@ export default function PropertyDetailPage() {
                       <option value="SSP">SSP</option>
                     </select>
                   ) : (
-                    <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-800">
-                      {account.location}
-                    </span>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">{account.location || '—'}</p>
                   )}
                 </div>
 
                 {/* Account Manager */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
-                      <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Account Manager</span>
                   </div>
@@ -687,7 +682,7 @@ export default function PropertyDetailPage() {
                       type="text"
                       value={editedAccount?.account_manager || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, account_manager: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Enter account manager"
                     />
                   ) : (
@@ -698,8 +693,8 @@ export default function PropertyDetailPage() {
                 {/* Whose Contract */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-amber-100 dark:bg-amber-900/30 rounded-md">
-                      <FileText className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Whose Contract</span>
                   </div>
@@ -707,20 +702,14 @@ export default function PropertyDetailPage() {
                     <select
                       value={editedAccount?.whose_contract || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, whose_contract: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="">Select...</option>
                       <option value="Ours">Ours</option>
                       <option value="Theirs">Theirs</option>
                     </select>
                   ) : account.whose_contract ? (
-                    <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold ${
-                      account.whose_contract === 'Ours' 
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800' 
-                        : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800'
-                    }`}>
-                      {account.whose_contract}
-                    </span>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">{account.whose_contract}</p>
                   ) : (
                     <p className="text-lg text-gray-500 dark:text-gray-400 italic">Not specified</p>
                   )}
@@ -729,8 +718,8 @@ export default function PropertyDetailPage() {
                 {/* CFL */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-pink-100 dark:bg-pink-900/30 rounded-md">
-                      <AudioLines className="h-4 w-4 text-pink-600 dark:text-pink-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <AudioLines className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">CFL Rating</span>
                   </div>
@@ -738,7 +727,7 @@ export default function PropertyDetailPage() {
                     <select
                       value={editedAccount?.cfl || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, cfl: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="">Select...</option>
                       <option value="A">A</option>
@@ -747,14 +736,7 @@ export default function PropertyDetailPage() {
                       <option value="D">D</option>
                     </select>
                   ) : account.cfl ? (
-                    <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold ${
-                      account.cfl === 'A' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800' :
-                      account.cfl === 'B' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800' :
-                      account.cfl === 'C' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 border border-orange-200 dark:border-orange-800' :
-                      'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800'
-                    }`}>
-                      Grade {account.cfl}
-                    </span>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">{account.cfl}</p>
                   ) : (
                     <p className="text-lg text-gray-500 dark:text-gray-400 italic">Not rated</p>
                   )}
@@ -763,8 +745,8 @@ export default function PropertyDetailPage() {
                 {/* Boss URL */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-md">
-                      <Globe className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                      <Globe className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Boss URL</span>
                   </div>
@@ -773,7 +755,7 @@ export default function PropertyDetailPage() {
                       type="url"
                       value={editedAccount?.boss_url || ''}
                       onChange={(e) => setEditedAccount({ ...editedAccount!, boss_url: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="https://..."
                     />
                   ) : account.boss_url ? (
@@ -781,7 +763,7 @@ export default function PropertyDetailPage() {
                       href={account.boss_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
                     >
                       <Globe className="h-4 w-4" />
                       View in Boss
@@ -797,116 +779,121 @@ export default function PropertyDetailPage() {
 
           {/* Service Information Section */}
           <div className="p-6 border-t border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-              <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                <Briefcase className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              Service Information
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+              SERVICE INFORMATION
             </h3>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Winter (WR) Services Card */}
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 shadow-sm">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                    <Snowflake className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <h4 className="text-lg font-bold text-blue-900 dark:text-blue-100">Winter (WR) Services</h4>
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">WINTER (WR) SERVICES</h4>
                 </div>
                 
                 <div className="space-y-4">
                   {/* WR Customer Status */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
-                          <Snowflake className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR Customer</span>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <Snowflake className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      {isEditing ? (
-                        <select
-                          value={editedAccount?.wr_customer === null || editedAccount?.wr_customer === undefined ? '' : editedAccount?.wr_customer ? 'true' : 'false'}
-                          onChange={(e) => setEditedAccount({
-                            ...editedAccount!,
-                            wr_customer: e.target.value === '' ? undefined : e.target.value === 'true'
-                          })}
-                          className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value=""></option>
-                          <option value="true">Yes</option>
-                          <option value="false">No</option>
-                        </select>
-                      ) : (
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                          account.wr_customer === null || account.wr_customer === undefined
-                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                            : account.wr_customer
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
-                            : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
-                        }`}>
-                          {account.wr_customer === null || account.wr_customer === undefined ? 'Unknown' : account.wr_customer ? 'Active' : 'Inactive'}
-                        </span>
-                      )}
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR CUSTOMER</span>
                     </div>
+                    {isEditing ? (
+                      <select
+                        value={editedAccount?.wr_customer === null || editedAccount?.wr_customer === undefined ? '' : editedAccount?.wr_customer ? 'true' : 'false'}
+                        onChange={(e) => setEditedAccount({
+                          ...editedAccount!,
+                          wr_customer: e.target.value === '' ? undefined : e.target.value === 'true'
+                        })}
+                        className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    ) : (
+                      <p className={account.wr_customer === null || account.wr_customer === undefined 
+                        ? "text-gray-500 dark:text-gray-400 italic" 
+                        : "text-gray-900 dark:text-white font-medium"
+                      }>
+                        {account.wr_customer === null || account.wr_customer === undefined 
+                          ? 'Not specified' 
+                          : account.wr_customer 
+                          ? 'Yes' 
+                          : 'No'
+                        }
+                      </p>
+                    )}
                   </div>
 
                   {/* IM Service Level */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-md">
-                        <ShieldPlus className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <ShieldPlus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">IM Service Level</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">IM SERVICE LEVEL</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editedAccount?.im_service_level || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, im_service_level: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Enter IM service level"
                       />
                     ) : (
-                      <p className="text-gray-900 dark:text-white font-medium">{account.im_service_level || 'Not specified'}</p>
+                      <p className={!account.im_service_level 
+                        ? "text-gray-500 dark:text-gray-400 italic" 
+                        : "text-gray-900 dark:text-white font-medium"
+                      }>
+                        {account.im_service_level || 'Not specified'}
+                      </p>
                     )}
                   </div>
 
                   {/* WR Area */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-md">
-                        <LocateFixed className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <LocateFixed className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR Area</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR AREA</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editedAccount?.wr_area || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, wr_area: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Enter WR area"
                       />
                     ) : (
-                      <p className="text-gray-900 dark:text-white font-medium">{account.wr_area || 'Not specified'}</p>
+                      <p className={!account.wr_area 
+                        ? "text-gray-500 dark:text-gray-400 italic" 
+                        : "text-gray-900 dark:text-white font-medium"
+                      }>
+                        {account.wr_area || 'Not specified'}
+                      </p>
                     )}
                   </div>
 
                   {/* WR Expiration Date */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-1.5 bg-red-100 dark:bg-red-900/30 rounded-md">
-                        <CalendarX className="h-4 w-4 text-red-600 dark:text-red-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <CalendarX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR Expiration</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR EXPIRATION</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="date"
                         value={editedAccount?.wr_expiration_date || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, wr_expiration_date: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     ) : account.wr_expiration_date ? (
                       <div className="flex items-center gap-2">
@@ -931,17 +918,17 @@ export default function PropertyDetailPage() {
                   {/* WR Maps URL */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-md">
-                        <MapIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <MapIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR Maps</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR MAPS</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="url"
                         value={editedAccount?.wr_maps_url || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, wr_maps_url: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="https://..."
                       />
                     ) : account.wr_maps_url ? (
@@ -949,7 +936,7 @@ export default function PropertyDetailPage() {
                         href={account.wr_maps_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-medium"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium"
                       >
                         <MapIcon className="h-4 w-4" />
                         View Winter Maps
@@ -963,10 +950,10 @@ export default function PropertyDetailPage() {
                   {/* WR Contract PDF */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-md">
-                        <FileSearch className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <FileSearch className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR Contract</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">WR CONTRACT</span>
                     </div>
                     {account.wr_contract_pdf_url ? (
                       <div className="space-y-3">
@@ -981,14 +968,14 @@ export default function PropertyDetailPage() {
                         <div className="flex flex-wrap gap-2">
                           <button
                             onClick={generateWRSignedUrl}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-medium"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium"
                           >
                             <Eye className="h-4 w-4" />
                             View PDF
                           </button>
                           <button
                             onClick={handleWRDownload}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           >
                             <Download className="h-4 w-4" />
                             Download
@@ -996,7 +983,7 @@ export default function PropertyDetailPage() {
                           <button
                             onClick={handleWRDelete}
                             disabled={deletingWR}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
                           >
                             {deletingWR ? (
                               <>
@@ -1024,11 +1011,11 @@ export default function PropertyDetailPage() {
                         <button
                           onClick={() => wrFileInputRef.current?.click()}
                           disabled={uploadingWR}
-                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                           {uploadingWR ? (
                             <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                               Uploading...
                             </>
                           ) : (
@@ -1046,122 +1033,124 @@ export default function PropertyDetailPage() {
               </div>
 
               {/* Lawn (LM) Services Card */}
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800 shadow-sm">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
-                    <Leaf className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  </div>
-                  <h4 className="text-lg font-bold text-green-900 dark:text-green-100">Lawn (LM) Services</h4>
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">LAWN MAINTENANCE (LM) SERVICES</h4>
                 </div>
 
                 <div className="space-y-4">
                   {/* LM Customer Status */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-md">
-                          <Leaf className="h-4 w-4 text-green-600 dark:text-green-400" />
-                        </div>
-                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM Customer</span>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <Leaf className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      {isEditing ? (
-                        <select
-                          value={editedAccount?.lm_customer === null || editedAccount?.lm_customer === undefined ? '' : editedAccount?.lm_customer ? 'true' : 'false'}
-                          onChange={(e) => setEditedAccount({
-                            ...editedAccount!,
-                            lm_customer: e.target.value === '' ? undefined : e.target.value === 'true'
-                          })}
-                          className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                        >
-                          <option value=""></option>
-                          <option value="true">Yes</option>
-                          <option value="false">No</option>
-                        </select>
-                      ) : (
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                          account.lm_customer === null || account.lm_customer === undefined
-                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                            : account.lm_customer
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
-                            : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
-                        }`}>
-                          {account.lm_customer === null || account.lm_customer === undefined ? 'Unknown' : account.lm_customer ? 'Active' : 'Inactive'}
-                        </span>
-                      )}
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM CUSTOMER</span>
                     </div>
+                    {isEditing ? (
+                      <select
+                        value={editedAccount?.lm_customer === null || editedAccount?.lm_customer === undefined ? '' : editedAccount?.lm_customer ? 'true' : 'false'}
+                        onChange={(e) => setEditedAccount({
+                          ...editedAccount!,
+                          lm_customer: e.target.value === '' ? undefined : e.target.value === 'true'
+                        })}
+                        className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    ) : (
+                      <p className={account.lm_customer === null || account.lm_customer === undefined 
+                        ? "text-gray-500 dark:text-gray-400 italic" 
+                        : "text-gray-900 dark:text-white font-medium"
+                      }>
+                        {account.lm_customer === null || account.lm_customer === undefined 
+                          ? 'Not specified' 
+                          : account.lm_customer 
+                          ? 'Yes' 
+                          : 'No'
+                        }
+                      </p>
+                    )}
                   </div>
 
                   {/* Irrigation Customer */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
-                          <ShieldPlus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Irrigation Customer</span>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <ShieldPlus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      {isEditing ? (
-                        <select
-                          value={editedAccount?.irrigation_customer === null || editedAccount?.irrigation_customer === undefined ? '' : editedAccount?.irrigation_customer ? 'true' : 'false'}
-                          onChange={(e) => setEditedAccount({
-                            ...editedAccount!,
-                            irrigation_customer: e.target.value === '' ? undefined : e.target.value === 'true'
-                          })}
-                          className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value=""></option>
-                          <option value="true">Yes</option>
-                          <option value="false">No</option>
-                        </select>
-                      ) : (
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                          account.irrigation_customer === null || account.irrigation_customer === undefined
-                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                            : account.irrigation_customer
-                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
-                            : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
-                        }`}>
-                          {account.irrigation_customer === null || account.irrigation_customer === undefined ? 'Unknown' : account.irrigation_customer ? 'Active' : 'Inactive'}
-                        </span>
-                      )}
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">IRRIGATION CUSTOMER</span>
                     </div>
+                    {isEditing ? (
+                      <select
+                        value={editedAccount?.irrigation_customer === null || editedAccount?.irrigation_customer === undefined ? '' : editedAccount?.irrigation_customer ? 'true' : 'false'}
+                        onChange={(e) => setEditedAccount({
+                          ...editedAccount!,
+                          irrigation_customer: e.target.value === '' ? undefined : e.target.value === 'true'
+                        })}
+                        className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    ) : (
+                      <p className={account.irrigation_customer === null || account.irrigation_customer === undefined 
+                        ? "text-gray-500 dark:text-gray-400 italic" 
+                        : "text-gray-900 dark:text-white font-medium"
+                      }>
+                        {account.irrigation_customer === null || account.irrigation_customer === undefined 
+                          ? 'Not specified' 
+                          : account.irrigation_customer 
+                          ? 'Yes' 
+                          : 'No'
+                        }
+                      </p>
+                    )}
                   </div>
 
                   {/* LM District */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-md">
-                        <LocateFixed className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <LocateFixed className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM District</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM DISTRICT</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editedAccount?.lm_district || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, lm_district: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Enter LM district"
                       />
                     ) : (
-                      <p className="text-gray-900 dark:text-white font-medium">{account.lm_district || 'Not specified'}</p>
+                      <p className={!account.lm_district 
+                        ? "text-gray-500 dark:text-gray-400 italic" 
+                        : "text-gray-900 dark:text-white font-medium"
+                      }>
+                        {account.lm_district || 'Not specified'}
+                      </p>
                     )}
                   </div>
 
                   {/* LM Expiration Date */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-1.5 bg-amber-100 dark:bg-amber-900/30 rounded-md">
-                        <CalendarDays className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <CalendarDays className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM Expiration</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM EXPIRATION</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="date"
                         value={editedAccount?.lm_expiration_date || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, lm_expiration_date: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     ) : account.lm_expiration_date ? (
                       <div className="flex items-center gap-2">
@@ -1186,17 +1175,17 @@ export default function PropertyDetailPage() {
                   {/* LM Maps URL */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-md">
-                        <MapIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <MapIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM Maps</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM MAPS</span>
                     </div>
                     {isEditing ? (
                       <input
                         type="url"
                         value={editedAccount?.lm_map_url || ''}
                         onChange={(e) => setEditedAccount({ ...editedAccount!, lm_map_url: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="https://..."
                       />
                     ) : account.lm_map_url ? (
@@ -1204,7 +1193,7 @@ export default function PropertyDetailPage() {
                         href={account.lm_map_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors font-medium"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium"
                       >
                         <MapIcon className="h-4 w-4" />
                         View Lawn Maps
@@ -1218,10 +1207,10 @@ export default function PropertyDetailPage() {
                   {/* LM Contract PDF */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="p-1.5 bg-pink-100 dark:bg-pink-900/30 rounded-md">
-                        <FileSearch className="h-4 w-4 text-pink-600 dark:text-pink-400" />
+                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <FileSearch className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM Contract</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LM CONTRACT</span>
                     </div>
                     {account.lm_contract_pdf_url ? (
                       <div className="space-y-3">
@@ -1236,14 +1225,14 @@ export default function PropertyDetailPage() {
                         <div className="flex flex-wrap gap-2">
                           <button
                             onClick={generateLMSignedUrl}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-medium"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium"
                           >
                             <Eye className="h-4 w-4" />
                             View PDF
                           </button>
                           <button
                             onClick={handleLMDownload}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           >
                             <Download className="h-4 w-4" />
                             Download
@@ -1251,7 +1240,7 @@ export default function PropertyDetailPage() {
                           <button
                             onClick={handleLMDelete}
                             disabled={deletingLM}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
                           >
                             {deletingLM ? (
                               <>
@@ -1279,11 +1268,11 @@ export default function PropertyDetailPage() {
                         <button
                           onClick={() => lmFileInputRef.current?.click()}
                           disabled={uploadingLM}
-                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                           {uploadingLM ? (
                             <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                               Uploading...
                             </>
                           ) : (
@@ -1301,6 +1290,7 @@ export default function PropertyDetailPage() {
               </div>
             </div>
           </div>
+        </div>
 
           {/* Account Notes Section */}
           <div className="p-6 border-t border-gray-200 dark:border-gray-700">
@@ -1308,14 +1298,14 @@ export default function PropertyDetailPage() {
               <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
                 <ClipboardList className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               </div>
-              Account Notes
+              ACCOUNT NOTES
             </h3>
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
               {isEditing ? (
                 <textarea
                   value={editedAccount?.account_notes || ''}
                   onChange={(e) => setEditedAccount({ ...editedAccount!, account_notes: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary resize-y"
                   rows={4}
                   placeholder="Enter account notes..."
                 />
@@ -1334,6 +1324,8 @@ export default function PropertyDetailPage() {
             </div>
           </div>
         </div>
+      </div>
+
       {/* PDF Viewers */}
       {showWRViewer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -1382,7 +1374,6 @@ export default function PropertyDetailPage() {
           </div>
         </div>
       )}
-    </div>
     </Layout>
   );
 }

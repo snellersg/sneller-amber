@@ -259,7 +259,7 @@ export default function ActiveAccountsPage() {
           </div>
           <button
             onClick={() => refetch()}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
           >
             Try Again
           </button>
@@ -287,7 +287,7 @@ export default function ActiveAccountsPage() {
             className="mt-4 sm:mt-0 inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : (
               <Search className="h-4 w-4" />
             )}
@@ -307,7 +307,7 @@ export default function ActiveAccountsPage() {
                   placeholder="Search accounts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -317,14 +317,14 @@ export default function ActiveAccountsPage() {
               onClick={() => setShowFilters(!showFilters)}
               className={`inline-flex items-center space-x-2 px-4 py-2 border rounded-md text-sm font-medium ${
                 activeFiltersCount > 0 || showFilters
-                  ? 'bg-indigo-100 dark:bg-indigo-900 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300'
+                  ? 'bg-primary/10 dark:bg-primary/20 border-primary/30 text-primary dark:text-primary'
                   : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
               }`}
             >
               <Filter className="h-4 w-4" />
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full">
+                <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                   {activeFiltersCount}
                 </span>
               )}
@@ -343,7 +343,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedLocation}
                     onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Locations</option>
                     {uniqueLocations.map(location => (
@@ -362,7 +362,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedManager}
                     onChange={(e) => setSelectedManager(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Managers</option>
                     {uniqueManagers.map(manager => (
@@ -381,7 +381,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedParentAccount}
                     onChange={(e) => setSelectedParentAccount(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Parent Accounts</option>
                     {uniqueParentAccounts.map(parent => (
@@ -400,7 +400,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedCustomerType}
                     onChange={(e) => setSelectedCustomerType(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Types</option>
                     {uniqueCustomerTypes.map(type => (
@@ -419,7 +419,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedImServiceLevel}
                     onChange={(e) => setSelectedImServiceLevel(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Service Levels</option>
                     {uniqueImServiceLevels.map(level => (
@@ -438,7 +438,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedIrrigationCustomer}
                     onChange={(e) => setSelectedIrrigationCustomer(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All</option>
                     <option value="yes">Yes</option>
@@ -454,7 +454,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedWrArea}
                     onChange={(e) => setSelectedWrArea(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All WR Areas</option>
                     {uniqueWrAreas.map(area => (
@@ -473,7 +473,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedLmDistrict}
                     onChange={(e) => setSelectedLmDistrict(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All LM Districts</option>
                     {uniqueLmDistricts.map(district => (
@@ -492,7 +492,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedCfl}
                     onChange={(e) => setSelectedCfl(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All CFLs</option>
                     {uniqueCfls.map(cfl => (
@@ -511,7 +511,7 @@ export default function ActiveAccountsPage() {
                   <select
                     value={selectedWhoseContract}
                     onChange={(e) => setSelectedWhoseContract(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Contracts</option>
                     {uniqueWhoseContracts.map(contract => (
@@ -540,7 +540,7 @@ export default function ActiveAccountsPage() {
         {/* Accounts Grid */}
         {isLoading ? (
           <div className="text-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-indigo-600" />
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
             <p className="text-gray-600">Loading accounts...</p>
           </div>
         ) : filteredAccounts.length === 0 ? (
@@ -587,10 +587,10 @@ export default function ActiveAccountsPage() {
                         </div>
                       )}
                       {account.location && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                          <MapPin className="h-3 w-3 mr-1" />
-                          {account.location}
-                        </span>
+                        <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
+                          <MapPin className="h-4 w-4 flex-shrink-0" />
+                          <span>{account.location}</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -599,7 +599,7 @@ export default function ActiveAccountsPage() {
                       href={account.boss_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 ml-2"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 ml-2"
                       title="Open in BOSS"
                     >
                       <ExternalLink className="h-4 w-4" />
@@ -614,7 +614,7 @@ export default function ActiveAccountsPage() {
                       <Phone className="h-4 w-4 flex-shrink-0" />
                       <a 
                         href={`tel:${account.phone}`}
-                        className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                        className="hover:text-blue-600 dark:hover:text-blue-400"
                       >
                         {account.phone}
                       </a>
@@ -626,33 +626,10 @@ export default function ActiveAccountsPage() {
                       <Mail className="h-4 w-4 flex-shrink-0" />
                       <a 
                         href={`mailto:${account.email}`}
-                        className="hover:text-indigo-600 dark:hover:text-indigo-400 truncate"
+                        className="hover:text-blue-600 dark:hover:text-blue-400 truncate"
                       >
                         {account.email}
                       </a>
-                    </div>
-                  )}
-
-                  {/* Service badges - removed border and reduced spacing */}
-                  {(account.customer_type || account.im_service_level || account.irrigation_customer) && (
-                    <div className="pt-2">
-                      <div className="flex flex-wrap gap-2">
-                        {account.customer_type && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {account.customer_type}
-                          </span>
-                        )}
-                        {account.im_service_level && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {account.im_service_level}
-                          </span>
-                        )}
-                        {account.irrigation_customer && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                            Irrigation
-                          </span>
-                        )}
-                      </div>
                     </div>
                   )}
                 </div>

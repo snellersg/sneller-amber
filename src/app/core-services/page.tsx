@@ -187,7 +187,7 @@ export default function CoreServicesPage() {
                     <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                       {service.title}
                     </h3>
-                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 ring-blue-600/20">
+                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 ring-gray-600/20">
                       WR
                     </span>
                   </div>
@@ -206,7 +206,7 @@ export default function CoreServicesPage() {
                       <ul className="space-y-2">
                         {service.details.map((detail, detailIdx) => (
                           <li key={detailIdx} className="flex items-start">
-                            <span className="text-blue-500 dark:text-blue-400 mr-2">•</span>
+                            <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
                             <span className="text-gray-600 dark:text-gray-300">{detail}</span>
                           </li>
                         ))}
@@ -247,7 +247,7 @@ export default function CoreServicesPage() {
                     <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                       {service.title}
                     </h3>
-                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 ring-green-600/20">
+                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-secondary dark:bg-secondary/30 text-primary dark:text-primary ring-primary/20">
                       LM
                     </span>
                   </div>
@@ -265,7 +265,7 @@ export default function CoreServicesPage() {
                   </p>
                   <div className="space-y-3">
                     {service.levels.map((level, levelIdx) => (
-                      <div key={levelIdx} className="border-l-4 border-indigo-300 dark:border-indigo-600 pl-4">
+                      <div key={levelIdx} className="border-l-4 border-blue-300 dark:border-blue-600 pl-4">
                         <p className="font-semibold text-sm mb-1 text-gray-900 dark:text-white">
                           {level.level}
                         </p>
@@ -308,7 +308,7 @@ export default function CoreServicesPage() {
                   <ul className="space-y-2">
                     {service.details.map((detail, detailIdx) => (
                       <li key={detailIdx} className="flex items-start">
-                        <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                        <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full mt-2 mr-3 shrink-0"></div>
                         <span className="text-gray-700 dark:text-gray-300">{detail}</span>
                       </li>
                     ))}
@@ -323,7 +323,7 @@ export default function CoreServicesPage() {
                     href={service.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-md transition-colors"
                   >
                     {service.buttonText || "Learn More"}
                     <ExternalLink className="h-3 w-3" />
@@ -336,7 +336,7 @@ export default function CoreServicesPage() {
           </div>
 
         {/* Footer Note */}
-        <div className="mt-12 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+        <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
           <p className="text-sm text-green-800 dark:text-green-200">
             <strong>Note:</strong> All services are delivered by licensed and insured professionals 
             following industry best practices and client-specific requirements.

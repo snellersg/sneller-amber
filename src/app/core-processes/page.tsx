@@ -183,7 +183,7 @@ export default function CoreProcessesPage() {
                 <ul className="space-y-2">
                   {process.steps.map((step, stepIdx) => (
                     <li key={stepIdx} className="flex items-start">
-                      <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
                       <span className="text-gray-700 dark:text-gray-300">{step}</span>
                     </li>
                   ))}
@@ -204,8 +204,8 @@ export default function CoreProcessesPage() {
         </div>
 
         {/* Footer Note */}
-        <div className="mt-12 p-6 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg">
-          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+        <div className="mt-12 p-6 bg-secondary dark:bg-secondary/20 border border-primary/30 dark:border-primary/30 rounded-lg">
+          <p className="text-sm text-primary dark:text-primary">
             <strong>Remember:</strong> These processes are the foundation of exceptional account management. 
             Consistency in execution builds trust and delivers results.
           </p>

@@ -137,7 +137,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
                       heading.level === 2 ? 'text-xs font-medium' : 'text-xs pl-4 font-normal'
                     } ${
                       activeId === heading.id
-                        ? 'font-medium text-white bg-blue-600'
+                        ? 'font-medium text-white bg-primary'
                         : heading.level === 2
                         ? 'text-gray-900 dark:text-gray-100'
                         : 'text-gray-600 dark:text-gray-400'
@@ -171,7 +171,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
                     heading.level === 2 ? 'text-xs font-medium' : 'text-xs pl-4 font-normal'
                   } ${
                     activeId === heading.id
-                      ? 'font-medium text-white bg-blue-600'
+                      ? 'font-medium text-white bg-primary'
                       : heading.level === 2
                       ? 'text-gray-900 dark:text-gray-100'
                       : 'text-gray-600 dark:text-gray-400'

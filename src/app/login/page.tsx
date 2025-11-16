@@ -168,7 +168,7 @@ export default function LoginPage() {
             )}
 
             {message && (
-              <div className="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
+              <div className="text-sm text-primary bg-secondary dark:bg-secondary/20 p-3 rounded-md">
                 {message}
               </div>
             )}

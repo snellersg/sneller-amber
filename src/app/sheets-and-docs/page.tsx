@@ -138,7 +138,7 @@ export default function SheetsDocsPage() {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-md transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white text-xs font-medium rounded-md transition-colors"
               >
                 Open
                 <ExternalLink className="h-3 w-3" />
@@ -148,8 +148,8 @@ export default function SheetsDocsPage() {
         </div>
 
         {/* Footer Note */}
-        <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
+        <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             <strong>Note:</strong> All links open in a new tab. Make sure you're logged into your Sneller Google account to access these documents.
           </p>
         </div>

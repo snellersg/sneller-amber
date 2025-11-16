@@ -345,7 +345,7 @@ export default function AdminPanel() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-indigo-600" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
           <p className="text-lg text-gray-600">Loading admin panel...</p>
         </div>
       </div>
@@ -382,12 +382,12 @@ export default function AdminPanel() {
         )}
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-2 sm:gap-0 sm:space-x-4 border-b border-gray-200 mb-6 overflow-x-auto">
+        <div className="flex flex-wrap gap-2 sm:gap-0 sm:space-x-4 border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('users')}
             className={`pb-2 px-2 sm:px-1 text-sm whitespace-nowrap ${
               activeTab === 'users'
-                ? 'border-b-2 border-indigo-500 text-indigo-600 font-medium'
+                ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -399,7 +399,7 @@ export default function AdminPanel() {
             onClick={() => setActiveTab('logs')}
             className={`pb-2 px-2 sm:px-1 text-sm whitespace-nowrap ${
               activeTab === 'logs'
-                ? 'border-b-2 border-indigo-500 text-indigo-600 font-medium'
+                ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -411,7 +411,7 @@ export default function AdminPanel() {
             onClick={() => setActiveTab('domains')}
             className={`pb-2 px-2 sm:px-1 text-sm whitespace-nowrap ${
               activeTab === 'domains'
-                ? 'border-b-2 border-indigo-500 text-indigo-600 font-medium'
+                ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -440,7 +440,7 @@ export default function AdminPanel() {
                       placeholder="Search users..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full pl-10 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div className="flex gap-2">
@@ -496,7 +496,7 @@ export default function AdminPanel() {
                 {/* Users Table */}
                 {loading ? (
                   <div className="flex items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+                    <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
@@ -509,7 +509,7 @@ export default function AdminPanel() {
                               className="flex items-center"
                             >
                               {selectedUsers.length === filteredUsers.length && filteredUsers.length > 0 ? (
-                                <CheckSquare className="h-4 w-4 text-indigo-600" />
+                                <CheckSquare className="h-4 w-4 text-blue-600" />
                               ) : (
                                 <Square className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                               )}
@@ -538,7 +538,7 @@ export default function AdminPanel() {
                                 className="flex items-center"
                               >
                                 {selectedUsers.includes(userData.id) ? (
-                                  <CheckSquare className="h-4 w-4 text-indigo-600" />
+                                  <CheckSquare className="h-4 w-4 text-blue-600" />
                                 ) : (
                                   <Square className="h-4 w-4 text-gray-400" />
                                 )}
@@ -657,7 +657,7 @@ export default function AdminPanel() {
 
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -738,7 +738,7 @@ export default function AdminPanel() {
                         value={newDomain}
                         onChange={(e) => setNewDomain(e.target.value)}
                         required
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -748,7 +748,7 @@ export default function AdminPanel() {
                         placeholder="Organization or purpose"
                         value={domainNotes}
                         onChange={(e) => setDomainNotes(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -770,7 +770,7 @@ export default function AdminPanel() {
 
                 {loading ? (
                   <div className="flex items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+                    <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
