@@ -566,15 +566,15 @@ export default function PropertyDetailPage() {
 
         {/* Property Details Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+          <div className="p-3 sm:p-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
               PROPERTY DETAILS
             </h3>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-x-8 sm:gap-y-6">
                 {/* Property Name */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                       <Building className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -691,7 +691,7 @@ export default function PropertyDetailPage() {
                 </div>
 
                 {/* Whose Contract */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                       <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -716,7 +716,7 @@ export default function PropertyDetailPage() {
                 </div>
 
                 {/* CFL */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                       <AudioLines className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -743,7 +743,7 @@ export default function PropertyDetailPage() {
                 </div>
 
                 {/* Boss URL */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                       <Globe className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -778,22 +778,22 @@ export default function PropertyDetailPage() {
           </div>
 
           {/* Service Information Section */}
-          <div className="p-6 border-t border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+          <div className="p-3 sm:p-6 border-t border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
               SERVICE INFORMATION
             </h3>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Winter (WR) Services Card */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-                <div className="flex items-center gap-3 mb-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                   <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">WINTER (WR) SERVICES</h4>
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* WR Customer Status */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <Snowflake className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -829,7 +829,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* IM Service Level */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <ShieldPlus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -855,7 +855,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* WR Area */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <LocateFixed className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -881,7 +881,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* WR Expiration Date */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <CalendarX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -948,7 +948,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* WR Contract PDF */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <FileSearch className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -1033,14 +1033,14 @@ export default function PropertyDetailPage() {
               </div>
 
               {/* Lawn (LM) Services Card */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-                <div className="flex items-center gap-3 mb-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                   <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">LAWN MAINTENANCE (LM) SERVICES</h4>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* LM Customer Status */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <Leaf className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -1112,7 +1112,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* LM District */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <LocateFixed className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -1138,7 +1138,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* LM Expiration Date */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <CalendarDays className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -1205,7 +1205,7 @@ export default function PropertyDetailPage() {
                   </div>
 
                   {/* LM Contract PDF */}
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
                         <FileSearch className="h-4 w-4 text-gray-600 dark:text-gray-400" />
