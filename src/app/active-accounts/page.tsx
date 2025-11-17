@@ -38,16 +38,44 @@ interface Account {
 }
 
 async function fetchAccounts(): Promise<Account[]> {
-  const { data, error } = await supabase
-    .from('active_accounts')
-    .select('*')
-    .order('property_name', { ascending: true })
+  try {
+    // Check if user is authenticated first
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    
+    if (authError) {
+      console.error('Authentication error:', authError)
+      throw new Error(`Authentication failed: ${authError.message}`)
+    }
+    
+    if (!user) {
+      throw new Error('User not authenticated. Please log in again.')
+    }
+    
+    console.log('Authenticated user:', user.email)
 
-  if (error) {
-    throw new Error(error.message)
+    const { data, error } = await supabase
+      .from('active_accounts')
+      .select('*')
+      .order('property_name', { ascending: true })
+
+    if (error) {
+      console.error('Database error:', error)
+      // Provide more specific error messages
+      if (error.code === 'PGRST116') {
+        throw new Error('No access to accounts data. Please contact your administrator to set up your permissions.')
+      } else if (error.code === '42501') {
+        throw new Error('Permission denied. Your account may not have access to view accounts.')
+      } else {
+        throw new Error(`Database error: ${error.message} (Code: ${error.code})`)
+      }
+    }
+
+    console.log(`Loaded ${data?.length || 0} accounts`)
+    return data || []
+  } catch (error) {
+    console.error('Error in fetchAccounts:', error)
+    throw error
   }
-
-  return data || []
 }
 
 export default function ActiveAccountsPage() {
@@ -250,6 +278,8 @@ export default function ActiveAccountsPage() {
   }
 
   if (error) {
+    console.error('Active accounts query error:', error)
+    
     return (
       <Layout>
         <div className="text-center py-12">
@@ -257,6 +287,26 @@ export default function ActiveAccountsPage() {
             <Building2 className="h-12 w-12 mx-auto mb-4" />
             <h3 className="text-lg font-medium">Failed to load accounts</h3>
             <p className="text-sm text-gray-600 mt-2">{error.message}</p>
+            
+            {/* Show specific permission error help */}
+            {error.message.includes('permission') || error.message.includes('policy') || error.message.includes('RLS') ? (
+              <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg text-left max-w-md mx-auto">
+                <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">Database Permission Issue</h4>
+                <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                  This appears to be a Row Level Security (RLS) policy issue. Please contact your administrator to ensure your account has the proper permissions to view active accounts.
+                </p>
+              </div>
+            ) : null}
+            
+            {/* Show empty results help */}
+            {error.message.includes('No rows') || accounts.length === 0 ? (
+              <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-left max-w-md mx-auto">
+                <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">No Data Available</h4>
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  No active accounts found. This could be due to database permissions or empty data.
+                </p>
+              </div>
+            ) : null}
           </div>
           <button
             onClick={() => refetch()}
