@@ -1,48 +1,45 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import { Loader2 } from 'lucide-react'
-
-// Prevent prerendering since this page needs to run client-side only
-export const dynamic = 'force-dynamic'
+import { useRouter } from 'next/navigation'
 
 export default function AuthCallback() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<'loading' | 'error' | 'success'>('loading')
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        const code = searchParams.get('code')
-        const next = searchParams.get('next') || '/active-accounts'
+        // Dynamic import to avoid SSR issues
+        const { supabase } = await import('@/lib/supabase')
+        
+        const urlParams = new URLSearchParams(window.location.search)
+        const code = urlParams.get('code')
         
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code)
           
           if (error) {
             console.error('Auth callback error:', error)
-            setError('Authentication failed. Please try again.')
+            setStatus('error')
             setTimeout(() => router.push('/login'), 3000)
             return
           }
         }
         
-        // Redirect to the intended page
-        router.push(next)
+        setStatus('success')
+        router.push('/active-accounts')
       } catch (err) {
         console.error('Auth callback error:', err)
-        setError('Authentication failed. Please try again.')
+        setStatus('error')
         setTimeout(() => router.push('/login'), 3000)
       }
     }
 
     handleAuthCallback()
-  }, [searchParams, router])
+  }, [router])
 
-  if (error) {
+  if (status === 'error') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -54,7 +51,7 @@ export default function AuthCallback() {
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Authentication Error</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{error}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Authentication failed. Please try again.</p>
               <p className="text-xs text-gray-400">Redirecting to login...</p>
             </div>
           </div>
@@ -68,7 +65,7 @@ export default function AuthCallback() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+            <div className="h-8 w-8 mx-auto mb-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Confirming your email...</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">Please wait while we complete your registration.</p>
           </div>
