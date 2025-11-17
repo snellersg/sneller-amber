@@ -273,27 +273,11 @@ export default function ActiveAccountsPage() {
     <Layout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ACTIVE ACCOUNTS</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              {isLoading ? 'Loading...' : `${filteredAccounts.length} of ${accounts.length} accounts`}
-            </p>
-          </div>
-          
-          {/* Refresh button */}
-          <button
-            onClick={() => refetch()}
-            disabled={isLoading}
-            className="mt-4 sm:mt-0 inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            ) : (
-              <RotateCcw className="h-4 w-4" />
-            )}
-            <span>{isLoading ? 'Refreshing...' : 'Refresh'}</span>
-          </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ACTIVE ACCOUNTS</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            {isLoading ? 'Loading...' : `${filteredAccounts.length} of ${accounts.length} accounts`}
+          </p>
         </div>
 
         {/* Search and Filters */}
@@ -313,23 +297,40 @@ export default function ActiveAccountsPage() {
               </div>
             </div>
 
-            {/* Filter toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`inline-flex items-center space-x-2 px-4 py-2 border rounded-md text-sm font-medium ${
-                activeFiltersCount > 0 || showFilters
-                  ? 'bg-primary/10 dark:bg-primary/20 border-primary/30 text-primary dark:text-primary'
-                  : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
-              }`}
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
+            {/* Buttons - Filters and Refresh */}
+            <div className="flex gap-3">
+              {/* Filter toggle */}
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`inline-flex items-center space-x-2 px-4 py-2 border rounded-md text-sm font-medium ${
+                  activeFiltersCount > 0 || showFilters
+                    ? 'bg-primary/10 dark:bg-primary/20 border-primary/30 text-primary dark:text-primary'
+                    : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
+                }`}
+              >
+                <Filter className="h-4 w-4" />
+                <span>Filters</span>
+                {activeFiltersCount > 0 && (
+                  <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
+                    {activeFiltersCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Refresh button */}
+              <button
+                onClick={() => refetch()}
+                disabled={isLoading}
+                className="inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <RotateCcw className="h-4 w-4" />
+                )}
+                <span>{isLoading ? 'Refreshing...' : 'Refresh'}</span>
+              </button>
+            </div>
           </div>
 
           {/* Expanded Filters */}

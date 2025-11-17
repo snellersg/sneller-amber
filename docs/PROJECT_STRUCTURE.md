@@ -202,8 +202,24 @@ sneller-amber-v2/
 
 ## Additional Resources
 
+### Documentation
 - **Main README**: [../README.md](../README.md) - Project overview
 - **Setup Guide**: [GETTING_STARTED.md](./GETTING_STARTED.md)
 - **Database Setup**: [../database/README.md](../database/README.md)
 - **Technical Docs**: [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Troubleshooting**: [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+
+### Development & Design
+- **UI Styling Guide**: [UI_STYLING_GUIDE.md](./UI_STYLING_GUIDE.md) - Design system patterns and component styling
+- **November 2025 Updates**: [NOVEMBER_2025_UPDATES.md](./NOVEMBER_2025_UPDATES.md) - Recent UI improvements and admin enhancements
+- **Recent Updates**: [RECENT_UPDATES.md](./RECENT_UPDATES.md) - Complete change history
+
+### Design System Notes
+The application follows a **Property Details-based design pattern** established in November 2025:
+- Consistent card layouts with `rounded-xl` borders and proper spacing
+- Typography hierarchy with ALL CAPS titles and semantic text sizing  
+- Sneller blue (#0A93D5) primary color with comprehensive dark mode support
+- Responsive padding patterns (`p-3 sm:p-6`) and mobile-first design
+- Compact button styling for admin interfaces and action elements
+
+See [UI_STYLING_GUIDE.md](./UI_STYLING_GUIDE.md) for complete implementation details.

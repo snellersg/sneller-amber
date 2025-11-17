@@ -1,7 +1,34 @@
 # Recent Updates Log
 
-> **⚠️ LEGACY DOCUMENTATION**  
-> This document contains update logs from the previous React version of AMBER.  
+## November 2025 - UI Consistency & Admin Panel Improvements (Next.js)
+
+### 🎯 Major Updates - Current Version
+Comprehensive UI consistency improvements and admin panel enhancements for the Next.js application. All pages now follow unified design patterns based on Property Details page styling.
+
+**📋 See Detailed Documentation:**
+- **[November 2025 Updates](./NOVEMBER_2025_UPDATES.md)** - Complete change log with technical details
+- **[UI Styling Guide](./UI_STYLING_GUIDE.md)** - Design system patterns and implementation guide
+
+**🔧 Key Improvements:**
+- Fixed admin panel navigation and styling consistency
+- Redesigned profile page to match Property Details patterns  
+- Enhanced admin role badges (gold with crown for admins, Sneller blue for users)
+- Standardized button styling across all pages (compact action buttons)
+- Removed footer notes from information pages for cleaner appearance
+- Improved Process Guides cards with responsive design and compact buttons
+- Updated Active Accounts page with proper title styling and refresh icon
+
+**🎨 Design System:**
+- Established Property Details page as reference design pattern
+- Implemented consistent card-based layouts with proper spacing
+- Standardized typography hierarchy (ALL CAPS for titles and labels)
+- Unified color scheme with Sneller blue primary and proper dark mode support
+- Responsive padding patterns (`p-3 sm:p-6`) throughout application
+
+---
+
+> **⚠️ LEGACY DOCUMENTATION BELOW**  
+> The following sections contain update logs from the previous React version of AMBER.  
 > Current version uses Next.js App Router structure. See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for current architecture.
 
 ## January 2025 - UI Styling Standardization (Pre-Next.js Rewrite)
