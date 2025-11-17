@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Loader2 } from 'lucide-react'
 
+// Prevent prerendering since this page needs to run client-side only
+export const dynamic = 'force-dynamic'
+
 export default function AuthCallback() {
   const router = useRouter()
   const searchParams = useSearchParams()
