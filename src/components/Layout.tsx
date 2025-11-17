@@ -29,14 +29,37 @@ export default function Layout({ children }: LayoutProps) {
           // Check if user is admin from metadata (support both property names)
           const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
           setIsAdmin(adminStatus)
+        } else {
+          setUser(null)
+          setIsAdmin(false)
         }
       } catch (error) {
+        console.error('Error checking user:', error)
         setUser(null)
         setIsAdmin(false)
       }
     }
 
+    // Check user on mount
     checkUser()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email)
+        if (session?.user) {
+          setUser(session.user)
+          const adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
+          setIsAdmin(adminStatus)
+        } else {
+          setUser(null)
+          setIsAdmin(false)
+        }
+      }
+    )
+
+    // Cleanup subscription
+    return () => subscription.unsubscribe()
   }, [])
 
   const handleSidebarToggle = () => {
