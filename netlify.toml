@@ -13,6 +13,11 @@
 
 # Handle client-side routing
 [[redirects]]
+  from = "/auth/callback"
+  to = "/auth/callback"
+  status = 200
+  
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

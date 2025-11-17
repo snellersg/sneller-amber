@@ -40,7 +40,16 @@ Add your Netlify URL to allowed redirects:
 ```
 https://your-site-name.netlify.app/**
 https://your-site-name.netlify.app/auth/callback
+https://your-site-name.netlify.app/login
+https://your-site-name.netlify.app/reset-password
 ```
+
+### ⚠️ IMPORTANT: Email Confirmation Links
+After updating the Site URL and Redirect URLs above, **existing email confirmation links will still point to the old URL**. New email confirmations sent after the update will use the correct URL.
+
+If users have pending email confirmations:
+1. Ask them to request a new confirmation email
+2. Or manually verify their email in Supabase dashboard → Authentication → Users
 
 ## 3. Supabase Row Level Security (RLS)
 Ensure your RLS policies allow access from the new domain.
