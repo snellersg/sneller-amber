@@ -180,15 +180,13 @@ export default function UserProfile() {
     <Layout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              USER PROFILE
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Manage your account settings and personal information
-            </p>
-          </div>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-2">
+            User Profile
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Manage your account settings and personal information
+          </p>
         </div>
 
         {/* Messages */}
@@ -213,9 +211,9 @@ export default function UserProfile() {
         {/* Profile Information */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-3 sm:p-6">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                PROFILE INFORMATION
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase">
+                Profile Information
               </h3>
               <button
                 onClick={() => {
@@ -229,20 +227,20 @@ export default function UserProfile() {
                   }
                 }}
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary hover:bg-primary/90 text-white rounded transition-colors font-medium disabled:opacity-50"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
                     Saving...
                   </>
                 ) : editing ? (
                   <>
-                    <Save className="h-4 w-4" />
-                    Save Changes
+                    <Save className="h-3 w-3" />
+                    Save
                   </>
                 ) : (
-                  'Edit Profile'
+                  'Edit'
                 )}
               </button>
             </div>
@@ -346,16 +344,16 @@ export default function UserProfile() {
         {/* Password Management */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-3 sm:p-6">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                PASSWORD SETTINGS
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase">
+                Password Settings
               </h3>
               <button
                 onClick={() => setShowPasswordForm(!showPasswordForm)}
-                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
-                <Lock className="h-4 w-4" />
-                {showPasswordForm ? 'Cancel' : 'Change Password'}
+                <Lock className="h-3 w-3" />
+                {showPasswordForm ? 'Cancel' : 'Change'}
               </button>
             </div>
             
@@ -412,21 +410,21 @@ export default function UserProfile() {
                     </div>
                   </div>
                   
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex gap-2 pt-2">
                     <button
                       onClick={handleChangePassword}
                       disabled={loading || !newPassword || !confirmPassword}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary hover:bg-primary/90 text-white rounded transition-colors font-medium disabled:opacity-50"
                     >
                       {loading ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
                           Updating...
                         </>
                       ) : (
                         <>
-                          <Lock className="h-4 w-4" />
-                          Update Password
+                          <Lock className="h-3 w-3" />
+                          Update
                         </>
                       )}
                     </button>
@@ -436,7 +434,7 @@ export default function UserProfile() {
                         setNewPassword('')
                         setConfirmPassword('')
                       }}
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       Cancel
                     </button>
@@ -456,8 +454,8 @@ export default function UserProfile() {
         {/* Account Information */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-3 sm:p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
-              ACCOUNT INFORMATION
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+              Account Information
             </h3>
             
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700">
