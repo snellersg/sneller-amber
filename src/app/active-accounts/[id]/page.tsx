@@ -588,18 +588,18 @@ export default function PropertyDetailPage() {
                 ) : (
                   <>
                     <button
-                      onClick={handleDelete}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-destructive text-destructive rounded-lg hover:bg-destructive/10 dark:hover:bg-destructive/10 transition-colors"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      Delete Account
-                    </button>
-                    <button
                       onClick={() => setIsEditing(true)}
                       className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                     >
                       <Edit2 className="h-3 w-3" />
                       Edit Account
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-destructive text-destructive rounded-lg hover:bg-destructive/10 dark:hover:bg-destructive/10 transition-colors"
+                      title="Delete Account"
+                    >
+                      <Trash2 className="h-3 w-3" />
                     </button>
                   </>
                 )}
@@ -1019,26 +1019,21 @@ export default function PropertyDetailPage() {
                           </button>
                           <button
                             onClick={handleWRDownload}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            title="Download"
                           >
                             <Download className="h-4 w-4" />
-                            Download
                           </button>
                           <button
                             onClick={handleWRDelete}
                             disabled={deletingWR}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                            title={deletingWR ? "Deleting..." : "Delete"}
                           >
                             {deletingWR ? (
-                              <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-                                Deleting...
-                              </>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
                             ) : (
-                              <>
-                                <Trash2 className="h-4 w-4" />
-                                Delete
-                              </>
+                              <Trash2 className="h-4 w-4" />
                             )}
                           </button>
                         </div>
@@ -1276,26 +1271,21 @@ export default function PropertyDetailPage() {
                           </button>
                           <button
                             onClick={handleLMDownload}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            title="Download"
                           >
                             <Download className="h-4 w-4" />
-                            Download
                           </button>
                           <button
                             onClick={handleLMDelete}
                             disabled={deletingLM}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                            title={deletingLM ? "Deleting..." : "Delete"}
                           >
                             {deletingLM ? (
-                              <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-                                Deleting...
-                              </>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
                             ) : (
-                              <>
-                                <Trash2 className="h-4 w-4" />
-                                Delete
-                              </>
+                              <Trash2 className="h-4 w-4" />
                             )}
                           </button>
                         </div>
