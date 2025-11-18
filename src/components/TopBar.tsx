@@ -69,7 +69,7 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
     <header className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16">
       <div className="flex items-center justify-between h-full px-4">
         {/* Left side */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center">
           {/* Mobile menu button */}
           <button
             onClick={onSidebarToggle}
