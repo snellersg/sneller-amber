@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
@@ -15,7 +15,8 @@ import {
   Mail,
   ExternalLink,
   Loader2,
-  RotateCcw
+  RotateCcw,
+  Plus
 } from 'lucide-react'
 
 interface Account {
@@ -78,6 +79,242 @@ async function fetchAccounts(): Promise<Account[]> {
   }
 }
 
+// Add Account Modal Component
+interface AddAccountModalProps {
+  onClose: () => void
+  onAccountAdded: () => void
+}
+
+function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
+  const [formData, setFormData] = useState({
+    property_name: '',
+    address: '',
+    parent_account: '',
+    location: '',
+    account_manager: '',
+    customer_type: '',
+    phone: '',
+    email: '',
+    wr_area: '',
+    lm_district: '',
+    cfl: '',
+    whose_contract: '',
+    im_service_level: ''
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!formData.property_name.trim()) {
+      setError('Property name is required')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const { error: insertError } = await supabase
+        .from('active_accounts')
+        .insert([{
+          ...formData,
+          property_name: formData.property_name.trim(),
+          email: formData.email.trim() || null,
+          phone: formData.phone.trim() || null,
+          address: formData.address.trim() || null
+        }])
+
+      if (insertError) throw insertError
+
+      onAccountAdded()
+    } catch (err: any) {
+      console.error('Error creating account:', err)
+      setError(err.message || 'Failed to create account')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    if (error) setError('') // Clear error when user starts typing
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">ADD NEW ACCOUNT</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+              <p className="text-red-700 dark:text-red-200 text-sm">{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Property Name - Required */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Property Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.property_name}
+                  onChange={(e) => handleInputChange('property_name', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter property name"
+                  required
+                />
+              </div>
+
+              {/* Address */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  value={formData.address}
+                  onChange={(e) => handleInputChange('address', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter property address"
+                />
+              </div>
+
+              {/* Parent Account */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Parent Account
+                </label>
+                <input
+                  type="text"
+                  value={formData.parent_account}
+                  onChange={(e) => handleInputChange('parent_account', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter parent account"
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter location"
+                />
+              </div>
+
+              {/* Account Manager */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Account Manager
+                </label>
+                <input
+                  type="text"
+                  value={formData.account_manager}
+                  onChange={(e) => handleInputChange('account_manager', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter account manager"
+                />
+              </div>
+
+              {/* Customer Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Customer Type
+                </label>
+                <input
+                  type="text"
+                  value={formData.customer_type}
+                  onChange={(e) => handleInputChange('customer_type', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter customer type"
+                />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter phone number"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter email address"
+                />
+              </div>
+            </div>
+
+            {/* Submit Buttons */}
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loading}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading || !formData.property_name.trim()}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" />
+                    Create Account
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ActiveAccountsPage() {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
@@ -92,6 +329,48 @@ export default function ActiveAccountsPage() {
   const [selectedCfl, setSelectedCfl] = useState('all')
   const [selectedWhoseContract, setSelectedWhoseContract] = useState('all')
   const [showFilters, setShowFilters] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+
+  // Check user admin status
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        
+        if (error) throw error
+        
+        if (user) {
+          setUser(user)
+          const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
+          setIsAdmin(adminStatus)
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error)
+        setUser(null)
+        setIsAdmin(false)
+      }
+    }
+
+    checkUser()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          setUser(session.user)
+          const adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
+          setIsAdmin(adminStatus)
+        } else {
+          setUser(null)
+          setIsAdmin(false)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   // Use TanStack Query for data fetching with background updates
   const {
@@ -347,8 +626,19 @@ export default function ActiveAccountsPage() {
               </div>
             </div>
 
-            {/* Buttons - Filters and Refresh */}
+            {/* Buttons - Add Account (Admin), Filters and Refresh */}
             <div className="flex gap-3">
+              {/* Add Account button - Admin Only */}
+              {isAdmin && (
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="inline-flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add Account</span>
+                </button>
+              )}
+
               {/* Filter toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
@@ -690,6 +980,17 @@ export default function ActiveAccountsPage() {
           </div>
         )}
       </div>
+
+      {/* Add Account Modal */}
+      {showAddModal && (
+        <AddAccountModal 
+          onClose={() => setShowAddModal(false)}
+          onAccountAdded={() => {
+            setShowAddModal(false)
+            refetch() // Refresh the accounts list
+          }}
+        />
+      )}
     </Layout>
   )
 }
