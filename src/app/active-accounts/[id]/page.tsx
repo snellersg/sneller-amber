@@ -625,7 +625,7 @@ export default function PropertyDetailPage() {
                     </div>
                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Property Name</span>
                   </div>
-                  {isEditing ? (
+                  {isAdmin && isEditing ? (
                     <input
                       type="text"
                       value={editedAccount?.property_name || ''}

@@ -31,11 +31,18 @@ TO authenticated
 USING (true);
 ```
 
-### 2. If you need admin-only write access, use these policies instead:
+### 2. Restrict write access to admins only (RECOMMENDED)
+
+Since we now want only admins to edit property details, update the policies:
 
 ```sql
 -- Enable RLS on active_accounts table
 ALTER TABLE active_accounts ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing permissive policies
+DROP POLICY IF EXISTS "Authenticated users can insert active accounts" ON active_accounts;
+DROP POLICY IF EXISTS "Authenticated users can update active accounts" ON active_accounts;
+DROP POLICY IF EXISTS "Authenticated users can delete active accounts" ON active_accounts;
 
 -- Allow all authenticated users to read active accounts
 CREATE POLICY "Allow authenticated users to read active accounts" 
@@ -53,7 +60,7 @@ WITH CHECK (
   EXISTS (
     SELECT 1 FROM auth.users 
     WHERE auth.users.id = auth.uid() 
-    AND (auth.users.user_metadata->>'is_admin')::boolean = true
+    AND (auth.users.raw_user_meta_data->>'is_admin')::boolean = true
   )
 );
 
@@ -66,7 +73,7 @@ USING (
   EXISTS (
     SELECT 1 FROM auth.users 
     WHERE auth.users.id = auth.uid() 
-    AND (auth.users.user_metadata->>'is_admin')::boolean = true
+    AND (auth.users.raw_user_meta_data->>'is_admin')::boolean = true
   )
 );
 
@@ -79,7 +86,7 @@ USING (
   EXISTS (
     SELECT 1 FROM auth.users 
     WHERE auth.users.id = auth.uid() 
-    AND (auth.users.user_metadata->>'is_admin')::boolean = true
+    AND (auth.users.raw_user_meta_data->>'is_admin')::boolean = true
   )
 );
 ```
