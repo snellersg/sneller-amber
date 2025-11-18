@@ -43,10 +43,56 @@ Consistent spacing that adapts to screen size:
 - **Borders**: `border-gray-200 dark:border-gray-700`
 - **Text**: `text-gray-900 dark:text-white` for primary, `text-gray-600 dark:text-gray-300` for secondary
 
-### 5. Icon Standards
-- **Field Icons**: `h-4 w-4` in gray backgrounds `bg-gray-100 dark:bg-gray-700`
-- **Button Icons**: `h-3 w-3` for compact buttons, `h-4 w-4` for standard
-- **Status Icons**: Sized appropriately with consistent color themes
+### 6. Badge System (December 2025)
+Consistent badge styling for service identification across all pages:
+
+```tsx
+// Badge Display Logic
+const getBadgeText = (badge) => {
+  return badge === 'Snow' ? 'WR' : badge === 'Lawn' ? 'LM' : badge;
+};
+
+// Badge Styling Classes
+const getBadgeClasses = (badge) => {
+  return badge === 'Snow'
+    ? 'bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20'  // WR - Sneller Blue
+    : 'bg-secondary/20 text-secondary-foreground ring-secondary/30';  // LM - Secondary
+};
+
+// Implementation Example
+<span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${getBadgeClasses(service.badge)}`}>
+  {getBadgeText(service.badge)}
+</span>
+```
+
+**Badge Types:**
+- **WR Services** (Winter): Sneller blue theme with `#0A93D5` color
+- **LM Services** (Lawn Maintenance): Secondary color theme
+- **Consistent Display**: "Snow" → "WR", "Lawn" → "LM" across all pages
+
+**Applied To:**
+- Core Services page
+- Add-On Services page  
+- Product Knowledge page
+
+### 7. Global Layout Controls
+Prevent horizontal scrolling issues:
+
+```css
+/* globals.css */
+html, body {
+  overflow-x: hidden;
+}
+```
+
+```tsx
+// Layout.tsx - Enhanced containers
+<main className="flex-1 overflow-x-hidden">
+  <div className="overflow-x-hidden">
+    {children}
+  </div>
+</main>
+```
 
 ## Page-Specific Patterns
 

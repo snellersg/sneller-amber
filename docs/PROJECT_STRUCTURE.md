@@ -13,34 +13,35 @@ sneller-amber-v2/
 │   ├── SUPABASE_SETUP.md             # Supabase configuration
 │   ├── ADMIN_APPROVAL_GUIDE.md       # Admin approval system guide
 │   ├── TROUBLESHOOTING.md            # Common issues and solutions
-│   ├── CLEANUP_LOG.md                # Code cleanup documentation
 │   ├── UI_STYLING_GUIDE.md           # UI styling patterns and conventions
 │   ├── AUDIT_LOG_SYSTEM.md           # Account audit logging system
-│   ├── PROPERTY_DETAIL_UPDATES.md    # Property detail page documentation
+│   ├── RECENT_UPDATES.md             # Recent changes and improvements
+│   ├── NOVEMBER_2025_UPDATES.md      # November UI consistency updates
+│   ├── DECEMBER_2025_UPDATES.md      # December badge system updates
+│   ├── NETLIFY_DEPLOYMENT.md         # Deployment configuration
 │   ├── SESSION_MANAGEMENT_FIX.md     # Session management fixes
-│   ├── _DOCUMENTATION_REVIEW.md      # Documentation review notes
 │   └── PROJECT_STRUCTURE.md          # This file - project organization
 │
 ├── src/                               # ⚛️ Next.js application source
 │   ├── app/                          # App Router pages
 │   │   ├── layout.tsx               # Root layout with metadata
 │   │   ├── page.js                  # Homepage (auth redirect)
-│   │   ├── globals.css              # Global styles with CSS variables
+│   │   ├── globals.css              # Global styles with overflow controls
 │   │   ├── providers.tsx            # TanStack Query provider
 │   │   ├── login/page.tsx           # Login page
 │   │   ├── active-accounts/
 │   │   │   ├── page.tsx             # Account management list with filters
-│   │   │   └── [id]/page.tsx        # Individual account details
-│   │   ├── admin/page.tsx           # Admin panel (admin-only)
+│   │   │   └── [id]/page.tsx        # Individual account details with WR/LM services
+│   │   ├── admin/page.tsx           # Admin panel with Sneller blue branding
 │   │   ├── profile/page.tsx         # User profile page
 │   │   ├── sheets-and-docs/page.tsx # Sheets & Docs page
 │   │   ├── core-processes/page.tsx  # Core business processes
-│   │   ├── core-services/page.tsx   # Core service offerings
-│   │   ├── add-on-services/page.tsx # Add-on service offerings
-│   │   ├── product-knowledge/page.tsx # Product specifications
+│   │   ├── core-services/page.tsx   # Core service offerings with badge system
+│   │   ├── add-on-services/page.tsx # Add-on service offerings with badge system
+│   │   ├── product-knowledge/page.tsx # Product specifications with badge system
 │   │   ├── tools/page.tsx           # Tools page
 │   │   ├── tools-platforms/page.tsx # Software platforms used
-│   │   └── guides/page.js           # Process guides
+│   │   └── guides/page.js           # Process guides with standardized layout
 │   │
 │   ├── components/                   # React components
 │   │   ├── ui/                       # shadcn/ui components

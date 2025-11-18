@@ -1,29 +1,30 @@
 # Recent Updates Log
 
-## November 2025 - UI Consistency & Admin Panel Improvements (Next.js)
+## December 2025 - Badge System Standardization & Documentation Cleanup
 
 ### 🎯 Major Updates - Current Version
-Comprehensive UI consistency improvements and admin panel enhancements for the Next.js application. All pages now follow unified design patterns based on Property Details page styling.
+Badge system standardization across all service pages and comprehensive documentation cleanup for the Next.js application. All WR/LM services now have consistent branding with Sneller blue color scheme.
 
 **📋 See Detailed Documentation:**
-- **[November 2025 Updates](./NOVEMBER_2025_UPDATES.md)** - Complete change log with technical details
+- **[December 2025 Updates](./DECEMBER_2025_UPDATES.md)** - Complete change log with badge system and cleanup details
 - **[UI Styling Guide](./UI_STYLING_GUIDE.md)** - Design system patterns and implementation guide
+- **[November 2025 Updates](./NOVEMBER_2025_UPDATES.md)** - Previous UI consistency improvements
 
 **🔧 Key Improvements:**
-- Fixed admin panel navigation and styling consistency
-- Redesigned profile page to match Property Details patterns  
-- Enhanced admin role badges (gold with crown for admins, Sneller blue for users)
-- Standardized button styling across all pages (compact action buttons)
-- Removed footer notes from information pages for cleaner appearance
-- Improved Process Guides cards with responsive design and compact buttons
-- Updated Active Accounts page with proper title styling and refresh icon
+- Unified badge system: WR services use Sneller blue, LM services use secondary colors
+- Consistent badge display across Core Services, Add-On Services, and Product Knowledge pages
+- Simplified service section titles (removed verbose "(WR)" and "(LM)" text)
+- Process Guides page alignment and header standardization  
+- Removed outdated SQL files and legacy documentation
+- Enhanced horizontal scrolling controls
 
-**🎨 Design System:**
-- Established Property Details page as reference design pattern
-- Implemented consistent card-based layouts with proper spacing
-- Standardized typography hierarchy (ALL CAPS for titles and labels)
-- Unified color scheme with Sneller blue primary and proper dark mode support
-- Responsive padding patterns (`p-3 sm:p-6`) throughout application
+**🎨 Badge System:**
+- **WR Services**: `bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20` (Sneller blue theme)
+- **LM Services**: `bg-secondary/20 text-secondary-foreground ring-secondary/30` (Secondary color theme)
+- **Display Logic**: "Snow" → "WR", "Lawn" → "LM" for clearer service identification
+- **Brand Consistency**: Sneller blue (#0A93D5) as primary service color
+
+## November 2025 - UI Consistency & Admin Panel Improvements (Previous)
 
 ---
 
