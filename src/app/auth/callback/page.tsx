@@ -41,17 +41,17 @@ export default function AuthCallback() {
 
   if (status === 'error') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex flex-col justify-center min-h-screen py-12 bg-gray-50 dark:bg-gray-900 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="px-4 py-8 bg-white shadow dark:bg-gray-800 sm:rounded-lg sm:px-10">
             <div className="text-center">
-              <div className="text-red-500 mb-4">
+              <div className="mb-4 text-red-500">
                 <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Authentication Error</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Authentication failed. Please try again.</p>
+              <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">Authentication Error</h3>
+              <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">Authentication failed. Please try again.</p>
               <p className="text-xs text-gray-400">Redirecting to login...</p>
             </div>
           </div>
@@ -61,12 +61,12 @@ export default function AuthCallback() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex flex-col justify-center min-h-screen py-12 bg-gray-50 dark:bg-gray-900 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="px-4 py-8 bg-white shadow dark:bg-gray-800 sm:rounded-lg sm:px-10">
           <div className="text-center">
-            <div className="h-8 w-8 mx-auto mb-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Confirming your email...</h3>
+            <div className="w-8 h-8 mx-auto mb-4 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
+            <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">Confirming your email...</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">Please wait while we complete your registration.</p>
           </div>
         </div>

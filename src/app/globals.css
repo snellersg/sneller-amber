@@ -3,6 +3,19 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
   :root {
     --background: 0 0% 98%;
     --foreground: 213 27% 14%;

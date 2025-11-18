@@ -319,11 +319,11 @@ export default function AddOnServicesPage() {
                 <span
                   className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
                     service.badge === 'Snow'
-                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                      ? 'bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20 dark:bg-[#0A93D5]/20 dark:text-[#0A93D5] dark:ring-[#0A93D5]/30'
+                      : 'bg-secondary/20 text-secondary-foreground ring-secondary/30 dark:bg-secondary/30 dark:text-secondary-foreground dark:ring-secondary/40'
                   }`}
                 >
-                  {service.badge}
+                  {service.badge === 'Snow' ? 'WR' : service.badge === 'Lawn' ? 'LM' : service.badge}
                 </span>
               </div>
 

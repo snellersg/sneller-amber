@@ -126,11 +126,11 @@ export default function ProductKnowledgePage() {
                         <span
                           className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
                             product.badge === 'Snow'
-                              ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                              : 'bg-secondary dark:bg-secondary/30 text-primary dark:text-primary ring-primary/20'
+                              ? 'bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20'
+                              : 'bg-secondary/20 text-secondary-foreground ring-secondary/30'
                           }`}
                         >
-                          {product.badge}
+                          {product.badge === 'Snow' ? 'WR' : product.badge === 'Lawn' ? 'LM' : product.badge}
                         </span>
                       )}
                     </div>

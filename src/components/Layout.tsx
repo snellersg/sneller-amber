@@ -110,9 +110,9 @@ export default function Layout({ children }: LayoutProps) {
         )}
 
         {/* Main Content Container */}
-        <div className="flex-1 flex">
+        <div className="flex-1 flex overflow-x-hidden">
           {/* Main Content */}
-          <main className="flex-1">
+          <main className="flex-1 overflow-x-hidden">
             <div className={isDocumentationPage ? "max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:px-8" : "max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:px-8"}>
               {/* Mobile Table of Contents */}
               {isDocumentationPage && (

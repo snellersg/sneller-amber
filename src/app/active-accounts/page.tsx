@@ -16,7 +16,10 @@ import {
   ExternalLink,
   Loader2,
   RotateCcw,
-  Plus
+  Plus,
+  Globe,
+  MapIcon,
+  ChevronRight
 } from 'lucide-react'
 
 interface Account {
@@ -30,12 +33,13 @@ interface Account {
   irrigation_customer?: boolean
   wr_area?: string
   lm_district?: string
-  cfl?: string
   whose_contract?: string
   phone?: string
   email?: string
   address?: string
   boss_url?: string
+  wr_maps_url?: string
+  lm_map_url?: string
 }
 
 async function fetchAccounts(): Promise<Account[]> {
@@ -88,21 +92,34 @@ interface AddAccountModalProps {
 function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
   const [formData, setFormData] = useState({
     property_name: '',
-    address: '',
-    parent_account: '',
-    location: '',
-    account_manager: '',
-    customer_type: '',
-    phone: '',
-    email: '',
-    wr_area: '',
-    lm_district: '',
-    cfl: '',
-    whose_contract: '',
-    im_service_level: ''
+    account_manager: ''
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [accountManagers, setAccountManagers] = useState<string[]>([])
+
+  // Fetch unique account managers on component mount
+  useEffect(() => {
+    const fetchAccountManagers = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('active_accounts')
+          .select('account_manager')
+          .not('account_manager', 'is', null)
+          .not('account_manager', 'eq', '')
+
+        if (error) throw error
+
+        // Get unique account managers and sort them
+        const uniqueManagers = [...new Set(data?.map(item => item.account_manager).filter(Boolean))].sort()
+        setAccountManagers(uniqueManagers)
+      } catch (err) {
+        console.error('Error fetching account managers:', err)
+      }
+    }
+
+    fetchAccountManagers()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -112,23 +129,39 @@ function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
       return
     }
 
+    if (!formData.account_manager.trim()) {
+      setError('Account manager is required')
+      return
+    }
+
     setLoading(true)
     setError('')
 
     try {
-      const { error: insertError } = await supabase
+      // Get current user to ensure we're authenticated
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        throw new Error('You must be logged in to create accounts')
+      }
+
+      // Explicitly insert into active_accounts table with proper data structure
+      const { data, error: insertError } = await supabase
         .from('active_accounts')
-        .insert([{
-          ...formData,
+        .insert({
           property_name: formData.property_name.trim(),
-          email: formData.email.trim() || null,
-          phone: formData.phone.trim() || null,
-          address: formData.address.trim() || null
-        }])
+          account_manager: formData.account_manager.trim()
+        })
+        .select()
 
-      if (insertError) throw insertError
+      if (insertError) {
+        console.error('Insert error details:', insertError)
+        throw insertError
+      }
 
+      console.log('Successfully created account:', data)
       onAccountAdded()
+      onClose()
     } catch (err: any) {
       console.error('Error creating account:', err)
       setError(err.message || 'Failed to create account')
@@ -165,9 +198,9 @@ function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {/* Property Name - Required */}
-              <div className="md:col-span-2">
+              <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Property Name *
                 </label>
@@ -181,102 +214,32 @@ function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
                 />
               </div>
 
-              {/* Address */}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  value={formData.address}
-                  onChange={(e) => handleInputChange('address', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter property address"
-                />
-              </div>
-
-              {/* Parent Account */}
+              {/* Account Manager - Required */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Parent Account
+                  Account Manager *
                 </label>
-                <input
-                  type="text"
-                  value={formData.parent_account}
-                  onChange={(e) => handleInputChange('parent_account', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter parent account"
-                />
-              </div>
-
-              {/* Location */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter location"
-                />
-              </div>
-
-              {/* Account Manager */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Account Manager
-                </label>
-                <input
-                  type="text"
-                  value={formData.account_manager}
-                  onChange={(e) => handleInputChange('account_manager', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter account manager"
-                />
-              </div>
-
-              {/* Customer Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Customer Type
-                </label>
-                <input
-                  type="text"
-                  value={formData.customer_type}
-                  onChange={(e) => handleInputChange('customer_type', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter customer type"
-                />
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Phone
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter phone number"
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Enter email address"
-                />
+                <div className="relative">
+                  <select
+                    value={formData.account_manager}
+                    onChange={(e) => handleInputChange('account_manager', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                    required
+                  >
+                    <option value="">Select an account manager</option>
+                    {accountManagers.map((manager) => (
+                      <option key={manager} value={manager}>
+                        {manager}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Custom dropdown arrow */}
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -292,7 +255,7 @@ function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
               </button>
               <button
                 type="submit"
-                disabled={loading || !formData.property_name.trim()}
+                disabled={loading || !formData.property_name.trim() || !formData.account_manager.trim()}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {loading ? (
@@ -326,7 +289,6 @@ export default function ActiveAccountsPage() {
   const [selectedIrrigationCustomer, setSelectedIrrigationCustomer] = useState('all')
   const [selectedWrArea, setSelectedWrArea] = useState('all')
   const [selectedLmDistrict, setSelectedLmDistrict] = useState('all')
-  const [selectedCfl, setSelectedCfl] = useState('all')
   const [selectedWhoseContract, setSelectedWhoseContract] = useState('all')
   const [showFilters, setShowFilters] = useState(false)
   const [user, setUser] = useState<any>(null)
@@ -436,12 +398,7 @@ export default function ActiveAccountsPage() {
     return Array.from(new Set(districts)).sort()
   }, [accounts])
 
-  const uniqueCfls = useMemo(() => {
-    const cfls = accounts
-      .map(account => account.cfl)
-      .filter((cfl): cfl is string => Boolean(cfl))
-    return Array.from(new Set(cfls)).sort()
-  }, [accounts])
+
 
   const uniqueWhoseContracts = useMemo(() => {
     const contracts = accounts
@@ -509,10 +466,7 @@ export default function ActiveAccountsPage() {
       filtered = filtered.filter(account => account.lm_district === selectedLmDistrict)
     }
 
-    // Apply CFL filter
-    if (selectedCfl !== 'all') {
-      filtered = filtered.filter(account => account.cfl === selectedCfl)
-    }
+
 
     // Apply whose contract filter
     if (selectedWhoseContract !== 'all') {
@@ -522,7 +476,7 @@ export default function ActiveAccountsPage() {
     return filtered
   }, [accounts, searchTerm, selectedLocation, selectedManager, selectedParentAccount, 
       selectedCustomerType, selectedImServiceLevel, selectedIrrigationCustomer, 
-      selectedWrArea, selectedLmDistrict, selectedCfl, selectedWhoseContract])
+      selectedWrArea, selectedLmDistrict, selectedWhoseContract])
 
   const clearAllFilters = () => {
     setSearchTerm('')
@@ -534,7 +488,6 @@ export default function ActiveAccountsPage() {
     setSelectedIrrigationCustomer('all')
     setSelectedWrArea('all')
     setSelectedLmDistrict('all')
-    setSelectedCfl('all')
     setSelectedWhoseContract('all')
   }
 
@@ -548,7 +501,6 @@ export default function ActiveAccountsPage() {
     selectedIrrigationCustomer !== 'all' ? selectedIrrigationCustomer : null,
     selectedWrArea !== 'all' ? selectedWrArea : null,
     selectedLmDistrict !== 'all' ? selectedLmDistrict : null,
-    selectedCfl !== 'all' ? selectedCfl : null,
     selectedWhoseContract !== 'all' ? selectedWhoseContract : null
   ].filter(Boolean).length
 
@@ -600,41 +552,41 @@ export default function ActiveAccountsPage() {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ACTIVE ACCOUNTS</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">ACTIVE ACCOUNTS</h1>
+          <p className="mt-1 text-xs text-gray-600">
             {isLoading ? 'Loading...' : `${filteredAccounts.length} of ${accounts.length} accounts`}
           </p>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border dark:border-gray-700">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow border dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   placeholder="Search accounts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
 
             {/* Buttons - Add Account (Admin), Filters and Refresh */}
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               {/* Add Account button - Admin Only */}
               {isAdmin && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="inline-flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3.5 w-3.5" />
                   <span>Add Account</span>
                 </button>
               )}
@@ -642,16 +594,16 @@ export default function ActiveAccountsPage() {
               {/* Filter toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`inline-flex items-center space-x-2 px-4 py-2 border rounded-md text-sm font-medium ${
+                className={`inline-flex items-center space-x-1.5 px-3 py-1.5 border rounded-md text-xs font-medium ${
                   activeFiltersCount > 0 || showFilters
                     ? 'bg-primary/10 dark:bg-primary/20 border-primary/30 text-primary dark:text-primary'
                     : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
                 }`}
               >
-                <Filter className="h-4 w-4" />
+                <Filter className="h-3.5 w-3.5" />
                 <span>Filters</span>
                 {activeFiltersCount > 0 && (
-                  <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
+                  <span className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -661,12 +613,12 @@ export default function ActiveAccountsPage() {
               <button
                 onClick={() => refetch()}
                 disabled={isLoading}
-                className="inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
                 ) : (
-                  <RotateCcw className="h-4 w-4" />
+                  <RotateCcw className="h-3.5 w-3.5" />
                 )}
                 <span>{isLoading ? 'Refreshing...' : 'Refresh'}</span>
               </button>
@@ -675,17 +627,17 @@ export default function ActiveAccountsPage() {
 
           {/* Expanded Filters */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                 {/* Location Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Location
                   </label>
                   <select
                     value={selectedLocation}
                     onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Locations</option>
                     {uniqueLocations.map(location => (
@@ -698,13 +650,13 @@ export default function ActiveAccountsPage() {
 
                 {/* Manager Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Account Manager
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Manager
                   </label>
                   <select
                     value={selectedManager}
                     onChange={(e) => setSelectedManager(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Managers</option>
                     {uniqueManagers.map(manager => (
@@ -826,24 +778,7 @@ export default function ActiveAccountsPage() {
                   </select>
                 </div>
 
-                {/* CFL Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    CFL
-                  </label>
-                  <select
-                    value={selectedCfl}
-                    onChange={(e) => setSelectedCfl(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="all">All CFLs</option>
-                    {uniqueCfls.map(cfl => (
-                      <option key={cfl} value={cfl}>
-                        {cfl}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+
 
                 {/* Whose Contract Filter */}
                 <div>
@@ -897,66 +832,52 @@ export default function ActiveAccountsPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {filteredAccounts.map((account) => (
               <div 
                 key={account.id} 
-                className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer border dark:border-gray-700"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3 cursor-pointer border dark:border-gray-700"
                 onClick={() => handlePropertyClick(account.id)}
               >
                 {/* Account Header */}
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 truncate">
                       {account.property_name}
                     </h3>
                     
                     {account.parent_account && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 truncate">
                         Parent: {account.parent_account}
                       </p>
                     )}
-
-                    {/* Separator line */}
-                    <div className="border-t border-gray-200 dark:border-gray-600 my-3"></div>
-
-                    {/* Account Manager and Location on same line */}
-                    <div className="flex items-center gap-3 mb-1">
-                      {account.account_manager && (
-                        <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
-                          <User className="h-4 w-4 flex-shrink-0" />
-                          <span>{account.account_manager}</span>
-                        </div>
-                      )}
-                      {account.location && (
-                        <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
-                          <MapPin className="h-4 w-4 flex-shrink-0" />
-                          <span>{account.location}</span>
-                        </div>
-                      )}
-                    </div>
                   </div>
-                  {account.boss_url && (
-                    <a
-                      href={account.boss_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 ml-2"
-                      title="Open in BOSS"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  )}
+                  
+                  <div className="flex flex-col items-end ml-2 flex-shrink-0">
+                    {account.account_manager && (
+                      <div className="flex items-center space-x-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
+                        <User className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{account.account_manager}</span>
+                      </div>
+                    )}
+                    {account.location && (
+                      <div className="flex items-center space-x-1 text-xs text-gray-600 dark:text-gray-400">
+                        <MapPin className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{account.location}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Account Details */}
-                <div className="space-y-2">
+                {/* Contact Details */}
+                <div className="flex items-center gap-4 mb-3">
                   {account.phone && (
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                      <Phone className="h-4 w-4 flex-shrink-0" />
+                    <div className="flex items-center space-x-1 text-xs text-gray-600 dark:text-gray-400 flex-1 min-w-0">
+                      <Phone className="h-3 w-3 flex-shrink-0" />
                       <a 
                         href={`tel:${account.phone}`}
-                        className="hover:text-blue-600 dark:hover:text-blue-400"
+                        className="hover:text-blue-600 dark:hover:text-blue-400 truncate"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {account.phone}
                       </a>
@@ -964,16 +885,93 @@ export default function ActiveAccountsPage() {
                   )}
 
                   {account.email && (
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                      <Mail className="h-4 w-4 flex-shrink-0" />
+                    <div className="flex items-center space-x-1 text-xs text-gray-600 dark:text-gray-400 flex-1 min-w-0">
+                      <Mail className="h-3 w-3 flex-shrink-0" />
                       <a 
                         href={`mailto:${account.email}`}
                         className="hover:text-blue-600 dark:hover:text-blue-400 truncate"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {account.email}
                       </a>
                     </div>
                   )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-4 gap-1">
+                  {/* Boss Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (account.boss_url) {
+                        window.open(account.boss_url, '_blank')
+                      }
+                    }}
+                    disabled={!account.boss_url}
+                    className={`inline-flex items-center justify-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                      account.boss_url
+                        ? 'border border-[#0A93D5] text-[#0A93D5] hover:bg-[#0A93D5] hover:text-white'
+                        : 'border border-gray-300 text-gray-400 dark:border-gray-600 dark:text-gray-500 cursor-not-allowed'
+                    }`}
+                    title={account.boss_url ? 'View in BOSS' : 'No BOSS URL available'}
+                  >
+                    <Globe className="h-3 w-3" />
+                    BOSS
+                  </button>
+
+                  {/* WR Maps Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (account.wr_maps_url) {
+                        window.open(account.wr_maps_url, '_blank')
+                      }
+                    }}
+                    disabled={!account.wr_maps_url}
+                    className={`inline-flex items-center justify-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                      account.wr_maps_url
+                        ? 'border border-[#0A93D5] text-[#0A93D5] hover:bg-[#0A93D5] hover:text-white'
+                        : 'border border-gray-300 text-gray-400 dark:border-gray-600 dark:text-gray-500 cursor-not-allowed'
+                    }`}
+                    title={account.wr_maps_url ? 'View WR Maps' : 'No WR Maps URL available'}
+                  >
+                    <MapIcon className="h-3 w-3" />
+                    WR Map
+                  </button>
+
+                  {/* LM Map Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (account.lm_map_url) {
+                        window.open(account.lm_map_url, '_blank')
+                      }
+                    }}
+                    disabled={!account.lm_map_url}
+                    className={`inline-flex items-center justify-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                      account.lm_map_url
+                        ? 'border border-[#0A93D5] text-[#0A93D5] hover:bg-[#0A93D5] hover:text-white'
+                        : 'border border-gray-300 text-gray-400 dark:border-gray-600 dark:text-gray-500 cursor-not-allowed'
+                    }`}
+                    title={account.lm_map_url ? 'View LM Map' : 'No LM Map URL available'}
+                  >
+                    <MapIcon className="h-3 w-3" />
+                    LM Map
+                  </button>
+
+                  {/* Property Details Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handlePropertyClick(account.id)
+                    }}
+                    className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded text-xs font-medium bg-[#0A93D5] text-white hover:bg-[#0A93D5]/90 transition-colors"
+                    title="View Property Details"
+                  >
+                    More
+                    <ChevronRight className="h-3 w-3" />
+                  </button>
                 </div>
               </div>
             ))}

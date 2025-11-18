@@ -199,11 +199,11 @@ export default function GuidesPage() {
     <Layout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
             Process Guides
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Comprehensive guides for daily operations, best practices, and step-by-step workflows. 
             Find everything you need to execute processes efficiently and consistently.
           </p>
@@ -216,18 +216,13 @@ export default function GuidesPage() {
             return (
               <div key={category.title} className="space-y-4">
                 {/* Category Header */}
-                <div className="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
-                  <div className={`p-2 rounded-lg ${category.color}`}>
-                    <IconComponent className={`h-6 w-6 ${category.iconColor}`} />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {category.title}
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {category.description}
-                    </p>
-                  </div>
+                <div className="pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase mb-2">
+                    {category.title}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    {category.description}
+                  </p>
                 </div>
 
                 {/* Guides Grid */}

@@ -174,10 +174,10 @@ export default function CoreServicesPage() {
 
         {/* Services grouped by type */}
         <div className="space-y-16">
-          {/* Winter (WR) Services */}
+          {/* WR Services */}
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase mb-8 border-b border-gray-200 dark:border-gray-700 pb-2">
-              Winter (WR)
+              WR Services
             </h2>
             <div className="space-y-12">
               {coreServices.filter(service => service.badge === 'Snow').map((service, idx) => (
@@ -187,7 +187,7 @@ export default function CoreServicesPage() {
                     <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                       {service.title}
                     </h3>
-                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 ring-gray-600/20">
+                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20 dark:bg-[#0A93D5]/20 dark:text-[#0A93D5] dark:ring-[#0A93D5]/30">
                       WR
                     </span>
                   </div>
@@ -234,10 +234,10 @@ export default function CoreServicesPage() {
             </div>
           </div>
 
-          {/* Lawn Maintenance (LM) Services */}
+          {/* LM Services */}
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase mb-8 border-b border-gray-200 dark:border-gray-700 pb-2">
-              Lawn Maintenance (LM)
+              LM Services
             </h2>
             <div className="space-y-12">
               {coreServices.filter(service => service.badge === 'Lawn').map((service, idx) => (
@@ -247,7 +247,7 @@ export default function CoreServicesPage() {
                     <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                       {service.title}
                     </h3>
-                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-secondary dark:bg-secondary/30 text-primary dark:text-primary ring-primary/20">
+                    <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-secondary/20 text-secondary-foreground ring-secondary/30 dark:bg-secondary/30 dark:text-secondary-foreground dark:ring-secondary/40">
                       LM
                     </span>
                   </div>
