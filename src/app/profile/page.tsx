@@ -30,6 +30,7 @@ interface UserProfile {
 }
 
 export default function UserProfile() {
+  // Force reload - compact styling update
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
@@ -245,97 +246,95 @@ export default function UserProfile() {
               </button>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-x-8 sm:gap-y-6">
-                {/* Email */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <Mail className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">EMAIL ADDRESS</span>
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+              {/* Email */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <Mail className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <p className="text-gray-900 dark:text-white font-medium">{user?.email}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Email cannot be changed</p>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Email Address</span>
                 </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.email}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Email cannot be changed</p>
+              </div>
 
-                {/* Full Name */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <UserIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">FULL NAME</span>
+              {/* Full Name */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Enter your full name"
-                    />
-                  ) : (
-                    <p className={!profile?.full_name 
-                      ? "text-gray-500 dark:text-gray-400 italic" 
-                      : "text-gray-900 dark:text-white font-medium"
-                    }>
-                      {profile?.full_name || 'Not set'}
-                    </p>
-                  )}
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Full Name</span>
                 </div>
+                {editing ? (
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Enter your full name"
+                  />
+                ) : (
+                  <p className={!profile?.full_name 
+                    ? "text-sm text-gray-500 dark:text-gray-400 italic" 
+                    : "text-sm font-medium text-gray-900 dark:text-white"
+                  }>
+                    {profile?.full_name || 'Not set'}
+                  </p>
+                )}
+              </div>
 
-                {/* Department */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <Building2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">DEPARTMENT</span>
+              {/* Department */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <Building2 className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={department}
-                      onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Enter your department"
-                    />
-                  ) : (
-                    <p className={!profile?.department 
-                      ? "text-gray-500 dark:text-gray-400 italic" 
-                      : "text-gray-900 dark:text-white font-medium"
-                    }>
-                      {profile?.department || 'Not set'}
-                    </p>
-                  )}
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Department</span>
                 </div>
+                {editing ? (
+                  <input
+                    type="text"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Enter your department"
+                  />
+                ) : (
+                  <p className={!profile?.department 
+                    ? "text-sm text-gray-500 dark:text-gray-400 italic" 
+                    : "text-sm font-medium text-gray-900 dark:text-white"
+                  }>
+                    {profile?.department || 'Not set'}
+                  </p>
+                )}
+              </div>
 
-                {/* Phone */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <Phone className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">PHONE NUMBER</span>
+              {/* Phone */}
+              <div className="p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <Phone className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  {editing ? (
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Enter your phone number"
-                    />
-                  ) : (
-                    <p className={!profile?.phone 
-                      ? "text-gray-500 dark:text-gray-400 italic" 
-                      : "text-gray-900 dark:text-white font-medium"
-                    }>
-                      {profile?.phone || 'Not set'}
-                    </p>
-                  )}
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Phone Number</span>
                 </div>
+                {editing ? (
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Enter your phone number"
+                  />
+                ) : (
+                  <p className={!profile?.phone 
+                    ? "text-sm text-gray-500 dark:text-gray-400 italic" 
+                    : "text-sm font-medium text-gray-900 dark:text-white"
+                  }>
+                    {profile?.phone || 'Not set'}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -357,22 +356,23 @@ export default function UserProfile() {
               </button>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
               {showPasswordForm ? (
-                <div className="space-y-4">
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                        <Lock className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                <>
+                  {/* New Password */}
+                  <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <Lock className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">NEW PASSWORD</span>
+                      <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">New Password</span>
                     </div>
                     <div className="relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full px-2 py-1.5 pr-10 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Enter new password"
                       />
                       <button
@@ -380,24 +380,25 @@ export default function UserProfile() {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                       </button>
                     </div>
                   </div>
                   
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                        <Lock className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  {/* Confirm Password */}
+                  <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                        <Lock className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">CONFIRM PASSWORD</span>
+                      <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Confirm Password</span>
                     </div>
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full px-2 py-1.5 pr-10 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Confirm new password"
                       />
                       <button
@@ -405,12 +406,13 @@ export default function UserProfile() {
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showConfirmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                       </button>
                     </div>
                   </div>
                   
-                  <div className="flex gap-2 pt-2">
+                  {/* Action Buttons */}
+                  <div className="p-3 flex gap-2">
                     <button
                       onClick={handleChangePassword}
                       disabled={loading || !newPassword || !confirmPassword}
@@ -439,12 +441,12 @@ export default function UserProfile() {
                       Cancel
                     </button>
                   </div>
-                </div>
+                </>
               ) : (
-                <div className="text-center py-8">
+                <div className="p-8 text-center">
                   <Lock className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">Your password is secure and encrypted</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500">Click "Change Password" above to update your password</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Your password is secure and encrypted</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">Click "Change" above to update your password</p>
                 </div>
               )}
             </div>
@@ -458,67 +460,65 @@ export default function UserProfile() {
               Account Information
             </h3>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 sm:p-6 border border-gray-200 dark:border-gray-700">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-x-8 sm:gap-y-6">
-                {/* User ID */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <UserIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">USER ID</span>
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+              {/* User ID */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                    {user?.id}
-                  </p>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">User ID</span>
                 </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded inline-block">
+                  {user?.id}
+                </p>
+              </div>
 
-                {/* Created Date */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <UserIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">MEMBER SINCE</span>
+              {/* Created Date */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <p className="text-gray-900 dark:text-white font-medium">
-                    {profile?.created_at 
-                      ? new Date(profile.created_at).toLocaleDateString()
-                      : user?.created_at
-                      ? new Date(user.created_at).toLocaleDateString()
-                      : 'Unknown'}
-                  </p>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Member Since</span>
                 </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {profile?.created_at 
+                    ? new Date(profile.created_at).toLocaleDateString()
+                    : user?.created_at
+                    ? new Date(user.created_at).toLocaleDateString()
+                    : 'Unknown'}
+                </p>
+              </div>
 
-                {/* Last Updated */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <UserIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">LAST UPDATED</span>
+              {/* Last Updated */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <p className="text-gray-900 dark:text-white font-medium">
-                    {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString() : 'Never'}
-                  </p>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Last Updated</span>
                 </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString() : 'Never'}
+                </p>
+              </div>
 
-                {/* Email Confirmed */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-md">
-                      <Mail className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">EMAIL STATUS</span>
+              {/* Email Confirmed */}
+              <div className="p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <Mail className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    user?.email_confirmed_at
-                      ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
-                      : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
-                  }`}>
-                    {user?.email_confirmed_at ? 'Verified' : 'Pending Verification'}
-                  </span>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Email Status</span>
                 </div>
+                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                  user?.email_confirmed_at
+                    ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
+                    : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
+                }`}>
+                  {user?.email_confirmed_at ? 'Verified' : 'Pending Verification'}
+                </span>
               </div>
             </div>
           </div>

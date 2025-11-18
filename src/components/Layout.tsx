@@ -87,7 +87,7 @@ export default function Layout({ children }: LayoutProps) {
       {/* Content with top padding for fixed header */}
       <div className="flex pt-16">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex md:w-64 md:flex-col md:shrink-0 md:sticky md:top-16 md:h-[calc(100vh-64px)] md:border-r md:border-gray-200 dark:md:border-gray-700 md:bg-white dark:md:bg-gray-800">
+        <div className="hidden md:flex md:w-64 md:flex-col md:shrink-0 md:fixed md:left-0 md:top-16 md:h-[calc(100vh-64px)] md:border-r md:border-gray-200 dark:md:border-gray-700 md:bg-white dark:md:bg-gray-800">
           <div className="overflow-y-auto overflow-x-hidden h-full custom-scrollbar">
             <Sidebar isAdmin={isAdmin} />
           </div>
@@ -110,7 +110,7 @@ export default function Layout({ children }: LayoutProps) {
         )}
 
         {/* Main Content Container */}
-        <div className="flex-1 flex overflow-x-hidden">
+        <div className="flex-1 flex overflow-x-hidden md:ml-64">
           {/* Main Content */}
           <main className="flex-1 overflow-x-hidden">
             <div className={isDocumentationPage ? "max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:px-8" : "max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:px-8"}>
