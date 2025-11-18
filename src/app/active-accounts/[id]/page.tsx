@@ -50,8 +50,10 @@ export default function PropertyDetailPage() {
   const [account, setAccount] = useState<Account | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
-  // Editing state
+  // Editing state (only available for admins)
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editedAccount, setEditedAccount] = useState<Account | null>(null);
@@ -71,6 +73,46 @@ export default function PropertyDetailPage() {
   const lmFileInputRef = useRef<HTMLInputElement>(null);
 
   const accountId = params.id as string
+
+  // Check user admin status
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        
+        if (error) throw error
+        
+        if (user) {
+          setUser(user)
+          // Check if user is admin from metadata
+          const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
+          setIsAdmin(adminStatus)
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error)
+        setUser(null)
+        setIsAdmin(false)
+      }
+    }
+
+    checkUser()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          setUser(session.user)
+          const adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
+          setIsAdmin(adminStatus)
+        } else {
+          setUser(null)
+          setIsAdmin(false)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   useEffect(() => {
     async function fetchAccountDetail() {
@@ -499,7 +541,7 @@ export default function PropertyDetailPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">
-              {isEditing ? (
+              {isAdmin && isEditing ? (
                 <input
                   type="text"
                   value={editedAccount?.property_name || ''}
@@ -512,55 +554,57 @@ export default function PropertyDetailPage() {
               )}
             </div>
 
-            {/* Edit/Save/Delete Buttons */}
-            <div className="flex gap-2">
-              {isEditing ? (
-                <>
-                  <button
-                    onClick={handleCancel}
-                    disabled={saving}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
-                  >
-                    <X className="h-3 w-3" />
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-                  >
-                    {saving ? (
-                      <>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary"></div>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="h-3 w-3" />
-                        Save Changes
-                      </>
-                    )}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={handleDelete}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-destructive text-destructive rounded-lg hover:bg-destructive/10 dark:hover:bg-destructive/10 transition-colors"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                    Delete Account
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    <Edit2 className="h-3 w-3" />
-                    Edit Account
-                  </button>
-                </>
-              )}
-            </div>
+            {/* Edit/Save/Delete Buttons - Admin Only */}
+            {isAdmin && (
+              <div className="flex gap-2">
+                {isEditing ? (
+                  <>
+                    <button
+                      onClick={handleCancel}
+                      disabled={saving}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                    >
+                      <X className="h-3 w-3" />
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      disabled={saving}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    >
+                      {saving ? (
+                        <>
+                          <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-3 w-3" />
+                          Save Changes
+                        </>
+                      )}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleDelete}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-destructive text-destructive rounded-lg hover:bg-destructive/10 dark:hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                      Delete Account
+                    </button>
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      <Edit2 className="h-3 w-3" />
+                      Edit Account
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
