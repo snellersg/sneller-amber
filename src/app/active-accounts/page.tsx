@@ -19,7 +19,8 @@ import {
   Plus,
   Globe,
   MapIcon,
-  ChevronRight
+  ChevronRight,
+  X
 } from 'lucide-react'
 
 interface Account {
@@ -280,20 +281,127 @@ function AddAccountModal({ onClose, onAccountAdded }: AddAccountModalProps) {
 
 export default function ActiveAccountsPage() {
   const router = useRouter()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedLocation, setSelectedLocation] = useState('all')
-  const [selectedManager, setSelectedManager] = useState('all')
-  const [selectedParentAccount, setSelectedParentAccount] = useState('all')
-  const [selectedCustomerType, setSelectedCustomerType] = useState('all')
-  const [selectedImServiceLevel, setSelectedImServiceLevel] = useState('all')
-  const [selectedIrrigationCustomer, setSelectedIrrigationCustomer] = useState('all')
-  const [selectedWrArea, setSelectedWrArea] = useState('all')
-  const [selectedLmDistrict, setSelectedLmDistrict] = useState('all')
-  const [selectedWhoseContract, setSelectedWhoseContract] = useState('all')
+  
+  // Initialize state from localStorage
+  const [searchTerm, setSearchTerm] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_searchTerm') || ''
+    }
+    return ''
+  })
+  const [selectedLocation, setSelectedLocation] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_location') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedManager, setSelectedManager] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_manager') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedParentAccount, setSelectedParentAccount] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_parentAccount') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedCustomerType, setSelectedCustomerType] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_customerType') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedImServiceLevel, setSelectedImServiceLevel] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_imServiceLevel') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedIrrigationCustomer, setSelectedIrrigationCustomer] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_irrigationCustomer') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedWrArea, setSelectedWrArea] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_wrArea') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedLmDistrict, setSelectedLmDistrict] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_lmDistrict') || 'all'
+    }
+    return 'all'
+  })
+  const [selectedWhoseContract, setSelectedWhoseContract] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('activeAccounts_whoseContract') || 'all'
+    }
+    return 'all'
+  })
   const [showFilters, setShowFilters] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
+
+  // Persist filters to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_searchTerm', searchTerm)
+  }, [searchTerm])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_location', selectedLocation)
+  }, [selectedLocation])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_manager', selectedManager)
+  }, [selectedManager])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_parentAccount', selectedParentAccount)
+  }, [selectedParentAccount])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_customerType', selectedCustomerType)
+  }, [selectedCustomerType])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_imServiceLevel', selectedImServiceLevel)
+  }, [selectedImServiceLevel])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_irrigationCustomer', selectedIrrigationCustomer)
+  }, [selectedIrrigationCustomer])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_wrArea', selectedWrArea)
+  }, [selectedWrArea])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_lmDistrict', selectedLmDistrict)
+  }, [selectedLmDistrict])
+
+  useEffect(() => {
+    localStorage.setItem('activeAccounts_whoseContract', selectedWhoseContract)
+  }, [selectedWhoseContract])
+
+  // Clear all filters function
+  const clearAllFilters = () => {
+    setSearchTerm('')
+    setSelectedLocation('all')
+    setSelectedManager('all')
+    setSelectedParentAccount('all')
+    setSelectedCustomerType('all')
+    setSelectedImServiceLevel('all')
+    setSelectedIrrigationCustomer('all')
+    setSelectedWrArea('all')
+    setSelectedLmDistrict('all')
+    setSelectedWhoseContract('all')
+  }
 
   // Check user admin status
   useEffect(() => {
@@ -478,19 +586,6 @@ export default function ActiveAccountsPage() {
       selectedCustomerType, selectedImServiceLevel, selectedIrrigationCustomer, 
       selectedWrArea, selectedLmDistrict, selectedWhoseContract])
 
-  const clearAllFilters = () => {
-    setSearchTerm('')
-    setSelectedLocation('all')
-    setSelectedManager('all')
-    setSelectedParentAccount('all')
-    setSelectedCustomerType('all')
-    setSelectedImServiceLevel('all')
-    setSelectedIrrigationCustomer('all')
-    setSelectedWrArea('all')
-    setSelectedLmDistrict('all')
-    setSelectedWhoseContract('all')
-  }
-
   const activeFiltersCount = [
     searchTerm,
     selectedLocation !== 'all' ? selectedLocation : null,
@@ -609,6 +704,17 @@ export default function ActiveAccountsPage() {
                 )}
               </button>
 
+              {/* Clear filters button */}
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  <span>Clear</span>
+                </button>
+              )}
+
               {/* Refresh button */}
               <button
                 onClick={() => refetch()}
@@ -669,13 +775,13 @@ export default function ActiveAccountsPage() {
 
                 {/* Parent Account Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Parent Account
                   </label>
                   <select
                     value={selectedParentAccount}
                     onChange={(e) => setSelectedParentAccount(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Parent Accounts</option>
                     {uniqueParentAccounts.map(parent => (
@@ -688,13 +794,13 @@ export default function ActiveAccountsPage() {
 
                 {/* Customer Type Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Customer Type
                   </label>
                   <select
                     value={selectedCustomerType}
                     onChange={(e) => setSelectedCustomerType(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Types</option>
                     {uniqueCustomerTypes.map(type => (
@@ -707,13 +813,13 @@ export default function ActiveAccountsPage() {
 
                 {/* IM Service Level Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     IM Service Level
                   </label>
                   <select
                     value={selectedImServiceLevel}
                     onChange={(e) => setSelectedImServiceLevel(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Service Levels</option>
                     {uniqueImServiceLevels.map(level => (
@@ -726,13 +832,13 @@ export default function ActiveAccountsPage() {
 
                 {/* Irrigation Customer Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Irrigation Customer
                   </label>
                   <select
                     value={selectedIrrigationCustomer}
                     onChange={(e) => setSelectedIrrigationCustomer(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All</option>
                     <option value="yes">Yes</option>
@@ -742,13 +848,13 @@ export default function ActiveAccountsPage() {
 
                 {/* WR Area Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     WR Area
                   </label>
                   <select
                     value={selectedWrArea}
                     onChange={(e) => setSelectedWrArea(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All WR Areas</option>
                     {uniqueWrAreas.map(area => (
@@ -761,13 +867,13 @@ export default function ActiveAccountsPage() {
 
                 {/* LM District Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     LM District
                   </label>
                   <select
                     value={selectedLmDistrict}
                     onChange={(e) => setSelectedLmDistrict(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All LM Districts</option>
                     {uniqueLmDistricts.map(district => (
@@ -782,13 +888,13 @@ export default function ActiveAccountsPage() {
 
                 {/* Whose Contract Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Whose Contract
                   </label>
                   <select
                     value={selectedWhoseContract}
                     onChange={(e) => setSelectedWhoseContract(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="all">All Contracts</option>
                     {uniqueWhoseContracts.map(contract => (
@@ -804,7 +910,7 @@ export default function ActiveAccountsPage() {
                   <button
                     onClick={clearAllFilters}
                     disabled={activeFiltersCount === 0}
-                    className="w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-2 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Clear All
                   </button>

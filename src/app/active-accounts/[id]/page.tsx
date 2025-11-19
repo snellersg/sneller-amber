@@ -600,10 +600,10 @@ export default function PropertyDetailPage() {
                     <>
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        className="inline-flex items-center justify-center px-2 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        title="Edit Account"
                       >
                         <Edit2 className="h-3 w-3" />
-                        Edit Account
                       </button>
                       <button
                         onClick={handleDelete}
@@ -993,18 +993,20 @@ export default function PropertyDetailPage() {
                           >
                             <Download className="h-3 w-3" />
                           </button>
-                          <button
-                            onClick={handleWRDelete}
-                            disabled={deletingWR}
-                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
-                            title={deletingWR ? "Deleting..." : "Delete"}
-                          >
-                            {deletingWR ? (
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600"></div>
-                            ) : (
-                              <Trash2 className="h-3 w-3" />
-                            )}
-                          </button>
+                          {isAdmin && (
+                            <button
+                              onClick={handleWRDelete}
+                              disabled={deletingWR}
+                              className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                              title={deletingWR ? "Deleting..." : "Delete"}
+                            >
+                              {deletingWR ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600"></div>
+                              ) : (
+                                <Trash2 className="h-3 w-3" />
+                              )}
+                            </button>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -1243,18 +1245,20 @@ export default function PropertyDetailPage() {
                           >
                             <Download className="h-3 w-3" />
                           </button>
-                          <button
-                            onClick={handleLMDelete}
-                            disabled={deletingLM}
-                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
-                            title={deletingLM ? "Deleting..." : "Delete"}
-                          >
-                            {deletingLM ? (
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600"></div>
-                            ) : (
-                              <Trash2 className="h-3 w-3" />
-                            )}
-                          </button>
+                          {isAdmin && (
+                            <button
+                              onClick={handleLMDelete}
+                              disabled={deletingLM}
+                              className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                              title={deletingLM ? "Deleting..." : "Delete"}
+                            >
+                              {deletingLM ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600"></div>
+                              ) : (
+                                <Trash2 className="h-3 w-3" />
+                              )}
+                            </button>
+                          )}
                         </div>
                       </div>
                     ) : (
