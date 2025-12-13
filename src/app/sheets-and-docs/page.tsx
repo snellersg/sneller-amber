@@ -56,6 +56,11 @@ const quickLinks = [
     description: "Contains the data used to create and update winter service maps.",
   },
   {
+    title: "Pile Hauling and Relocating Rates",
+    url: "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0",
+    description: "Rate sheet for hauling or relocating pile material between sites and dump locations.",
+  },
+  {
     title: "PE Cheat Sheet",
     url: "https://docs.google.com/spreadsheets/d/1PPFemVzptGsJTWIL_-tl64x-5xuZi7zGSzCAQPCJRcI/edit?gid=2145458084#gid=2145458084",
     description: "Contains helpful links and key metrics used for bidding new property enhancement opportunities.",
