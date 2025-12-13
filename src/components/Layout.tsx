@@ -76,7 +76,6 @@ export default function Layout({ children }: LayoutProps) {
     pathname.startsWith('/product-knowledge') ||
     pathname.startsWith('/guides') ||
     pathname.startsWith('/core-processes') ||
-    pathname.startsWith('/tools') ||
     pathname.startsWith('/sheets-and-docs')
 
   return (

@@ -56,7 +56,6 @@ const sidebarSections = [
   {
     title: 'Resources',
     items: [
-      { label: 'Calculators', icon: Calculator, path: '/tools' },
       { label: 'Platforms', icon: Wrench, path: '/tools-platforms' },
       {
         label: 'Ops Hub',
