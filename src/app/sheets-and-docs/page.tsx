@@ -11,6 +11,11 @@ const quickLinks = [
     description: "Where account managers track priorities, issues, and metrics for weekly EOS Level 10 meetings.",
   },
   {
+    title: "ACM/Steve Snow Convo Cheat Sheet",
+    url: "https://docs.google.com/spreadsheets/d/1LHZlUNa7WHBkcgjHm9fW-MDlvpxMpHlBAm5_s0s3O6M/edit?gid=1070268231#gid=1070268231",
+    description: "Cheat sheet for key snow conversation points between ACMs and Steve.",
+  },
+  {
     title: "Average Services Per Service Level",
     url: "https://docs.google.com/spreadsheets/d/1fENwJfi0TfAquaYj9MQ4htjxzLVOUpr3vot1CBPmr7g/edit?gid=0#gid=0",
     description: "Analysis of average service quantities by service level to help with pricing and service planning.",
@@ -56,19 +61,29 @@ const quickLinks = [
     description: "Contains the data used to create and update winter service maps.",
   },
   {
-    title: "Pile Hauling and Relocating Rates",
-    url: "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0",
-    description: "Rate sheet for hauling or relocating pile material between sites and dump locations.",
-  },
-  {
     title: "PE Cheat Sheet",
     url: "https://docs.google.com/spreadsheets/d/1PPFemVzptGsJTWIL_-tl64x-5xuZi7zGSzCAQPCJRcI/edit?gid=2145458084#gid=2145458084",
     description: "Contains helpful links and key metrics used for bidding new property enhancement opportunities.",
   },
   {
+    title: "Pile Hauling and Relocating Rates",
+    url: "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0",
+    description: "Rate sheet for hauling or relocating pile material between sites and dump locations.",
+  },
+  {
     title: "Property Estimation Sheet (PES)",
     url: "https://docs.google.com/spreadsheets/d/1aEdgfF3gneoxxnxJngI6siX9H7fOYjaonrH8ue9HJW8/edit?gid=960469792#gid=960469792",
     description: "Used to estimate lawn maintenance pricing and provides the figures needed for entry into BossLM.",
+  },
+  {
+    title: "Snow and Ice Management Updates",
+    url: "https://docs.google.com/spreadsheets/d/16_jDPJg-iK2kQb_TMAQreA8-xAK5wTtlXJ0yq3p42Tw/edit?gid=1964679955#gid=1964679955",
+    description: "Updates and communications related to snow and ice management operations.",
+  },
+  {
+    title: "Snow Event Notes",
+    url: "https://docs.google.com/spreadsheets/d/1M25vDPi1y7_ZaXgQgL5Vcom_sCtLoatdiD1-qf-W-Y8/edit?gid=0#gid=0",
+    description: "Notes and details recorded during snow events for follow-up and tracking.",
   },
   {
     title: "SP Renewals/Retentions",
