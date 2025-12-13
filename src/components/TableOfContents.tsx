@@ -120,14 +120,14 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
       <div className="w-full mb-6">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-600 rounded-lg"
+          className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-600 rounded-lg"
         >
           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">On This Page</span>
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </button>
 
         {isOpen && (
-          <nav className="border-x border-b border-gray-200 dark:border-gray-600 rounded-b-lg p-3 bg-white dark:bg-gray-800 max-h-[60vh] overflow-y-auto">
+          <nav className="border-x border-b border-gray-200 dark:border-gray-600 rounded-b-lg p-3 bg-gray-50 dark:bg-gray-900 max-h-[60vh] overflow-y-auto">
             <ul className="space-y-1">
               {headings.map((heading) => (
                 <li key={heading.id}>
@@ -159,8 +159,8 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
   // Desktop version - sidebar
   return (
     <div className="hidden xl:block fixed right-6 top-24 w-72 z-30">
-      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg overflow-hidden">
-        <div className="px-4 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-lg overflow-hidden">
+        <div className="px-4 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">On This Page</h4>
         </div>
         <nav className="max-h-[calc(100vh-200px)] overflow-y-auto p-3">
