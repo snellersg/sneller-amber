@@ -158,10 +158,12 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
 
   // Desktop version - sidebar
   return (
-    <div className="w-full border-l border-gray-200 dark:border-gray-700 pl-4">
-      <div className="pb-4">
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4 uppercase pt-8">On This Page</h4>
-        <nav style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }} className="pr-2">
+    <div className="hidden xl:block fixed right-6 top-24 w-72 z-30">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg overflow-hidden">
+        <div className="px-4 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">On This Page</h4>
+        </div>
+        <nav className="max-h-[calc(100vh-200px)] overflow-y-auto p-3">
           <ul className="space-y-1">
             {headings.map((heading) => (
               <li key={heading.id}>
