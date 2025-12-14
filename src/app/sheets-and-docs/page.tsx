@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ExternalLink, HelpCircle } from 'lucide-react'
 import Layout from '../../components/Layout'
 
@@ -11,17 +11,17 @@ const sections = [
       {
         title: "ACM L10 Doc",
         url: "https://docs.google.com/spreadsheets/d/1tsiXNRoYKHpPSj-GsZjh4mB1o9bHYy-8Q0O7jSiivkk/edit?gid=253066623#gid=253066623",
-        description: "Where account managers track priorities, issues, and metrics for weekly EOS Level 10 meetings.",
+        description: "Track priorities, issues, and metrics for weekly EOS Level 10 meetings.",
       },
       {
         title: "Compliments/Appreciation From Customers",
         url: "https://docs.google.com/document/d/10AUX53jS8q_ynwDgUFaZhlo6iOiryC5bllqRVcbxEgw/edit?tab=t.0",
-        description: "A living record where ACMs log positive feedback received about our services and operations team.",
+        description: "Living record of positive feedback received about our services and operations team.",
       },
       {
         title: "Customer Master List",
         url: "https://docs.google.com/spreadsheets/d/1foWuc4sUsoP8lNTq5dVULEQ5iTlLG9jVb1o7EzYJ77w/edit?gid=1491987735#gid=1491987735",
-        description: "The master spreadsheet containing detailed information on all current and former accounts.",
+        description: "Master spreadsheet containing detailed information on all current and former accounts.",
       },
       {
         title: "Universal Pricing Sheet",
@@ -51,12 +51,12 @@ const sections = [
       {
         title: "Pile Hauling and Relocating Rates",
         url: "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0",
-        description: "Rate sheet for hauling or relocating pile material between sites and dump locations.",
+        description: "Rate sheet for hauling or relocating snow piles around sites and to dump locations.",
       },
       {
         title: "Snow and Ice Management Updates",
         url: "https://docs.google.com/spreadsheets/d/16_jDPJg-iK2kQb_TMAQreA8-xAK5wTtlXJ0yq3p42Tw/edit?gid=1964679955#gid=1964679955",
-        description: "Updates and communications related to snow and ice management operations.",
+        description: "Log of Dan's emails for updating customers each snow event.",
       },
       {
         title: "Snow Event Notes",
@@ -66,7 +66,7 @@ const sections = [
       {
         title: "SP Renewals/Retentions",
         url: "https://docs.google.com/spreadsheets/d/1LRwLfKNUNuxr5LJ0P7ULn-96oA5TLuHI2dJkPwUiNWc/edit?gid=0#gid=0",
-        description: "A spreadsheet that tracks the status of winter renewals and retentions for all accounts.",
+        description: "Tracks the status of winter renewals and retentions for all accounts.",
       }
     ]
   },
@@ -96,7 +96,7 @@ const sections = [
       {
         title: "LM Renewals/Retentions",
         url: "https://docs.google.com/spreadsheets/d/1o2gnNWpQ7E5IlngWE2MArfXZn-IlrKF05aNlVQxpdto/edit?gid=0#gid=0",
-        description: "A spreadsheet that tracks the status of LM renewals and retentions for all accounts.",
+        description: "Tracks the status of LM renewals and retentions for all accounts.",
       },
       {
         title: "PE Cheat Sheet",
@@ -115,6 +115,13 @@ const sections = [
 export default function SheetsDocsPage() {
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
 
+  // Close tooltip on outside click
+  useEffect(() => {
+    const handleClick = () => setOpenTooltip(null)
+    window.addEventListener('click', handleClick)
+    return () => window.removeEventListener('click', handleClick)
+  }, [])
+
   const toggleTooltip = (key: string) => {
     setOpenTooltip(openTooltip === key ? null : key)
   }
@@ -124,7 +131,7 @@ export default function SheetsDocsPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+          <h1 className="mb-4 text-3xl font-bold text-gray-900 uppercase dark:text-white">
             Sheets & Docs
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -137,10 +144,10 @@ export default function SheetsDocsPage() {
           {sections.map((section) => (
             <div
               key={section.title}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+              className="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700"
             >
               <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                <h2 className="text-sm font-semibold text-gray-900 dark:text-white uppercase">
+                <h2 className="text-sm font-semibold text-gray-900 uppercase dark:text-white">
                   {section.title}
                 </h2>
               </div>
@@ -150,11 +157,11 @@ export default function SheetsDocsPage() {
                   return (
                     <div
                       key={key}
-                      className="flex items-center justify-between gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="flex items-center justify-between gap-4 px-4 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
                     >
                       {/* Title and Info */}
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <span className="font-medium text-sm text-gray-900 dark:text-white break-words">
+                      <div className="flex items-center flex-1 min-w-0 gap-3">
+                        <span className="text-sm font-medium text-gray-900 break-words dark:text-white">
                           {item.title}
                         </span>
                         
@@ -165,17 +172,20 @@ export default function SheetsDocsPage() {
                               e.stopPropagation()
                               toggleTooltip(key)
                             }}
-                            className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            className="w-5 h-5 text-gray-400 transition-colors shrink-0 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                             aria-label="Show description"
                           >
-                            <HelpCircle className="h-4 w-4" />
+                            <HelpCircle className="w-4 h-4" />
                           </button>
                           
                           {/* Tooltip */}
                           {openTooltip === key && (
-                            <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-gray-700 rounded-lg shadow-lg max-w-xs">
+                            <div
+                              className="absolute z-20 bottom-full left-0 mb-2 px-4 py-3 text-sm leading-relaxed text-white bg-gray-900 dark:bg-gray-700 rounded-lg shadow-lg min-w-[18rem] max-w-3xl whitespace-normal"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <p>{item.description}</p>
-                              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                              <div className="absolute transform -translate-x-1/2 border-4 border-transparent top-full left-1/2 border-t-gray-900 dark:border-t-gray-700"></div>
                             </div>
                           )}
                         </div>
@@ -189,7 +199,7 @@ export default function SheetsDocsPage() {
                         className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white text-xs font-medium rounded-md transition-colors"
                       >
                         Open
-                        <ExternalLink className="h-3 w-3" />
+                        <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
                   )

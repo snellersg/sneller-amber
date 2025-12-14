@@ -90,23 +90,24 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
 
   // Initialize collapsed state - only Quick Access is open by default
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('sidebar-collapsed-sections');
-        if (saved) {
-          return JSON.parse(saved);
-        }
-      } catch (error) {
-        // Failed to load sidebar state, use defaults
-      }
-    }
-
     const initial: Record<string, boolean> = {};
     sidebarSections.forEach(section => {
       initial[section.title] = section.title !== 'Quick Access';
     });
     return initial;
   });
+
+  // Load collapsed state from localStorage on client to avoid hydration mismatch
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('sidebar-collapsed-sections');
+      if (saved) {
+        setCollapsedSections(JSON.parse(saved));
+      }
+    } catch (error) {
+      // Failed to load sidebar state, keep defaults
+    }
+  }, []);
 
   // Persist collapsed state to localStorage
   useEffect(() => {
