@@ -146,7 +146,7 @@ export default function SheetsDocsPage() {
               key={section.title}
               className="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700"
             >
-              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+              <div className="px-4 py-3 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                 <h2 className="text-sm font-semibold text-gray-900 uppercase dark:text-white">
                   {section.title}
                 </h2>
