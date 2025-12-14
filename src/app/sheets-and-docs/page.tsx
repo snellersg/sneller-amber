@@ -181,11 +181,11 @@ export default function SheetsDocsPage() {
                           {/* Tooltip */}
                           {openTooltip === key && (
                             <div
-                              className="absolute z-20 bottom-full left-0 mb-2 px-4 py-3 text-sm leading-relaxed text-white bg-gray-900 dark:bg-gray-700 rounded-lg shadow-lg min-w-[18rem] max-w-3xl whitespace-normal"
+                              className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-3 text-xs leading-relaxed text-white bg-gray-900 dark:bg-gray-700 rounded-lg shadow-lg min-w-[18rem] max-w-3xl whitespace-normal"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <p>{item.description}</p>
-                              <div className="absolute transform -translate-x-1/2 border-4 border-transparent top-full left-1/2 border-t-gray-900 dark:border-t-gray-700"></div>
+                              <div className="absolute -translate-x-1/2 border-4 border-transparent top-full left-1/2 border-t-gray-900 dark:border-t-gray-700"></div>
                             </div>
                           )}
                         </div>
