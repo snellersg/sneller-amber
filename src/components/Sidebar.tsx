@@ -37,8 +37,8 @@ const sidebarSections = [
   {
     title: 'Quick Access',
     items: [
-      { label: 'Active Accounts', icon: Building2, path: '/active-accounts' },
       { label: 'Sheets & Docs', icon: Table, path: '/sheets-and-docs' },
+      { label: 'Active Accounts', icon: Building2, path: '/active-accounts' },
       {
         label: 'Customer Call Log',
         icon: Phone,

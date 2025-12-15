@@ -16,11 +16,10 @@ export default function HomePage() {
         
         if (error) throw error
         
+        // Authenticated users go to Sheets & Docs, unauthenticated to login
         if (user) {
-          // User is authenticated, redirect to Active Accounts
-          router.push('/active-accounts')
+          router.push('/sheets-and-docs')
         } else {
-          // User is not authenticated, redirect to login
           router.push('/login')
         }
       } catch (error) {
