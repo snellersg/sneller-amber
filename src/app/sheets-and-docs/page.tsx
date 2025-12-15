@@ -49,7 +49,7 @@ const sections = [
         description: "Contains the data used to create and update winter service maps.",
       },
       {
-        title: "Pile Hauling and Relocating Rates",
+        title: "Snow Piling and Hauling Prices",
         url: "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0",
         description: "Rate sheet for hauling or relocating snow piles around sites and to dump locations.",
       },
