@@ -64,6 +64,11 @@ const sections = [
         description: "Notes and details recorded during snow events for follow-up and tracking.",
       },
       {
+        title: "Snow Pile Removal Master Doc",
+        url: "https://docs.google.com/spreadsheets/d/1Ccjc-G7sTADrnp7fa6KX-rmbIfulJOW0z9xohievZr4/edit?gid=1858114008#gid=1858114008",
+        description: "Master tracker for snow pile removal planning, scheduling, and execution.",
+      },
+      {
         title: "SP Renewals/Retentions",
         url: "https://docs.google.com/spreadsheets/d/1LRwLfKNUNuxr5LJ0P7ULn-96oA5TLuHI2dJkPwUiNWc/edit?gid=0#gid=0",
         description: "Tracks the status of winter renewals and retentions for all accounts.",
