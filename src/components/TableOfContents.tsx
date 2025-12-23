@@ -127,10 +127,10 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
         </button>
 
         {isOpen && (
-          <nav className="border-x border-b border-gray-200 dark:border-gray-600 rounded-b-lg p-3 bg-gray-50 dark:bg-gray-900 max-h-[60vh] overflow-y-auto">
+          <nav className="border-x border-b border-gray-200 dark:border-gray-600 rounded-b-lg p-3 bg-gray-50 dark:bg-gray-900 max-h-[60vh] overflow-y-auto custom-scrollbar">
             <ul className="space-y-1">
-              {headings.map((heading) => (
-                <li key={heading.id}>
+              {headings.map((heading, index) => (
+                <li key={`${heading.id}-${index}`}>
                   <button
                     onClick={() => scrollToHeading(heading.id)}
                     className={`text-left w-full px-2 py-1 rounded transition-colors cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 ${
@@ -163,10 +163,10 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
         <div className="px-4 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">On This Page</h4>
         </div>
-        <nav className="max-h-[calc(100vh-200px)] overflow-y-auto p-3">
+        <nav className="max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar p-3">
           <ul className="space-y-1">
-            {headings.map((heading) => (
-              <li key={heading.id}>
+            {headings.map((heading, index) => (
+              <li key={`${heading.id}-${index}`}>
                 <button
                   onClick={() => scrollToHeading(heading.id)}
                   className={`text-left w-full px-2 py-1 rounded transition-colors cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 ${

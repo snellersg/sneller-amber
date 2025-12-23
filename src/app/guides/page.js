@@ -114,28 +114,28 @@ const guideCategories = [
         title: 'Create a Construction Work Order (CWO)',
         description: 'Process for creating construction work orders in BossLM',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       },
       {
         slug: 'create-a-work-order',
         title: 'Create a Work Order (WO)',
         description: 'Standard work order creation and management procedures',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       },
       {
         slug: 'create-a-lawn-contract',
         title: 'Create a Lawn Contract',
         description: 'Complete process for lawn service contract creation and setup',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       },
       {
         slug: 'create-a-winter-contract',
         title: 'Create a Winter Contract',
         description: 'Winter service contract creation with service level specifications',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       }
     ]
   },
@@ -165,14 +165,14 @@ const guideCategories = [
         title: 'Creating/Editing LM & SP Maps',
         description: 'Map creation and editing procedures using SiteFotos platform',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       },
       {
         slug: 'create-tickets-for-ops',
         title: 'Create Tickets for Ops',
         description: 'Ticket creation workflow for operational requests and issues',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       }
     ]
   },
@@ -188,7 +188,7 @@ const guideCategories = [
         title: 'Submitting PO\'s',
         description: 'Purchase order submission process and approval workflows',
         updated: 'June 2025',
-        hasContent: false
+        hasContent: true
       }
     ]
   }
