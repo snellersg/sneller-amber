@@ -27,7 +27,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
       const mainContent = document.querySelector('main')
       if (!mainContent) return
 
-      const headingElements = mainContent.querySelectorAll('h2, h3')
+      const headingElements = mainContent.querySelectorAll('h1, h2, h3, h4, h5, h6')
       const headingArray = Array.from(headingElements)
         .filter((heading) => {
           const text = heading.textContent || ''
@@ -44,6 +44,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
           )
         })
         .map((heading, index) => {
+          // Use the existing ID from the element, don't generate new ones
           const id = heading.id || `heading-${index}`
           if (!heading.id) {
             heading.id = id
@@ -59,37 +60,57 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
           }
         })
 
+      console.log('Found headings:', headingArray) // Debug log
+      console.log('Found headings:', headingArray) // Debug log
+      
+      // Temporary debug log for L10 guide
+      if (window.location.pathname.includes('use-the-l10-document')) {
+        console.log('L10 Guide - Found headings:', headingArray)
+        console.log('L10 Guide - All heading elements before filtering:', Array.from(mainContent.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(h => ({ tag: h.tagName, text: h.textContent, id: h.id })))
+      }
+      
       setHeadings(headingArray)
     }
 
-    // Update headings when pathname changes
-    const timeoutId = setTimeout(updateHeadings, 100)
+    // Update headings when pathname changes with a longer delay for React Markdown to render
+    const timeoutId = setTimeout(updateHeadings, 500)
 
     return () => clearTimeout(timeoutId)
   }, [pathname])
 
   useEffect(() => {
+    if (headings.length === 0) return
+
     const handleScroll = () => {
-      if (headings.length === 0) return
+      const scrollTop = window.scrollY + 120 // Offset for fixed header
+      let currentActiveId = ''
 
-      const scrollPosition = window.scrollY + 80 // Match the scroll offset
-      let foundActiveId = ''
-
+      // Find which section we're currently in
       for (let i = headings.length - 1; i >= 0; i--) {
         const element = document.getElementById(headings[i].id)
-        if (element && element.offsetTop <= scrollPosition) {
-          foundActiveId = headings[i].id
-          break
+        if (element) {
+          if (element.offsetTop <= scrollTop) {
+            currentActiveId = headings[i].id
+            break
+          }
         }
       }
 
-      if (foundActiveId !== activeId) {
-        setActiveId(foundActiveId)
+      // If no heading is above scroll position, use the first one
+      if (!currentActiveId && headings.length > 0) {
+        currentActiveId = headings[0].id
+      }
+
+      if (currentActiveId && currentActiveId !== activeId) {
+        setActiveId(currentActiveId)
       }
     }
 
-    window.addEventListener('scroll', handleScroll)
-    handleScroll() // Set initial active heading
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    // Set initial heading
+    handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [headings, activeId])

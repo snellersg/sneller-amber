@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import TableOfContents from '@/components/TableOfContents'
@@ -21,6 +21,7 @@ export default function GuidePage() {
   const params = useParams()
   const router = useRouter()
   const slug = params.slug as string
+  const headingCounterRef = useRef<{[key: string]: number}>({})
   
   const [isEditing, setIsEditing] = useState(false)
   const [content, setContent] = useState('')
@@ -31,6 +32,27 @@ export default function GuidePage() {
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [guideExists, setGuideExists] = useState(false)
+
+  // Reset heading counter when content changes
+  useEffect(() => {
+    headingCounterRef.current = {}
+  }, [content])
+
+  const generateUniqueId = (text: string) => {
+    const baseId = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
+    
+    // Track how many times we've seen this base ID
+    if (headingCounterRef.current[baseId] === undefined) {
+      headingCounterRef.current[baseId] = 0
+    } else {
+      headingCounterRef.current[baseId]++
+    }
+    
+    // Return unique ID with counter suffix if needed
+    return headingCounterRef.current[baseId] === 0 
+      ? baseId 
+      : `${baseId}-${headingCounterRef.current[baseId]}`
+  }
 
   useEffect(() => {
     // Check user admin status
@@ -316,14 +338,14 @@ Add your process steps and guidelines here.
               onClick={() => router.back()}
               className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="w-4 h-4" />
               Back to Guides
             </button>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border dark:border-gray-700 p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Loading Guide...</h1>
+          <div className="p-8 text-center bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="w-8 h-8 mx-auto mb-4 border-b-2 rounded-full animate-spin border-primary"></div>
+            <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Loading Guide...</h1>
             <p className="text-gray-600 dark:text-gray-400">Please wait while we load the guide content.</p>
           </div>
         </div>
@@ -340,17 +362,17 @@ Add your process steps and guidelines here.
               onClick={() => router.back()}
               className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="w-4 h-4" />
               Back to Guides
             </button>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border dark:border-gray-700 p-8 text-center">
-            <h1 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error Loading Guide</h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+          <div className="p-8 text-center bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <h1 className="mb-4 text-2xl font-bold text-red-600 dark:text-red-400">Error Loading Guide</h1>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
             >
               Try Again
             </button>
@@ -369,13 +391,13 @@ Add your process steps and guidelines here.
               onClick={() => router.back()}
               className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="w-4 h-4" />
               Back to Guides
             </button>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border dark:border-gray-700 p-8 text-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Guide Not Found</h1>
+          <div className="p-8 text-center bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <h1 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">Guide Not Found</h1>
             <p className="text-gray-600 dark:text-gray-400">The requested guide could not be found.</p>
           </div>
         </div>
@@ -392,7 +414,7 @@ Add your process steps and guidelines here.
             onClick={() => router.back()}
             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="w-4 h-4" />
             Back to Guides
           </button>
 
@@ -405,7 +427,7 @@ Add your process steps and guidelines here.
                     onClick={handleCancel}
                     className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="w-4 h-4" />
                     Cancel
                   </button>
                   <button
@@ -413,13 +435,13 @@ Add your process steps and guidelines here.
                     disabled={saving}
                     className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
                   >
-                    <Save className="h-4 w-4" />
+                    <Save className="w-4 h-4" />
                     {saving ? 'Saving...' : 'Save'}
                   </button>
                 </>
               ) : null}
               
-              <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+              <div className="flex items-center p-1 bg-gray-100 rounded-lg dark:bg-gray-700">
                 <button
                   onClick={() => setIsEditing(false)}
                   className={`inline-flex items-center gap-2 px-2 py-1 text-xs rounded-md transition-colors ${
@@ -428,7 +450,7 @@ Add your process steps and guidelines here.
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
                   }`}
                 >
-                  <Eye className="h-3 w-3" />
+                  <Eye className="w-3 h-3" />
                   View
                 </button>
                 <button
@@ -439,7 +461,7 @@ Add your process steps and guidelines here.
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
                   }`}
                 >
-                  <Edit3 className="h-3 w-3" />
+                  <Edit3 className="w-3 h-3" />
                   Edit
                 </button>
               </div>
@@ -449,7 +471,7 @@ Add your process steps and guidelines here.
 
         {/* Content */}
         <main>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border dark:border-gray-700">
+          <div className="bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
           {isEditing && isAdmin ? (
             /* Edit Mode */
             <div className="p-6">
@@ -465,51 +487,51 @@ Add your process steps and guidelines here.
             </div>
           ) : (
             /* View Mode */
-            <div className="prose prose-gray dark:prose-invert max-w-none p-6">
+            <div className="p-6 prose prose-gray dark:prose-invert max-w-none">
               <ReactMarkdown
                 components={{
                   h1: ({children}) => {
                     const text = children?.toString() || ''
-                    const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
-                    return <h1 id={id} className="text-3xl font-bold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">{children}</h1>
+                    const id = generateUniqueId(text)
+                    return <h1 id={id} className="pb-2 mb-6 text-3xl font-bold text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">{children}</h1>
                   },
                   h2: ({children}) => {
                     const text = children?.toString() || ''
-                    const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
-                    return <h2 id={id} className="text-2xl font-semibold text-gray-900 dark:text-white mb-4 mt-8">{children}</h2>
+                    const id = generateUniqueId(text)
+                    return <h2 id={id} className="mt-8 mb-4 text-2xl font-semibold text-gray-900 dark:text-white">{children}</h2>
                   },
                   h3: ({children}) => {
                     const text = children?.toString() || ''
-                    const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
-                    return <h3 id={id} className="text-xl font-semibold text-gray-900 dark:text-white mb-3 mt-6">{children}</h3>
+                    const id = generateUniqueId(text)
+                    return <h3 id={id} className="mt-6 mb-3 text-xl font-semibold text-gray-900 dark:text-white">{children}</h3>
                   },
                   h4: ({children}) => {
                     const text = children?.toString() || ''
-                    const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
-                    return <h4 id={id} className="text-lg font-semibold text-gray-900 dark:text-white mb-2 mt-4">{children}</h4>
+                    const id = generateUniqueId(text)
+                    return <h4 id={id} className="mt-4 mb-2 text-lg font-semibold text-gray-900 dark:text-white">{children}</h4>
                   },
                   h5: ({children}) => {
                     const text = children?.toString() || ''
-                    const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
-                    return <h5 id={id} className="text-base font-semibold text-gray-900 dark:text-white mb-2 mt-4">{children}</h5>
+                    const id = generateUniqueId(text)
+                    return <h5 id={id} className="mt-4 mb-2 text-base font-semibold text-gray-900 dark:text-white">{children}</h5>
                   },
                   h6: ({children}) => {
                     const text = children?.toString() || ''
-                    const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').trim()
-                    return <h6 id={id} className="text-sm font-semibold text-gray-900 dark:text-white mb-2 mt-4">{children}</h6>
+                    const id = generateUniqueId(text)
+                    return <h6 id={id} className="mt-4 mb-2 text-sm font-semibold text-gray-900 dark:text-white">{children}</h6>
                   },
-                  p: ({children}) => <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{children}</p>,
-                  ul: ({children}) => <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-1">{children}</ul>,
-                  ol: ({children}) => <ol className="list-decimal list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-1">{children}</ol>,
+                  p: ({children}) => <p className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300">{children}</p>,
+                  ul: ({children}) => <ul className="mb-4 space-y-1 text-gray-700 list-disc list-inside dark:text-gray-300">{children}</ul>,
+                  ol: ({children}) => <ol className="mb-4 space-y-1 text-gray-700 list-decimal list-inside dark:text-gray-300">{children}</ol>,
                   li: ({children}) => <li className="ml-4">{children}</li>,
                   strong: ({children}) => <strong className="font-semibold text-gray-900 dark:text-white">{children}</strong>,
                   em: ({children}) => <em className="italic text-gray-700 dark:text-gray-300">{children}</em>,
                   code: ({children}) => <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-gray-900 dark:text-gray-100">{children}</code>,
-                  pre: ({children}) => <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm font-mono text-gray-900 dark:text-gray-100 mb-4">{children}</pre>,
-                  blockquote: ({children}) => <blockquote className="border-l-4 border-primary pl-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mb-4">{children}</blockquote>,
-                  table: ({children}) => <div className="overflow-x-auto mb-4"><table className="w-full border-collapse border border-gray-300 dark:border-gray-600">{children}</table></div>,
-                  th: ({children}) => <th className="border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-4 py-2 text-left font-semibold text-gray-900 dark:text-white">{children}</th>,
-                  td: ({children}) => <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">{children}</td>
+                  pre: ({children}) => <pre className="p-4 mb-4 overflow-x-auto font-mono text-sm text-gray-900 bg-gray-100 rounded-lg dark:bg-gray-800 dark:text-gray-100">{children}</pre>,
+                  blockquote: ({children}) => <blockquote className="py-2 pl-4 mb-4 text-gray-700 border-l-4 border-primary bg-gray-50 dark:bg-gray-800 dark:text-gray-300">{children}</blockquote>,
+                  table: ({children}) => <div className="mb-4 overflow-x-auto"><table className="w-full border border-collapse border-gray-300 dark:border-gray-600">{children}</table></div>,
+                  th: ({children}) => <th className="px-4 py-2 font-semibold text-left text-gray-900 bg-gray-100 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">{children}</th>,
+                  td: ({children}) => <td className="px-4 py-2 text-gray-700 border border-gray-300 dark:border-gray-600 dark:text-gray-300">{children}</td>
                 }}
               >
                 {content}

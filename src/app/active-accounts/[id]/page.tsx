@@ -34,12 +34,6 @@ interface Account {
   lm_expiration_date?: string
   wr_maps_url?: string
   lm_map_url?: string
-  wr_contract_pdf_url?: string
-  wr_contract_pdf_name?: string
-  wr_contract_uploaded_at?: string
-  lm_contract_pdf_url?: string
-  lm_contract_pdf_name?: string
-  lm_contract_uploaded_at?: string
 }
 
 export default function PropertyDetailPage() {
@@ -51,24 +45,10 @@ export default function PropertyDetailPage() {
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
 
-  // Editing state (only available for admins)
+  // Editing state
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editedAccount, setEditedAccount] = useState<Account | null>(null);
-
-  // File upload state
-  const [uploadingWR, setUploadingWR] = useState(false);
-  const [uploadingLM, setUploadingLM] = useState(false);
-  const [deletingWR, setDeletingWR] = useState(false);
-  const [deletingLM, setDeletingLM] = useState(false);
-  const [showWRViewer, setShowWRViewer] = useState(false);
-  const [showLMViewer, setShowLMViewer] = useState(false);
-  const [wrSignedUrl, setWrSignedUrl] = useState('');
-  const [lmSignedUrl, setLmSignedUrl] = useState('');
-
-  // File input refs
-  const wrFileInputRef = useRef<HTMLInputElement>(null);
-  const lmFileInputRef = useRef<HTMLInputElement>(null);
 
   const accountId = params.id as string
 
@@ -565,9 +545,8 @@ export default function PropertyDetailPage() {
                 </a>
               )}
               
-              {/* Edit/Save/Delete Buttons - Admin Only */}
-              {isAdmin && (
-                <>
+              {/* Edit/Save/Delete Buttons */}
+              <>
                   {isEditing ? (
                     <>
                       <button
@@ -600,22 +579,21 @@ export default function PropertyDetailPage() {
                     <>
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="inline-flex items-center justify-center px-2 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                        title="Edit Account"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
                       >
                         <Edit2 className="h-3 w-3" />
+                        Edit Account
                       </button>
                       <button
                         onClick={handleDelete}
-                        className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                        title="Delete Account"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium"
                       >
                         <Trash2 className="h-3 w-3" />
+                        Delete Account
                       </button>
                     </>
                   )}
-                </>
-              )}
+              </>
             </div>
           </div>
         </div>
@@ -959,86 +937,6 @@ export default function PropertyDetailPage() {
                       <p className="text-sm text-gray-500 dark:text-gray-400 italic">No maps available</p>
                     )}
                   </div>
-
-                  {/* WR Contract PDF */}
-                  <div className="p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                        <FileSearch className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                      </div>
-                      <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">WR Contract</span>
-                    </div>
-                    {account.wr_contract_pdf_url ? (
-                      <div className="space-y-3">
-                        <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
-                            {account.wr_contract_pdf_name || 'Contract.pdf'}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Uploaded {account.wr_contract_uploaded_at ? new Date(account.wr_contract_uploaded_at).toLocaleDateString() : 'Unknown'}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            onClick={generateWRSignedUrl}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium"
-                          >
-                            <Eye className="h-3 w-3" />
-                            View PDF
-                          </button>
-                          <button
-                            onClick={handleWRDownload}
-                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                            title="Download"
-                          >
-                            <Download className="h-3 w-3" />
-                          </button>
-                          {isAdmin && (
-                            <button
-                              onClick={handleWRDelete}
-                              disabled={deletingWR}
-                              className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
-                              title={deletingWR ? "Deleting..." : "Delete"}
-                            >
-                              {deletingWR ? (
-                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600"></div>
-                              ) : (
-                                <Trash2 className="h-3 w-3" />
-                              )}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <input
-                          ref={wrFileInputRef}
-                          type="file"
-                          accept="application/pdf"
-                          onChange={handleWRUpload}
-                          className="hidden"
-                        />
-                        <button
-                          onClick={() => wrFileInputRef.current?.click()}
-                          disabled={uploadingWR}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
-                        >
-                          {uploadingWR ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                              Uploading...
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="h-3 w-3" />
-                              Upload Contract
-                            </>
-                          )}
-                        </button>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">PDF files only</p>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
 
@@ -1211,141 +1109,12 @@ export default function PropertyDetailPage() {
                       <p className="text-sm text-gray-500 dark:text-gray-400 italic">No maps available</p>
                     )}
                   </div>
-
-                  {/* LM Contract PDF */}
-                  <div className="p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                        <FileSearch className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                      </div>
-                      <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">LM Contract</span>
-                    </div>
-                    {account.lm_contract_pdf_url ? (
-                      <div className="space-y-3">
-                        <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
-                            {account.lm_contract_pdf_name || 'Contract.pdf'}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Uploaded {account.lm_contract_uploaded_at ? new Date(account.lm_contract_uploaded_at).toLocaleDateString() : 'Unknown'}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            onClick={generateLMSignedUrl}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium"
-                          >
-                            <Eye className="h-3 w-3" />
-                            View PDF
-                          </button>
-                          <button
-                            onClick={handleLMDownload}
-                            className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                            title="Download"
-                          >
-                            <Download className="h-3 w-3" />
-                          </button>
-                          {isAdmin && (
-                            <button
-                              onClick={handleLMDelete}
-                              disabled={deletingLM}
-                              className="inline-flex items-center justify-center px-2 py-1.5 text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
-                              title={deletingLM ? "Deleting..." : "Delete"}
-                            >
-                              {deletingLM ? (
-                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600"></div>
-                              ) : (
-                                <Trash2 className="h-3 w-3" />
-                              )}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <input
-                          ref={lmFileInputRef}
-                          type="file"
-                          accept="application/pdf"
-                          onChange={handleLMUpload}
-                          className="hidden"
-                        />
-                        <button
-                          onClick={() => lmFileInputRef.current?.click()}
-                          disabled={uploadingLM}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
-                        >
-                          {uploadingLM ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                              Uploading...
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="h-3 w-3" />
-                              Upload Contract
-                            </>
-                          )}
-                        </button>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">PDF files only</p>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* PDF Viewers */}
-      {showWRViewer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 max-w-4xl max-h-[90vh] w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">WR Contract PDF</h3>
-              <button
-                onClick={() => {
-                  setShowWRViewer(false);
-                  setWrSignedUrl('');
-                }}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <iframe
-              src={wrSignedUrl}
-              className="w-full h-[70vh] border border-gray-300 dark:border-gray-600 rounded"
-              title="WR Contract PDF"
-            />
-          </div>
-        </div>
-      )}
-
-      {showLMViewer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 max-w-4xl max-h-[90vh] w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">LM Contract PDF</h3>
-              <button
-                onClick={() => {
-                  setShowLMViewer(false);
-                  setLmSignedUrl('');
-                }}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <iframe
-              src={lmSignedUrl}
-              className="w-full h-[70vh] border border-gray-300 dark:border-gray-600 rounded"
-              title="LM Contract PDF"
-            />
-          </div>
-        </div>
-      )}
     </Layout>
   );
 }

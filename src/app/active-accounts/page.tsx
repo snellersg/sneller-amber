@@ -675,16 +675,14 @@ export default function ActiveAccountsPage() {
 
             {/* Buttons - Add Account (Admin), Filters and Refresh */}
             <div className="flex gap-2">
-              {/* Add Account button - Admin Only */}
-              {isAdmin && (
-                <button
-                  onClick={() => setShowAddModal(true)}
-                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  <span>Add Account</span>
-                </button>
-              )}
+              {/* Add Account button */}
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add Account</span>
+              </button>
 
               {/* Filter toggle */}
               <button

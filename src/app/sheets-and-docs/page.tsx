@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ExternalLink, HelpCircle } from 'lucide-react'
 import Layout from '../../components/Layout'
+import { Badge } from '../../components/ui/badge'
 
 const sections = [
   {
@@ -33,6 +34,12 @@ const sections = [
   {
     title: "WR",
     items: [
+      {
+        title: "25/26 Data for Customer Reporting",
+        url: "https://lookerstudio.google.com/u/0/reporting/935959fe-0330-4a4d-a088-7ceb4b0757e2/page/p_aywo571rod",
+        description: "Looker Studio dashboard with data for 2025/2026 customer reporting and analytics.",
+        badge: "NEW",
+      },
       {
         title: "ACM/Steve Snow Convo Cheat Sheet",
         url: "https://docs.google.com/spreadsheets/d/1LHZlUNa7WHBkcgjHm9fW-MDlvpxMpHlBAm5_s0s3O6M/edit?gid=1070268231#gid=1070268231",
@@ -166,6 +173,14 @@ export default function SheetsDocsPage() {
                     >
                       {/* Title and Info */}
                       <div className="flex items-center flex-1 min-w-0 gap-3">
+                        {item.badge && (
+                          <Badge
+                            variant="destructive"
+                            className="bg-amber-500 text-white hover:bg-amber-600 text-xs px-2 py-1"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
                         <span className="text-sm font-medium text-gray-900 break-words dark:text-white">
                           {item.title}
                         </span>

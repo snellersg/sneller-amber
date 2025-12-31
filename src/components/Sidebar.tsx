@@ -44,13 +44,17 @@ const sidebarSections = [
         icon: Phone,
         external: true,
         href: 'https://docs.google.com/a/snellerslandscaping.com/forms/d/e/1FAIpQLSeXUYSgm1wqnY2nrTV2jmprBaikGoVcsOskGfEyrIQGiQk02w/viewform'
-      },
-      {
-        label: 'Damage Report',
-        icon: AlertTriangle,
-        external: true,
-        href: 'https://docs.google.com/forms/d/e/1FAIpQLSeu_A3tDfCg9wiLiFVbm09DygZ3IjQJY3Bus3ZDnCt9GqzV3A/viewform'
       }
+    ]
+  },
+  {
+    title: 'Knowledge',
+    items: [
+      { label: 'Process Guides', icon: ListTodo, path: '/guides' },
+      { label: 'Core Processes', icon: Settings, path: '/core-processes' },
+      { label: 'Core Services', icon: Shield, path: '/core-services' },
+      { label: 'Add-On Services', icon: Plus, path: '/add-on-services' },
+      { label: 'Product Info', icon: FlaskConical, path: '/product-knowledge' }
     ]
   },
   {
@@ -62,25 +66,7 @@ const sidebarSections = [
         icon: Waypoints,
         external: true,
         href: 'https://sites.google.com/snellerslandscaping.com/opshub/home'
-      },
-      { label: 'Cheatsheets & PDFs', icon: File, path: '/pdf-templates', comingSoon: true }
-    ]
-  },
-  {
-    title: 'Knowledge',
-    items: [
-      { label: 'Core Processes', icon: Settings, path: '/core-processes' },
-      { label: 'Core Services', icon: Shield, path: '/core-services' },
-      { label: 'Add-On Services', icon: Plus, path: '/add-on-services' },
-      { label: 'Product Info', icon: FlaskConical, path: '/product-knowledge' }
-    ]
-  },
-  {
-    title: 'Training',
-    items: [
-      { label: 'Process Guides', icon: ListTodo, path: '/guides' },
-      { label: 'Practice Workflows', icon: Target, path: '/practice-workflows', comingSoon: true },
-      { label: 'Armstrong Coaching', icon: User, path: '/kirk-armstrong', comingSoon: true }
+      }
     ]
   }
 ]
