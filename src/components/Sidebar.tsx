@@ -212,21 +212,6 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
                   if (item.path) {
                     const isItemActive = isActive(item.path)
                     
-                    // Coming Soon items - non-clickable and grayed out
-                    if (item.comingSoon) {
-                      return (
-                        <li key={item.label} className="relative">
-                          <div className="flex items-center space-x-3 px-3 py-2 text-sm rounded-md cursor-not-allowed opacity-60">
-                            <Icon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                            <span className="text-gray-500 dark:text-gray-400">{item.label}</span>
-                            <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
-                              Soon
-                            </span>
-                          </div>
-                        </li>
-                      )
-                    }
-                    
                     // Regular clickable items
                     return (
                       <li key={item.label} className="relative">
