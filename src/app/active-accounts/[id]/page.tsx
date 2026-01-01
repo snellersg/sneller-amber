@@ -147,7 +147,8 @@ export default function PropertyDetailPage() {
           lm_district: editedAccount.lm_district,
           lm_expiration_date: editedAccount.lm_expiration_date,
           lm_customer: editedAccount.lm_customer,
-          irrigation_customer: editedAccount.irrigation_customer
+          irrigation_customer: editedAccount.irrigation_customer,
+          account_notes: editedAccount.account_notes
         })
         .eq('id', accountId);
 
