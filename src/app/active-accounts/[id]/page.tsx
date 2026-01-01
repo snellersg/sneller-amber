@@ -34,6 +34,7 @@ interface Account {
   lm_expiration_date?: string
   wr_maps_url?: string
   lm_map_url?: string
+  account_notes?: string
 }
 
 export default function PropertyDetailPage() {
@@ -843,6 +844,35 @@ export default function PropertyDetailPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Notes Section */}
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-600 rounded-lg mb-6">
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-md">
+                <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notes</h3>
+            </div>
+            {isEditing ? (
+              <textarea
+                value={editedAccount?.account_notes || ''}
+                onChange={(e) => setEditedAccount({ ...editedAccount!, account_notes: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary resize-vertical"
+                placeholder="Add notes about this property..."
+                rows={6}
+              />
+            ) : (
+              <div className="text-gray-700 dark:text-gray-300">
+                {account.account_notes ? (
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed">{account.account_notes}</div>
+                ) : (
+                  <p className="text-gray-500 dark:text-gray-400 italic text-sm">No notes added yet</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
