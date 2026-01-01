@@ -17,7 +17,7 @@ const products = [
         ],
         keyProperties: [
           "Effective melting temperature: Down to 5°F (-15°C)",
-          "Optimal performance: Around 15°F (-9°C)",
+          "Optimal performance: Over 15°F (-9°C)",
           "Source: Underground mines in Michigan, Ohio, Ontario",
           "Appearance: White to off-white crystalline rock"
         ]
@@ -34,9 +34,9 @@ const products = [
         ],
         keyProperties: [
           "Effective melting temperature: Down to -22°F (-30°C)",
-          "Melts 18% more ice vs. rock salt at 14°F",
-          "Melts 88% more ice at -4°F",
-          "Melts 100% more ice at -22°F",
+          "  Melts 18% more ice vs. rock salt at 14°F",
+          "  Melts 88% more ice at -4°F",
+          "  Melts 100% more ice at -22°F",
           "Uniform ¼\" granule size for consistent application",
           "Homogenous infusion (not coated or blended)",
           "Minimal tracking and residue"
@@ -98,7 +98,7 @@ export default function ProductKnowledgePage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+          <h1 className="mb-4 text-3xl font-bold text-gray-900 uppercase dark:text-white">
             Product Info
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -110,16 +110,16 @@ export default function ProductKnowledgePage() {
         <div className="space-y-16">
           {products.map((category, catIdx) => (
             <div key={catIdx}>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase mb-8 border-b border-gray-200 dark:border-gray-700 pb-2">
+              <h2 className="pb-2 mb-8 text-2xl font-bold text-gray-900 uppercase border-b border-gray-200 dark:text-white dark:border-gray-700">
                 {category.category}
               </h2>
 
               <div className="space-y-12">
                 {category.items.map((product, prodIdx) => (
-                  <section key={prodIdx} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                  <section key={prodIdx} className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
                     {/* Product Title and Badge */}
                     <div className="flex items-center gap-3 mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white uppercase">
+                      <h3 className="text-xl font-semibold text-gray-900 uppercase dark:text-white">
                         {product.title}
                       </h3>
                       {product.badge && (
@@ -137,14 +137,14 @@ export default function ProductKnowledgePage() {
 
                     {/* Product Name */}
                     {product.productName && (
-                      <p className="text-base mb-3 text-gray-900 dark:text-white">
+                      <p className="mb-3 text-base text-gray-900 dark:text-white">
                         <strong>Product Name:</strong> {product.productName}
                       </p>
                     )}
 
                     {/* Description */}
                     {product.description && (
-                      <p className="text-gray-600 dark:text-gray-400 mb-6">
+                      <p className="mb-6 text-gray-600 dark:text-gray-400">
                         {product.description}
                       </p>
                     )}
@@ -152,20 +152,20 @@ export default function ProductKnowledgePage() {
                     {/* Composition Table */}
                     {product.composition && (
                       <div className="mb-6">
-                        <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                        <h4 className="mb-3 text-sm font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
                           Composition
                         </h4>
                         <div className="overflow-x-auto">
-                          <table className="min-w-full border-collapse border border-gray-300 dark:border-gray-600">
+                          <table className="min-w-full border border-collapse border-gray-300 dark:border-gray-600">
                             <thead>
                               <tr className="bg-gray-50 dark:bg-gray-700">
-                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-medium text-gray-900 dark:text-white">
+                                <th className="px-4 py-2 text-sm font-medium text-left text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
                                   Component
                                 </th>
-                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-medium text-gray-900 dark:text-white">
+                                <th className="px-4 py-2 text-sm font-medium text-left text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
                                   Percentage
                                 </th>
-                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-medium text-gray-900 dark:text-white">
+                                <th className="px-4 py-2 text-sm font-medium text-left text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
                                   Function
                                 </th>
                               </tr>
@@ -173,13 +173,13 @@ export default function ProductKnowledgePage() {
                             <tbody>
                               {product.composition.map((comp, compIdx) => (
                                 <tr key={compIdx}>
-                                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900 dark:text-white">
+                                  <td className="px-4 py-2 text-sm text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
                                     {(comp as any).component || (comp as any).nutrient}
                                   </td>
-                                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900 dark:text-white">
+                                  <td className="px-4 py-2 text-sm text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
                                     {comp.percentage}
                                   </td>
-                                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
+                                  <td className="px-4 py-2 text-sm text-gray-600 border border-gray-300 dark:border-gray-600 dark:text-gray-400">
                                     {comp.function}
                                   </td>
                                 </tr>
@@ -193,16 +193,20 @@ export default function ProductKnowledgePage() {
                     {/* Key Properties */}
                     {product.keyProperties && (
                       <div className="mb-6">
-                        <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                        <h4 className="mb-2 text-sm font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
                           Key Properties
                         </h4>
                         <ul className="space-y-2">
-                          {product.keyProperties.map((prop, propIdx) => (
-                            <li key={propIdx} className="flex items-start">
-                              <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
-                              <span className="text-gray-700 dark:text-gray-300">{prop}</span>
-                            </li>
-                          ))}
+                          {product.keyProperties.map((prop, propIdx) => {
+                            const isIndented = prop.startsWith('  ');
+                            const displayText = isIndented ? prop.substring(2) : prop;
+                            return (
+                              <li key={propIdx} className={`flex items-start ${isIndented ? 'ml-6' : ''}`}>
+                                <div className="w-2 h-2 mt-2 mr-3 rounded-full bg-primary shrink-0"></div>
+                                <span className="text-gray-700 dark:text-gray-300">{displayText}</span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     )}
@@ -210,16 +214,16 @@ export default function ProductKnowledgePage() {
                     {/* Program Rounds */}
                     {(product as any).rounds && (
                       <div className="mb-6">
-                        <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                        <h4 className="mb-3 text-sm font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
                           Application Schedule
                         </h4>
                         <div className="space-y-3">
                           {(product as any).rounds.map((round: any, roundIdx: number) => (
-                            <div key={roundIdx} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                              <h5 className="font-semibold text-gray-900 dark:text-white mb-2">
+                            <div key={roundIdx} className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                              <h5 className="mb-2 font-semibold text-gray-900 dark:text-white">
                                 {round.round}
                               </h5>
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                                 <strong>Product:</strong> {round.fertilizer}
                               </p>
                               <p className="text-sm text-gray-600 dark:text-gray-400">
