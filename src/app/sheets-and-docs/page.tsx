@@ -20,7 +20,7 @@ const sections = [
         description: "Living record of positive feedback received about our services and operations team.",
       },
       {
-        title: "Customer Master List",
+        title: "Customer Master List (CML)",
         url: "https://docs.google.com/spreadsheets/d/1foWuc4sUsoP8lNTq5dVULEQ5iTlLG9jVb1o7EzYJ77w/edit?gid=1491987735#gid=1491987735",
         description: "Master spreadsheet containing detailed information on all current and former accounts.",
       },
@@ -116,7 +116,7 @@ const sections = [
         description: "Contains helpful links and key metrics used for bidding new property enhancement opportunities.",
       },
       {
-        title: "Property Estimation Sheet",
+        title: "Property Estimation Sheet (PES)",
         url: "https://docs.google.com/spreadsheets/d/1aEdgfF3gneoxxnxJngI6siX9H7fOYjaonrH8ue9HJW8/edit?gid=960469792#gid=960469792",
         description: "Used to estimate lawn maintenance pricing and provides the figures needed for entry into BossLM.",
       }
@@ -176,7 +176,7 @@ export default function SheetsDocsPage() {
                         {item.badge && (
                           <Badge
                             variant="destructive"
-                            className="bg-amber-500 text-white hover:bg-amber-600 text-xs px-2 py-1"
+                            className="px-2 py-1 text-xs text-white bg-amber-500 hover:bg-amber-600"
                           >
                             {item.badge}
                           </Badge>
