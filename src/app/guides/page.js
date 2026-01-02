@@ -173,6 +173,13 @@ const guideCategories = [
         description: 'Ticket creation workflow for operational requests and issues',
         updated: 'June 2025',
         hasContent: true
+      },
+      {
+        slug: 'working-through-lm-renewals',
+        title: 'Working Through LM Renewals',
+        description: 'Complete process for managing lawn maintenance contract renewals',
+        updated: 'January 2026',
+        hasContent: true
       }
     ]
   },
@@ -200,7 +207,7 @@ export default function GuidesPage() {
       <div className="space-y-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+          <h1 className="mb-4 text-3xl font-bold text-gray-900 uppercase dark:text-white">
             Process Guides
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -217,7 +224,7 @@ export default function GuidesPage() {
               <div key={category.title} className="space-y-4">
                 {/* Category Header */}
                 <div className="pb-3 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase mb-2">
+                  <h2 className="mb-2 text-2xl font-bold text-gray-900 uppercase dark:text-white">
                     {category.title}
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300">
@@ -226,16 +233,16 @@ export default function GuidesPage() {
                 </div>
 
                 {/* Guides Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {category.guides.map((guide) => (
-                    <Card key={guide.slug} className="h-full flex flex-col">
+                    <Card key={guide.slug} className="flex flex-col h-full">
                       <CardHeader className="flex-shrink-0">
                         <div className="space-y-3">
                           <CardTitle className="leading-snug">
                             {guide.title}
                           </CardTitle>
                           <div className="flex items-center gap-2">
-                            <Calendar className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                            <Calendar className="flex-shrink-0 w-3 h-3 text-gray-400" />
                             <span className="text-xs text-gray-500 dark:text-gray-400">
                               Updated {guide.updated}
                             </span>
@@ -243,7 +250,7 @@ export default function GuidesPage() {
                         </div>
                       </CardHeader>
 
-                      <CardContent className="flex-1 flex flex-col justify-between space-y-3">
+                      <CardContent className="flex flex-col justify-between flex-1 space-y-3">
                         <CardDescription className="flex-1">
                           {guide.description}
                         </CardDescription>
@@ -253,13 +260,13 @@ export default function GuidesPage() {
                             href={`/guides/${guide.slug}`}
                             className="w-full mt-auto"
                           >
-                            <FileText className="h-3 w-3" />
+                            <FileText className="w-3 h-3" />
                             View Guide
-                            <ArrowRight className="h-3 w-3" />
+                            <ArrowRight className="w-3 h-3" />
                           </Button>
                         ) : (
                           <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
-                            <Construction className="h-3 w-3" />
+                            <Construction className="w-3 h-3" />
                             Under Development
                           </div>
                         )}
@@ -273,11 +280,11 @@ export default function GuidesPage() {
         </div>
 
         {/* Footer Note */}
-        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="p-4 text-center border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800/50 dark:border-gray-700">
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
             Need a New Guide?
           </h3>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
+          <p className="mb-4 text-gray-700 dark:text-gray-300">
             If you need a process guide that doesn't exist yet, or have suggestions for improvements,
             please reach out to brendon.dalaba@snellersg.com or submit a request through Asana.
           </p>

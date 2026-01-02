@@ -122,6 +122,7 @@ export default function GuidePage() {
               'create-a-winter-contract': 'Create a Winter Contract',
               'measure-maps-in-sitefotos': 'Creating/Editing LM & SP Maps',
               'create-tickets-for-ops': 'Create Tickets for Ops',
+              'working-through-lm-renewals': 'Working Through LM Renewals',
               'submitting-pos': 'Submitting PO\'s'
             }
 
@@ -183,6 +184,7 @@ Add your process steps and guidelines here.
       'create-a-winter-contract': 'Create a Winter Contract',
       'measure-maps-in-sitefotos': 'Creating/Editing LM & SP Maps',
       'create-tickets-for-ops': 'Create Tickets for Ops',
+      'working-through-lm-renewals': 'Working Through LM Renewals',
       'submitting-pos': 'Submitting PO\'s'
     }
 
@@ -482,7 +484,7 @@ Add your process steps and guidelines here.
                 placeholder="Enter markdown content..."
               />
               <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-                Use Markdown formatting. Preview your changes by switching to View mode.
+                Use <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Markdown formatting</a>. Preview your changes by switching to View mode.
               </div>
             </div>
           ) : (
@@ -526,8 +528,9 @@ Add your process steps and guidelines here.
                   li: ({children}) => <li className="ml-4">{children}</li>,
                   strong: ({children}) => <strong className="font-semibold text-gray-900 dark:text-white">{children}</strong>,
                   em: ({children}) => <em className="italic text-gray-700 dark:text-gray-300">{children}</em>,
-                  code: ({children}) => <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-gray-900 dark:text-gray-100">{children}</code>,
-                  pre: ({children}) => <pre className="p-4 mb-4 overflow-x-auto font-mono text-sm text-gray-900 bg-gray-100 rounded-lg dark:bg-gray-800 dark:text-gray-100">{children}</pre>,
+                  a: ({children, href}) => <a href={href} className="text-gray-700 dark:text-gray-300 underline hover:text-primary transition-colors" target={href?.startsWith('http') ? '_blank' : '_self'} rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}>{children}</a>,
+                  code: ({children}) => <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-primary">{children}</code>,
+                  pre: ({children}) => <pre className="p-4 mb-4 overflow-x-auto font-mono text-sm text-primary bg-gray-100 rounded-lg dark:bg-gray-800">{children}</pre>,
                   blockquote: ({children}) => <blockquote className="py-2 pl-4 mb-4 text-gray-700 border-l-4 border-primary bg-gray-50 dark:bg-gray-800 dark:text-gray-300">{children}</blockquote>,
                   table: ({children}) => <div className="mb-4 overflow-x-auto"><table className="w-full border border-collapse border-gray-300 dark:border-gray-600">{children}</table></div>,
                   th: ({children}) => <th className="px-4 py-2 font-semibold text-left text-gray-900 bg-gray-100 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">{children}</th>,
