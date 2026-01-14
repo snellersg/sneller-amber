@@ -28,7 +28,7 @@ export default function AuthCallback() {
         }
         
         setStatus('success')
-        router.push('/active-accounts')
+        router.push('/sheets-and-docs')
       } catch (err) {
         console.error('Auth callback error:', err)
         setStatus('error')

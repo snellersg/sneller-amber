@@ -75,7 +75,7 @@ export default function LoginPage() {
         if (signInError) throw signInError
 
         if (data.user) {
-          router.push('/active-accounts')
+          router.push('/sheets-and-docs')
         }
       }
     } catch (error) {

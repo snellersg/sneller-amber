@@ -18,7 +18,6 @@ export const config = {
   matcher: [
     '/admin/:path*',
     '/profile/:path*',
-    '/active-accounts/:path*',
     '/calculators/:path*',
     '/core-services/:path*',
     '/add-on-services/:path*',
