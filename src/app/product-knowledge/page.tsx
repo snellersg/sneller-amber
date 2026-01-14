@@ -116,7 +116,7 @@ export default function ProductKnowledgePage() {
 
               <div className="space-y-12">
                 {category.items.map((product, prodIdx) => (
-                  <section key={prodIdx} className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                  <section key={prodIdx} className="border-b border-gray-200 dark:border-gray-700 pb-8 last:border-b-0">
                     {/* Product Title and Badge */}
                     <div className="flex items-center gap-3 mb-4">
                       <h3 className="text-xl font-semibold text-gray-900 uppercase dark:text-white">

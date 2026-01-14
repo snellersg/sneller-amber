@@ -1,53 +1,138 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import Layout from '@/components/Layout';
-import { 
-  ArrowLeft, MapPin, User, Building, Building2, MapPinned, FileText, AudioLines, Globe, 
-  ExternalLink, Briefcase, ClipboardList, Snowflake, ShieldPlus, LocateFixed, CalendarX, 
-  MapIcon, FileSearch, Eye, Download, Trash2, Upload, Leaf, CalendarDays, Edit2, Save, X 
-} from 'lucide-react';
+// ARCHIVED: Active Accounts feature has been temporarily disabled
+// This page is archived and can be restored in the future if needed
+// Original implementation used Supabase 'active_accounts' table
 
-interface Account {
-  id: number
-  property_name: string
-  parent_account?: string
-  location?: string
-  account_manager?: string
-  customer_type?: string
-  im_service_level?: string
-  irrigation_customer?: boolean
-  wr_area?: string
-  lm_district?: string
-  whose_contract?: string
-  phone?: string
-  email?: string
-  address?: string
-  boss_url?: string
-  created_at?: string
-  updated_at?: string
-  wr_customer?: boolean
-  lm_customer?: boolean
-  wr_expiration_date?: string
-  lm_expiration_date?: string
-  wr_maps_url?: string
-  lm_map_url?: string
-  account_notes?: string
-}
+import { useRouter } from 'next/navigation';
+import Layout from '@/components/Layout';
+import { ArrowLeft, Archive } from 'lucide-react';
 
 export default function PropertyDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [account, setAccount] = useState<Account | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [user, setUser] = useState<any>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const router = useRouter();
 
-  // Editing state
-  const [isEditing, setIsEditing] = useState(false);
+  return (
+    <Layout>
+      <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-6 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5 mr-2" />
+          Back
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+            Account Details
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Detailed property and account information.
+          </p>
+        </div>
+
+        {/* Disabled Message */}
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-8 text-center">
+          <Archive className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+            Feature Temporarily Disabled
+          </h2>
+          <p className="text-yellow-700 dark:text-yellow-300 mb-4">
+            The Active Accounts feature has been temporarily disabled and archived. 
+            This helps reduce system resources while the feature is not in active use.
+          </p>
+          <p className="text-sm text-yellow-600 dark:text-yellow-400">
+            This feature can be restored in the future if needed.
+          </p>
+        </div>
+      </div>
+    </Layout>
+  )
+}
+
+/* ARCHIVED CODE - Original implementation with Supabase
+
+The original code used:
+- Supabase table: 'active_accounts'
+- Real-time account data fetching
+- Account editing and management
+- File upload/download functionality
+- Service tracking (WR/LM)
+- Account notes and audit logging
+
+Original file archived as: page_backup.tsx (already exists)
+
+*/
+
+// ARCHIVED: Active Accounts feature has been temporarily disabled
+// This page is archived and can be restored in the future if needed
+// Original implementation used Supabase 'active_accounts' table
+
+import { useRouter } from 'next/navigation';
+import Layout from '@/components/Layout';
+import { ArrowLeft, Archive } from 'lucide-react';
+
+export default function PropertyDetailPage() {
+  const router = useRouter();
+
+  return (
+    <Layout>
+      <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-6 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5 mr-2" />
+          Back
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+            Account Details
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Detailed property and account information.
+          </p>
+        </div>
+
+        {/* Disabled Message */}
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-8 text-center">
+          <Archive className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+            Feature Temporarily Disabled
+          </h2>
+          <p className="text-yellow-700 dark:text-yellow-300 mb-4">
+            The Active Accounts feature has been temporarily disabled and archived. 
+            This helps reduce system resources while the feature is not in active use.
+          </p>
+          <p className="text-sm text-yellow-600 dark:text-yellow-400">
+            This feature can be restored in the future if needed.
+          </p>
+        </div>
+      </div>
+    </Layout>
+  )
+}
+
+/* ARCHIVED CODE - Original implementation with Supabase
+
+The original code used:
+- Supabase table: 'active_accounts'
+- Real-time account data fetching
+- Account editing and management
+- File upload/download functionality
+- Service tracking (WR/LM)
+- Account notes and audit logging
+
+To restore, uncomment and replace the archived code below:
+
+[Original implementation would go here if restoration is needed]
+
+*/
   const [saving, setSaving] = useState(false);
   const [editedAccount, setEditedAccount] = useState<Account | null>(null);
 

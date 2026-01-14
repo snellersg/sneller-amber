@@ -38,23 +38,7 @@ const sidebarSections = [
     title: 'Quick Access',
     items: [
       { label: 'Sheets & Docs', icon: Table, path: '/sheets-and-docs' },
-      { label: 'Active Accounts', icon: Building2, path: '/active-accounts' },
-      {
-        label: 'Customer Call Log',
-        icon: Phone,
-        external: true,
-        href: 'https://docs.google.com/a/snellerslandscaping.com/forms/d/e/1FAIpQLSeXUYSgm1wqnY2nrTV2jmprBaikGoVcsOskGfEyrIQGiQk02w/viewform'
-      }
-    ]
-  },
-  {
-    title: 'Knowledge',
-    items: [
-      { label: 'Process Guides', icon: ListTodo, path: '/guides' },
-      { label: 'Core Processes', icon: Settings, path: '/core-processes' },
-      { label: 'Core Services', icon: Shield, path: '/core-services' },
-      { label: 'Add-On Services', icon: Plus, path: '/add-on-services' },
-      { label: 'Product Info', icon: FlaskConical, path: '/product-knowledge' }
+      { label: 'Process Guides', icon: ListTodo, path: '/guides' }
     ]
   },
   {
@@ -66,7 +50,22 @@ const sidebarSections = [
         icon: Waypoints,
         external: true,
         href: 'https://sites.google.com/snellerslandscaping.com/opshub/home'
+      },
+      {
+        label: 'Customer Call Log',
+        icon: Phone,
+        external: true,
+        href: 'https://docs.google.com/a/snellerslandscaping.com/forms/d/e/1FAIpQLSeXUYSgm1wqnY2nrTV2jmprBaikGoVcsOskGfEyrIQGiQk02w/viewform'
       }
+    ]
+  },
+  {
+    title: 'Information',
+    items: [
+      { label: 'Core Processes', icon: Settings, path: '/core-processes' },
+      { label: 'Core Services', icon: Shield, path: '/core-services' },
+      { label: 'Add-On Services', icon: Plus, path: '/add-on-services' },
+      { label: 'Product Info', icon: FlaskConical, path: '/product-knowledge' }
     ]
   }
 ]
