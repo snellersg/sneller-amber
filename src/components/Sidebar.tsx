@@ -56,6 +56,12 @@ const sidebarSections = [
         icon: Phone,
         external: true,
         href: 'https://docs.google.com/a/snellerslandscaping.com/forms/d/e/1FAIpQLSeXUYSgm1wqnY2nrTV2jmprBaikGoVcsOskGfEyrIQGiQk02w/viewform'
+      },
+      {
+        label: 'Equipment Form',
+        icon: FileText,
+        external: true,
+        href: 'https://docs.google.com/forms/d/e/1FAIpQLSe-LCaB9ZgoQjoYbJ0Hhd2yfAqTJOdWW9sKsdfIxXRJ1fdV5Q/viewform'
       }
     ]
   },
