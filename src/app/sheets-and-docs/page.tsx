@@ -67,7 +67,7 @@ const sections = [
       },
       {
         title: "Snow Event Notes",
-        url: "https://docs.google.com/spreadsheets/d/1M25vDPi1y7_ZaXgQgL5Vcom_sCtLoatdiD1-qf-W-Y8/edit?gid=0#gid=0",
+        url: "https://docs.google.com/spreadsheets/d/1M25vDPi1y7_ZaXgQgL5Vcom_sCtLoatdiD1-qf-W-Y8/edit?gid=1281422397#gid=1281422397",
         description: "Notes and details recorded during snow events for follow-up and tracking.",
       },
       {

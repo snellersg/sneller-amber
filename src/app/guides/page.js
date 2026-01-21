@@ -84,14 +84,16 @@ const guideCategories = [
         title: 'ACM/Sales - Client Handoff Meeting',
         description: 'Complete workflow for transitioning new clients from sales to account management',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: true
       },
       {
         slug: 'use-the-l10-document',
         title: 'How to use the L10 Document',
         description: 'L10 meeting structure integrated with Asana task management system',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       }
     ]
   },
@@ -103,39 +105,36 @@ const guideCategories = [
     iconColor: 'text-gray-600 dark:text-gray-400',
     guides: [
       {
-        slug: 'identifying-pe-opportunities',
-        title: 'Identifying PE Opportunities',
-        description: 'Proactive identification and tracking of property enhancement opportunities',
-        updated: 'June 2025',
-        hasContent: true
-      },
-      {
         slug: 'create-a-construction-work-order',
         title: 'Create a Construction Work Order (CWO)',
         description: 'Process for creating construction work orders in BossLM',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       },
       {
         slug: 'create-a-work-order',
         title: 'Create a Work Order (WO)',
         description: 'Standard work order creation and management procedures',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       },
       {
         slug: 'create-a-lawn-contract',
         title: 'Create a Lawn Contract',
         description: 'Complete process for lawn service contract creation and setup',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       },
       {
         slug: 'create-a-winter-contract',
         title: 'Create a Winter Contract',
         description: 'Winter service contract creation with service level specifications',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       }
     ]
   },
@@ -147,39 +146,36 @@ const guideCategories = [
     iconColor: 'text-blue-600 dark:text-blue-400',
     guides: [
       {
-        slug: 'working-a-snow-event',
-        title: 'Working a Snow Event',
+        slug: 'work-a-snow-event',
+        title: 'Work a Snow Event',
         description: 'Complete workflow for managing snow event operations from morning to evening',
         updated: 'June 2025',
-        hasContent: true
-      },
-      {
-        slug: 'cascading-customer-communication-to-ops',
-        title: 'Cascading Customer Communication to Ops',
-        description: 'Process for routing customer requests through Helpdesk to operations via Asana',
-        updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       },
       {
         slug: 'measure-maps-in-sitefotos',
-        title: 'Creating/Editing LM & SP Maps',
+        title: 'Create/Edit LM & SP Maps',
         description: 'Map creation and editing procedures using SiteFotos platform',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       },
       {
         slug: 'create-tickets-for-ops',
         title: 'Create Tickets for Ops',
         description: 'Ticket creation workflow for operational requests and issues',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       },
       {
-        slug: 'working-through-lm-renewals',
-        title: 'Working Through LM Renewals',
+        slug: 'work-through-lm-renewals',
+        title: 'Work Through LM Renewals',
         description: 'Complete process for managing lawn maintenance contract renewals',
         updated: 'January 2026',
-        hasContent: true
+        hasContent: true,
+        live: false
       }
     ]
   },
@@ -195,7 +191,8 @@ const guideCategories = [
         title: 'Submitting PO\'s',
         description: 'Purchase order submission process and approval workflows',
         updated: 'June 2025',
-        hasContent: true
+        hasContent: true,
+        live: false
       }
     ]
   }
@@ -212,7 +209,7 @@ export default function GuidesPage() {
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Comprehensive guides for daily operations, best practices, and step-by-step workflows. 
-            Find everything you need to execute processes efficiently and consistently.
+            These guides provide detailed procedures to execute processes efficiently and consistently.
           </p>
         </div>
 
@@ -235,7 +232,10 @@ export default function GuidesPage() {
                 {/* Guides Grid */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {category.guides.map((guide) => (
-                    <Card key={guide.slug} className="flex flex-col h-full">
+                    <Card 
+                      key={guide.slug} 
+                      className={`flex flex-col h-full ${!guide.live ? 'opacity-60' : ''}`}
+                    >
                       <CardHeader className="flex-shrink-0">
                         <div className="space-y-3">
                           <CardTitle className="leading-snug">
@@ -255,19 +255,26 @@ export default function GuidesPage() {
                           {guide.description}
                         </CardDescription>
 
-                        {guide.hasContent ? (
-                          <Button 
-                            href={`/guides/${guide.slug}`}
-                            className="w-full mt-auto"
-                          >
-                            <FileText className="w-3 h-3" />
-                            View Guide
-                            <ArrowRight className="w-3 h-3" />
-                          </Button>
+                        {guide.live ? (
+                          guide.hasContent ? (
+                            <Button 
+                              href={`/guides/${guide.slug}`}
+                              className="w-full mt-auto"
+                            >
+                              <FileText className="w-3 h-3" />
+                              View Guide
+                              <ArrowRight className="w-3 h-3" />
+                            </Button>
+                          ) : (
+                            <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
+                              <Construction className="w-3 h-3" />
+                              Under Development
+                            </div>
+                          )
                         ) : (
-                          <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
+                          <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed">
                             <Construction className="w-3 h-3" />
-                            Under Development
+                            Coming Soon
                           </div>
                         )}
                       </CardContent>

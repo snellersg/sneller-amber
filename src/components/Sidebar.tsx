@@ -1,30 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { 
-  Building2, 
   Table, 
   Phone, 
-  AlertTriangle,
-  Calculator,
   FileText,
   Settings,
-  Users,
   ExternalLink,
   X,
-  ChevronRight,
-  ChevronDown,
   Shield,
   Plus,
   FlaskConical,
   ListTodo,
-  Target,
-  User,
   Wrench,
   Waypoints,
-  File,
   ShieldCheck
 } from 'lucide-react'
 
@@ -79,45 +69,6 @@ const sidebarSections = [
 export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
   const pathname = usePathname()
 
-  // Initialize collapsed state - only Quick Access is open by default
-  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    sidebarSections.forEach(section => {
-      initial[section.title] = section.title !== 'Quick Access';
-    });
-    return initial;
-  });
-
-  // Load collapsed state from localStorage on client to avoid hydration mismatch
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('sidebar-collapsed-sections');
-      if (saved) {
-        setCollapsedSections(JSON.parse(saved));
-      }
-    } catch (error) {
-      // Failed to load sidebar state, keep defaults
-    }
-  }, []);
-
-  // Persist collapsed state to localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('sidebar-collapsed-sections', JSON.stringify(collapsedSections));
-      } catch (error) {
-        console.error('Failed to save sidebar state:', error);
-      }
-    }
-  }, [collapsedSections]);
-
-  const toggleSection = (sectionTitle: string) => {
-    setCollapsedSections(prev => ({
-      ...prev,
-      [sectionTitle]: !prev[sectionTitle]
-    }));
-  };
-
   const isActive = (path: string) => {
     return pathname === path || pathname.startsWith(path + '/');
   };
@@ -142,104 +93,86 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
         {/* Admin Panel Section for Admin Users - Show at top */}
         {isAdmin && (
           <div>
-            <button
-              onClick={() => toggleSection('Admin Panel')}
-              className="w-full flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
-            >
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
               Admin Panel
-              {collapsedSections['Admin Panel'] ? 
-                <ChevronRight className="h-3 w-3" /> : 
-                <ChevronDown className="h-3 w-3" />
-              }
-            </button>
+            </h3>
             
-            {!collapsedSections['Admin Panel'] && (
-              <ul className="space-y-1">
-                <li>
-                  <Link
-                    href="/admin"
-                    className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-md transition-colors ${
-                      isActive('/admin')
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                    onClick={onClose}
-                  >
-                    <ShieldCheck className={`h-5 w-5 ${
-                      isActive('/admin') ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'
-                    }`} />
-                    <span>Admin Panel</span>
-                  </Link>
-                </li>
-              </ul>
-            )}
+            <ul className="space-y-1">
+              <li>
+                <Link
+                  href="/admin"
+                  className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-md transition-colors ${
+                    isActive('/admin')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                  onClick={onClose}
+                >
+                  <ShieldCheck className={`h-5 w-5 ${
+                    isActive('/admin') ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'
+                  }`} />
+                  <span>Admin Panel</span>
+                </Link>
+              </li>
+            </ul>
           </div>
         )}
 
         {sidebarSections.map((section) => (
           <div key={section.title}>
-            <button
-              onClick={() => toggleSection(section.title)}
-              className="w-full flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
-            >
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
               {section.title}
-              {collapsedSections[section.title] ? 
-                <ChevronRight className="h-3 w-3" /> : 
-                <ChevronDown className="h-3 w-3" />
-              }
-            </button>
+            </h3>
             
-            {!collapsedSections[section.title] && (
-              <ul className="space-y-1">
-                {section.items.map((item) => {
-                  const Icon = item.icon
-                  const isItemActive = item.path && isActive(item.path)
+            <ul className="space-y-1">
+              {section.items.map((item) => {
+                const Icon = item.icon
+                const isItemActive = item.path && isActive(item.path)
 
-                  if (item.external) {
-                    return (
-                      <li key={item.label}>
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded-md group"
-                          onClick={onClose}
-                        >
-                          <Icon className="h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200" />
-                          <span className="flex-1">{item.label}</span>
-                          <ExternalLink className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                        </a>
-                      </li>
-                    )
-                  }
+                if (item.external) {
+                  return (
+                    <li key={item.label}>
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded-md group"
+                        onClick={onClose}
+                      >
+                        <Icon className="h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200" />
+                        <span className="flex-1">{item.label}</span>
+                        <ExternalLink className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                      </a>
+                    </li>
+                  )
+                }
 
-                  // Internal links
-                  if (item.path) {
-                    const isItemActive = isActive(item.path)
-                    
-                    // Regular clickable items
-                    return (
-                      <li key={item.label} className="relative">
-                        <Link
-                          href={item.path!}
-                          className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-md transition-colors ${
-                            isItemActive
-                              ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium'
-                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
-                          }`}
-                          onClick={onClose}
-                        >
-                          <Icon className={`h-5 w-5 ${
-                            isItemActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'
-                          }`} />
-                          <span>{item.label}</span>
-                        </Link>
-                      </li>
-                    )
-                  }
-                })}
-              </ul>
-            )}
+                // Internal links
+                if (item.path) {
+                  const isItemActive = isActive(item.path)
+                  
+                  // Regular clickable items
+                  return (
+                    <li key={item.label} className="relative">
+                      <Link
+                        href={item.path!}
+                        className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-md transition-colors ${
+                          isItemActive
+                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
+                        }`}
+                        onClick={onClose}
+                      >
+                        <Icon className={`h-5 w-5 ${
+                          isItemActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'
+                        }`} />
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  )
+                }
+              })}
+            </ul>
           </div>
         ))}
       </nav>
