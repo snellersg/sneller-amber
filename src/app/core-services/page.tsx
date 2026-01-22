@@ -206,8 +206,8 @@ export default function CoreServicesPage() {
                       <ul className="space-y-2">
                         {service.details.map((detail, detailIdx) => (
                           <li key={detailIdx} className="flex items-start">
-                            <span className="text-gray-400 dark:text-gray-500 mr-2">•</span>
-                            <span className="text-gray-600 dark:text-gray-300">{detail}</span>
+                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                            <span className="text-gray-700 dark:text-gray-300">{detail}</span>
                           </li>
                         ))}
                       </ul>
@@ -308,7 +308,7 @@ export default function CoreServicesPage() {
                   <ul className="space-y-2">
                     {service.details.map((detail, detailIdx) => (
                       <li key={detailIdx} className="flex items-start">
-                        <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
                         <span className="text-gray-700 dark:text-gray-300">{detail}</span>
                       </li>
                     ))}
