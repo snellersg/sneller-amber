@@ -358,7 +358,7 @@ export default function AddOnServicesPage() {
                   <ul className="space-y-2">
                     {service.opportunities.map((opp, oppIdx) => (
                       <li key={oppIdx} className="flex items-start">
-                        <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
                         <span className="text-gray-700 dark:text-gray-300">{opp}</span>
                       </li>
                     ))}
