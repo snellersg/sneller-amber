@@ -107,7 +107,7 @@ const sections = [
       },
       {
         title: "LM Renewals/Retentions",
-        url: "https://docs.google.com/spreadsheets/d/1o2gnNWpQ7E5IlngWE2MArfXZn-IlrKF05aNlVQxpdto/edit?gid=0#gid=0",
+        url: "https://docs.google.com/spreadsheets/d/1o2gnNWpQ7E5IlngWE2MArfXZn-IlrKF05aNlVQxpdto/edit?gid=644878389#gid=644878389",
         description: "Tracks the status of LM renewals and retentions for all accounts.",
       },
       {
