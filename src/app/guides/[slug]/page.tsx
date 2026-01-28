@@ -97,13 +97,6 @@ const guides: GuidesData = {
           '• Create any necessary work orders or service tickets'
         ]
       }
-    ],
-    resources: [
-      { title: 'Client Handoff Checklist', url: 'https://docs.google.com/document/d/1EgOaXzNDDXALA5dD-knAQp3FzZnw5uz15Gkf4vIvBPA/edit?tab=t.0', description: 'Google Doc checklist for handoff meetings' }
-    ],
-    contacts: [
-      { role: 'ACM Lead', name: 'josh.rees@snellersg.com', email: 'josh.rees@snellersg.com' }
-      
     ]
   },
   'use-the-l10-document': {
@@ -149,13 +142,6 @@ const guides: GuidesData = {
           '• Document decisions and next steps'
         ]
       }
-    ],
-    resources: [
-      { title: 'L10 Meeting Scorecard Template', url: '#', description: 'Weekly scorecard tracking template' },
-      { title: 'EOS L10 Meeting Guide', url: '#', description: 'Complete Entrepreneurial Operating System meeting guide' }
-    ],
-    contacts: [
-      { role: 'Operations Manager', name: 'Steve Sneller', email: 'steve@snellersg.com' }
     ]
   },
   'identifying-pe-opportunities': {
@@ -201,14 +187,6 @@ const guides: GuidesData = {
           '• Follow up within 48 hours for decision timeline'
         ]
       }
-    ],
-    resources: [
-      { title: 'PE Opportunity Assessment Form', url: '#', description: 'Standardized form for documenting opportunities' },
-      { title: 'Photo Documentation Guidelines', url: '#', description: 'Best practices for property enhancement photos' }
-    ],
-    contacts: [
-      { role: 'Business Development', name: 'BD Team', email: 'bd@snellersg.com' },
-      { role: 'Estimating Department', name: 'Estimating', email: 'estimates@snellersg.com' }
     ]
   },
   'create-a-construction-work-order': {
@@ -254,14 +232,6 @@ const guides: GuidesData = {
           '• Notify client of confirmed start and completion dates'
         ]
       }
-    ],
-    resources: [
-      { title: 'BossLM CWO Tutorial', url: '#', description: 'Step-by-step video guide for BossLM' },
-      { title: 'Construction Estimating Guidelines', url: '#', description: 'Standard pricing and timing references' }
-    ],
-    contacts: [
-      { role: 'Construction Manager', name: 'Construction Dept', email: 'construction@snellersg.com' },
-      { role: 'BossLM Support', name: 'IT Support', email: 'support@snellersg.com' }
     ]
   },
   'create-a-work-order': {
@@ -307,14 +277,6 @@ const guides: GuidesData = {
           '• Prepare billing documentation upon completion'
         ]
       }
-    ],
-    resources: [
-      { title: 'BossLM Work Order Quick Reference', url: '#', description: 'Fast reference guide for common tasks' },
-      { title: 'Crew Assignment Matrix', url: '#', description: 'Guide for matching crews to work types' }
-    ],
-    contacts: [
-      { role: 'Operations Coordinator', name: 'Operations', email: 'ops@snellersg.com' },
-      { role: 'Crew Scheduler', name: 'Scheduling', email: 'scheduling@snellersg.com' }
     ]
   },
   'create-a-lawn-contract': {
@@ -360,14 +322,6 @@ const guides: GuidesData = {
           '• Review contract with client and obtain signature'
         ]
       }
-    ],
-    resources: [
-      { title: 'Lawn Service Pricing Calculator', url: '#', description: 'Standardized pricing tool for lawn services' },
-      { title: 'Contract Template Library', url: '#', description: 'Standard contract templates for different service levels' }
-    ],
-    contacts: [
-      { role: 'Landscape Manager', name: 'Landscape Dept', email: 'landscape@snellersg.com' },
-      { role: 'Sales Manager', name: 'Sales Team', email: 'sales@snellersg.com' }
     ]
   },
   'create-a-winter-contract': {
@@ -413,14 +367,6 @@ const guides: GuidesData = {
           '• Define payment terms, insurance requirements, and liability'
         ]
       }
-    ],
-    resources: [
-      { title: 'Winter Service Estimating Guide', url: '#', description: 'Comprehensive pricing and service level guide' },
-      { title: 'Snow Contract Templates', url: '#', description: 'Standard contract formats for different service types' }
-    ],
-    contacts: [
-      { role: 'Snow Operations Manager', name: 'Snow Ops', email: 'snow@snellersg.com' },
-      { role: 'Contract Specialist', name: 'Contracts', email: 'contracts@snellersg.com' }
     ]
   },
   'working-a-snow-event': {
@@ -466,14 +412,6 @@ const guides: GuidesData = {
           '• Prepare equipment for next event (fuel, salt, repairs)'
         ]
       }
-    ],
-    resources: [
-      { title: 'Weather Monitoring Dashboard', url: 'https://pro.accuweather.com', description: 'Professional weather forecasting tools' },
-      { title: 'Crew Communication System', url: '#', description: 'Internal notification and tracking system' }
-    ],
-    contacts: [
-      { role: 'Operations Manager', name: 'Steve Sneller', email: 'steve@snellersg.com' },
-      { role: 'Emergency Dispatch', name: 'Dispatch Team', email: 'dispatch@snellersg.com' }
     ]
   },
   'cascading-customer-communication-to-ops': {
@@ -519,14 +457,6 @@ const guides: GuidesData = {
           '• Document resolution and update customer communication log'
         ]
       }
-    ],
-    resources: [
-      { title: 'Customer Communication Log Template', url: '#', description: 'Standardized tracking form for customer requests' },
-      { title: 'Operations Notification Checklist', url: '#', description: 'Checklist ensuring complete information transfer' }
-    ],
-    contacts: [
-      { role: 'Customer Service Manager', name: 'CS Team', email: 'service@snellersg.com' },
-      { role: 'Operations Coordinator', name: 'Operations', email: 'ops@snellersg.com' }
     ]
   },
   'measure-maps-in-sitefotos': {
@@ -583,14 +513,6 @@ const guides: GuidesData = {
           '• Archive old versions for reference and comparison'
         ]
       }
-    ],
-    resources: [
-      { title: 'SiteFotos User Manual', url: '#', description: 'Complete guide to SiteFotos mapping software' },
-      { title: 'Map Standardization Guide', url: '#', description: 'Company standards for map creation and formatting' }
-    ],
-    contacts: [
-      { role: 'GIS Specialist', name: 'Mapping Team', email: 'mapping@snellersg.com' },
-      { role: 'IT Support', name: 'Technical Support', email: 'support@snellersg.com' }
     ]
   },
   'create-tickets-for-ops': {
@@ -636,14 +558,6 @@ const guides: GuidesData = {
           '• Close ticket and notify customer of completion'
         ]
       }
-    ],
-    resources: [
-      { title: 'Ticketing System Quick Start Guide', url: '#', description: 'Fast reference for common ticket operations' },
-      { title: 'Priority Level Guidelines', url: '#', description: 'Standards for determining ticket priority levels' }
-    ],
-    contacts: [
-      { role: 'Dispatch Coordinator', name: 'Dispatch', email: 'dispatch@snellersg.com' },
-      { role: 'Operations Manager', name: 'Operations', email: 'ops@snellersg.com' }
     ]
   },
   'working-through-lm-renewals': {
@@ -700,14 +614,6 @@ const guides: GuidesData = {
           '• Plan service improvements or changes for new contract period'
         ]
       }
-    ],
-    resources: [
-      { title: 'Contract Renewal Checklist', url: '#', description: 'Complete checklist for renewal process management' },
-      { title: 'Market Pricing Analysis Tool', url: '#', description: 'Competitive analysis and pricing benchmarking' }
-    ],
-    contacts: [
-      { role: 'Account Manager', name: 'Account Management', email: 'accounts@snellersg.com' },
-      { role: 'Business Development Director', name: 'BD Director', email: 'bd@snellersg.com' }
     ]
   },
   'submitting-pos': {
@@ -753,14 +659,7 @@ const guides: GuidesData = {
           '• Update inventory systems with received items'
         ]
       }
-    ],
-    resources: [
-      { title: 'PO Submission Guidelines', url: '#', description: 'Complete guide to purchase order procedures' },
-      { title: 'Approved Vendor Directory', url: '#', description: 'List of pre-approved suppliers and contact information' }
-    ],
-    contacts: [
-      { role: 'Purchasing Manager', name: 'Purchasing', email: 'purchasing@snellersg.com' },
-      { role: 'Finance Department', name: 'Accounting', email: 'accounting@snellersg.com' }
+
     ]
   }
 }
@@ -950,65 +849,6 @@ export default function GuidePage() {
                 )}
               </div>
             ))}
-
-            {/* Resources and Contacts */}
-            {(guide.resources || guide.contacts) && (
-              <div className="grid grid-cols-1 gap-6 mt-12 md:grid-cols-2">
-                {guide.resources && (
-                  <div className="transition-shadow duration-200 bg-white border border-gray-200 shadow-sm rounded-xl dark:border-gray-700 dark:bg-gray-800 hover:shadow-md">
-                    <div className="p-4">
-                      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                        Resources
-                      </h3>
-                      <div className="space-y-3">
-                        {guide.resources.map((resource, idx) => (
-                          <div key={idx}>
-                            <a 
-                              href={resource.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="font-medium transition-colors text-primary hover:text-primary/80"
-                            >
-                              {resource.title}
-                            </a>
-                            {resource.description && (
-                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {resource.description}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {guide.contacts && (
-                  <div className="transition-shadow duration-200 bg-white border border-gray-200 shadow-sm rounded-xl dark:border-gray-700 dark:bg-gray-800 hover:shadow-md">
-                    <div className="p-4">
-                      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                        Contacts
-                      </h3>
-                      <div className="space-y-3">
-                        {guide.contacts.map((contact, idx) => (
-                          <div key={idx}>
-                            <p className="font-medium text-gray-900 dark:text-white">
-                              {contact.role}
-                            </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {contact.name} • 
-                              <a href={`mailto:${contact.email}`} className="text-primary hover:text-primary/80">
-                                {contact.email}
-                              </a>
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         ) : (
           /* Coming Soon Content for incomplete guides */

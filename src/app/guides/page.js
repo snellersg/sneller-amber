@@ -83,7 +83,7 @@ const guideCategories = [
         slug: 'acm-sales-client-handoff-meeting',
         title: 'ACM/Sales - Client Handoff Meeting',
         description: 'Complete workflow for transitioning new clients from sales to account management',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: true
       },
@@ -91,7 +91,7 @@ const guideCategories = [
         slug: 'use-the-l10-document',
         title: 'How to use the L10 Document',
         description: 'L10 meeting structure integrated with Asana task management system',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       }
@@ -108,7 +108,7 @@ const guideCategories = [
         slug: 'create-a-construction-work-order',
         title: 'Create a Construction Work Order (CWO)',
         description: 'Process for creating construction work orders in BossLM',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       },
@@ -116,7 +116,7 @@ const guideCategories = [
         slug: 'create-a-work-order',
         title: 'Create a Work Order (WO)',
         description: 'Standard work order creation and management procedures',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       },
@@ -124,7 +124,7 @@ const guideCategories = [
         slug: 'create-a-lawn-contract',
         title: 'Create a Lawn Contract',
         description: 'Complete process for lawn service contract creation and setup',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       },
@@ -132,7 +132,7 @@ const guideCategories = [
         slug: 'create-a-winter-contract',
         title: 'Create a Winter Contract',
         description: 'Winter service contract creation with service level specifications',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       }
@@ -149,7 +149,7 @@ const guideCategories = [
         slug: 'work-a-snow-event',
         title: 'Work a Snow Event',
         description: 'Complete workflow for managing snow event operations from morning to evening',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       },
@@ -157,7 +157,7 @@ const guideCategories = [
         slug: 'measure-maps-in-sitefotos',
         title: 'Create/Edit LM & SP Maps',
         description: 'Map creation and editing procedures using SiteFotos platform',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       },
@@ -165,7 +165,7 @@ const guideCategories = [
         slug: 'create-tickets-for-ops',
         title: 'Create Tickets for Ops',
         description: 'Ticket creation workflow for operational requests and issues',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       },
@@ -190,7 +190,7 @@ const guideCategories = [
         slug: 'submitting-pos',
         title: 'Submitting PO\'s',
         description: 'Purchase order submission process and approval workflows',
-        updated: 'June 2025',
+        updated: 'January 2026',
         hasContent: true,
         live: false
       }
