@@ -4,13 +4,13 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                   React Frontend                        │
+│                 Next.js Frontend                        │
 │                                                         │
-│  • React 19 + React Router v7                          │
-│  • Tailwind CSS + Typography                           │
-│  • Radix UI Components                                 │
+│  • Next.js 16 + React 19 + App Router                  │
+│  • Tailwind CSS 3.4 + Sneller 2026 Design System      │
+│  • shadcn/ui Components + next-themes                  │
 │  • Protected Routes + Admin Routes                     │
-│  • Context API for Auth State                          │
+│  • TanStack Query for Server State                     │
 │                                                         │
 └────────────────────┬────────────────────────────────────┘
                      │
@@ -29,19 +29,20 @@
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 
-        Frontend: Next.js (Port 3000 dev / Deployed)
+        Frontend: Next.js 16 (Port 3000 dev / Deployed)
         Backend: Supabase Cloud (Managed)
 ```
 
 ## Tech Stack
 
-### Frontend: Next.js 15 + React 19 + Tailwind CSS
+### Frontend: Next.js 16 + React 19 + Tailwind CSS
 **Why:**
-- Next.js App Router for modern SSR/SSG capabilities
-- Modern React 19 with latest features (concurrent rendering, automatic batching)
-- TypeScript for type safety and better developer experience
-- Tailwind CSS with shadcn/ui design system for consistent styling
-- TanStack Query for server state management and caching
+- Next.js 16 App Router with Turbopack for fast development
+- React 19 with latest features (concurrent rendering, automatic batching)
+- TypeScript 5 for type safety and better developer experience
+- Tailwind CSS 3.4 with Sneller 2026 design system and next-themes
+- TanStack Query v5 for server state management and caching
+- Production-grade light/dark mode with zero-flicker theme switching
 
 ### Backend: Supabase (Backend-as-a-Service)
 **Why:**

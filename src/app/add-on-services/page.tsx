@@ -296,7 +296,7 @@ const addOnServices = [
 export default function AddOnServicesPage() {
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto">
+      <div className="page-add-on-services max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
@@ -320,7 +320,7 @@ export default function AddOnServicesPage() {
                   className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
                     service.badge === 'Snow'
                       ? 'bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20 dark:bg-[#0A93D5]/20 dark:text-[#0A93D5] dark:ring-[#0A93D5]/30'
-                      : 'bg-secondary/20 text-secondary-foreground ring-secondary/30 dark:bg-secondary/30 dark:text-secondary-foreground dark:ring-secondary/40'
+                      : 'bg-accent/10 text-accent-foreground ring-accent/20 dark:bg-accent/20 dark:text-accent dark:ring-accent/30'
                   }`}
                 >
                   {service.badge === 'Snow' ? 'WR' : service.badge === 'Lawn' ? 'LM' : service.badge}
@@ -341,7 +341,7 @@ export default function AddOnServicesPage() {
                   <ul className="space-y-2">
                     {service.details.map((detail, detailIdx) => (
                       <li key={detailIdx} className="flex items-start">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
                         <span className="text-gray-700 dark:text-gray-300">{detail}</span>
                       </li>
                     ))}
@@ -358,7 +358,7 @@ export default function AddOnServicesPage() {
                   <ul className="space-y-2">
                     {service.opportunities.map((opp, oppIdx) => (
                       <li key={oppIdx} className="flex items-start">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
                         <span className="text-gray-700 dark:text-gray-300">{opp}</span>
                       </li>
                     ))}

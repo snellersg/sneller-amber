@@ -85,20 +85,6 @@ const guides: GuidesData = {
           '• Discuss timeline for service implementation',
           '• Address any client concerns or special requirements',
           '• Establish ongoing communication protocols'
-        ],
-        images: [
-          {
-            src: '/images/guides/handoff-meeting-agenda.jpg',
-            alt: 'Sample handoff meeting agenda template',
-            caption: 'Example meeting agenda template for client handoffs'
-          }
-        ],
-        videos: [
-          {
-            src: '/videos/guides/effective-handoff-meetings.mp4',
-            title: 'Effective Client Handoff Meetings',
-            description: 'Watch this 5-minute video on conducting successful handoff meetings'
-          }
         ]
       },
       {
@@ -113,12 +99,11 @@ const guides: GuidesData = {
       }
     ],
     resources: [
-      { title: 'Client Handoff Checklist', url: '#', description: 'Printable checklist for handoff meetings' },
-      { title: 'BossLM Client Setup Guide', url: '#', description: 'Step-by-step client setup in BossLM' }
+      { title: 'Client Handoff Checklist', url: 'https://docs.google.com/document/d/1EgOaXzNDDXALA5dD-knAQp3FzZnw5uz15Gkf4vIvBPA/edit?tab=t.0', description: 'Google Doc checklist for handoff meetings' }
     ],
     contacts: [
-      { role: 'Sales Director', name: 'Contact Sales', email: 'sales@snellersg.com' },
-      { role: 'ACM Lead', name: 'Contact ACM', email: 'acm@snellersg.com' }
+      { role: 'ACM Lead', name: 'josh.rees@snellersg.com', email: 'josh.rees@snellersg.com' }
+      
     ]
   },
   'use-the-l10-document': {
@@ -794,24 +779,24 @@ export default function GuidePage() {
           <div className="mb-8">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-primary hover:text-primary/80 mb-4 transition-colors"
+              className="flex items-center gap-2 mb-4 transition-colors text-primary hover:text-primary/80"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="w-4 h-4" />
               Back to Guides
             </button>
           </div>
           
-          <div className="text-center py-12">
-            <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <div className="py-12 text-center">
+            <FileText className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+            <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
               Guide Not Found
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="mb-6 text-gray-600 dark:text-gray-400">
               The guide you're looking for doesn't exist or may have been moved.
             </p>
             <Link 
               href="/guides" 
-              className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center px-4 py-2 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
             >
               Browse All Guides
             </Link>
@@ -829,27 +814,27 @@ export default function GuidePage() {
           <div className="mb-8">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-primary hover:text-primary/80 mb-4 transition-colors"
+              className="flex items-center gap-2 mb-4 transition-colors text-primary hover:text-primary/80"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="w-4 h-4" />
               Back to Guides
             </button>
           </div>
           
-          <div className="text-center py-16">
-            <Construction className="h-24 w-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="py-16 text-center">
+            <Construction className="w-24 h-24 mx-auto mb-6 text-gray-300" />
+            <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
               Coming Soon
             </h1>
-            <h2 className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+            <h2 className="mb-4 text-xl text-gray-600 dark:text-gray-400">
               {guide.title}
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            <p className="max-w-2xl mx-auto mb-8 text-gray-600 dark:text-gray-300">
               This guide is currently under development and will be available soon. 
               Check back later for comprehensive step-by-step instructions.
             </p>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 text-left max-w-md mx-auto mb-8">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Guide Details</h3>
+            <div className="max-w-md p-6 mx-auto mb-8 text-left rounded-lg bg-gray-50 dark:bg-gray-800">
+              <h3 className="mb-3 font-semibold text-gray-900 dark:text-white">Guide Details</h3>
               <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <p><strong>Category:</strong> {guide.category}</p>
                 <p><strong>Estimated Time:</strong> {guide.estimatedTime}</p>
@@ -858,7 +843,7 @@ export default function GuidePage() {
             </div>
             <Link 
               href="/guides" 
-              className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center px-6 py-3 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
             >
               Browse Other Guides
             </Link>
@@ -875,51 +860,21 @@ export default function GuidePage() {
         <div className="mb-8">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-primary hover:text-primary/80 mb-4 transition-colors"
+            className="flex items-center gap-2 mb-4 transition-colors text-primary hover:text-primary/80"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="w-4 h-4" />
             Back to Guides
           </button>
         </div>
 
         {/* Guide Header */}
-        <div className="mb-8 p-6 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-xl border border-primary/20">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+        <div className="mb-8">
+          <h1 className="mb-3 text-4xl font-semibold font-heading text-foreground">
             {guide.title}
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
+          <p className="text-lg text-muted-foreground">
             {guide.description}
           </p>
-          
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-500" />
-              <span className="text-gray-600 dark:text-gray-400">Category: {guide.category}</span>
-            </div>
-            {guide.estimatedTime && (
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600 dark:text-gray-400">Time: {guide.estimatedTime}</span>
-              </div>
-            )}
-            {guide.difficulty && (
-              <div className="flex items-center gap-2">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  guide.difficulty === 'Beginner' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' :
-                  guide.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' :
-                  'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
-                }`}>
-                  {guide.difficulty}
-                </span>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-gray-500" />
-              <span className="text-gray-600 dark:text-gray-400">
-                Status: {guide.isComplete ? 'Complete' : 'In Development'}
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* Guide Content */}
@@ -927,11 +882,11 @@ export default function GuidePage() {
           <div className="space-y-8">
             {guide.sections.map((section, index) => (
               <div key={index} className="space-y-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+                <h2 className="pb-2 text-2xl font-bold text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">
                   {section.title}
                 </h2>
                 {section.content && (
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  <p className="mb-4 text-gray-600 dark:text-gray-300">
                     {section.content}
                   </p>
                 )}
@@ -958,7 +913,7 @@ export default function GuidePage() {
                           className="w-full max-w-2xl rounded-lg shadow-md"
                         />
                         {image.caption && (
-                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                          <p className="text-sm italic text-gray-500 dark:text-gray-400">
                             {image.caption}
                           </p>
                         )}
@@ -998,11 +953,11 @@ export default function GuidePage() {
 
             {/* Resources and Contacts */}
             {(guide.resources || guide.contacts) && (
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 mt-12 md:grid-cols-2">
                 {guide.resources && (
-                  <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <div className="transition-shadow duration-200 bg-white border border-gray-200 shadow-sm rounded-xl dark:border-gray-700 dark:bg-gray-800 hover:shadow-md">
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                         Resources
                       </h3>
                       <div className="space-y-3">
@@ -1012,12 +967,12 @@ export default function GuidePage() {
                               href={resource.url} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="font-medium text-primary hover:text-primary/80 transition-colors"
+                              className="font-medium transition-colors text-primary hover:text-primary/80"
                             >
                               {resource.title}
                             </a>
                             {resource.description && (
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 {resource.description}
                               </p>
                             )}
@@ -1029,9 +984,9 @@ export default function GuidePage() {
                 )}
                 
                 {guide.contacts && (
-                  <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <div className="transition-shadow duration-200 bg-white border border-gray-200 shadow-sm rounded-xl dark:border-gray-700 dark:bg-gray-800 hover:shadow-md">
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                         Contacts
                       </h3>
                       <div className="space-y-3">
@@ -1057,24 +1012,24 @@ export default function GuidePage() {
           </div>
         ) : (
           /* Coming Soon Content for incomplete guides */
-          <div className="text-center py-16">
+          <div className="py-16 text-center">
             <div className="mb-6">
-              <Construction className="h-20 w-20 text-gray-300 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              <Construction className="w-20 h-20 mx-auto mb-4 text-gray-300" />
+              <h2 className="mb-3 text-3xl font-bold text-gray-900 dark:text-white">
                 Coming Soon
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
+              <p className="max-w-2xl mx-auto mb-6 text-lg text-gray-600 dark:text-gray-400">
                 This guide is currently under development. We're working to provide you with 
                 comprehensive, step-by-step instructions for <strong>{guide.title.toLowerCase()}</strong>.
               </p>
             </div>
             
             {/* Development Info */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 max-w-2xl mx-auto mb-8">
-              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+            <div className="max-w-2xl p-6 mx-auto mb-8 border rounded-md status-info">
+              <h3 className="mb-2 text-lg font-semibold font-heading text-primary">
                 What to Expect
               </h3>
-              <ul className="text-left text-blue-800 dark:text-blue-200 space-y-2">
+              <ul className="space-y-2 text-left text-blue-800 dark:text-blue-200">
                 <li>• Step-by-step process documentation</li>
                 <li>• Screenshots and visual guides</li>
                 <li>• Best practices and tips</li>
@@ -1085,7 +1040,7 @@ export default function GuidePage() {
             {/* Back to Guides */}
             <Link 
               href="/guides" 
-              className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center px-6 py-3 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
             >
               Browse Other Guides
             </Link>
@@ -1095,10 +1050,10 @@ export default function GuidePage() {
         {/* Additional Info for incomplete guides */}
         {!guide.isComplete && (
           <div className="mt-12">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+            <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
               Need Help Now?
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
               While this guide is being developed, you can still get assistance with {guide.title.toLowerCase()}.
             </p>
             <div className="space-y-2 text-sm">

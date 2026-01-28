@@ -1,6 +1,6 @@
 # 🚀 Sneller AMBER - Getting Started Guide
 
-A secure, authenticated Next.js documentation site for Sneller's Landscaping internal knowledge management.
+A secure, authenticated Next.js knowledge management platform for Sneller's Landscaping with production-grade theming and the Sneller 2026 design system.
 
 ## 📋 Prerequisites
 
@@ -15,35 +15,36 @@ A secure, authenticated Next.js documentation site for Sneller's Landscaping int
 ```
 sneller-amber-v2/
 ├── src/
-│   ├── app/               # Next.js App Router
-│   │   ├── layout.tsx    # Root layout with providers
+│   ├── app/               # Next.js 16 App Router
+│   │   ├── layout.tsx    # Root layout with fonts, providers, theme system
 │   │   ├── page.js       # Homepage (auth redirect)
-│   │   ├── globals.css   # Global styles with CSS variables
-│   │   ├── providers.tsx # TanStack Query provider
-│   │   ├── login/page.tsx # Login/signup page
-│   │   ├── active-accounts/
-│   │   │   ├── page.tsx  # Account list
-│   │   │   └── [id]/page.tsx # Account details
+│   │   ├── globals.css   # Sneller 2026 design tokens and CSS variables
+│   │   ├── providers.tsx # TanStack Query + ThemeProvider (next-themes)
+│   │   ├── login/page.tsx # Authentication page
 │   │   ├── admin/page.tsx # Admin user management
 │   │   ├── profile/page.tsx # User profile
-│   │   └── ...           # Other content pages
-│   ├── components/       # UI components
+│   │   ├── guides/       # Process guide system with multimedia
+│   │   ├── core-services/ # Service pages with WR/LM badges
+│   │   ├── add-on-services/ # Additional services
+│   │   ├── product-knowledge/ # Product specifications
+│   │   └── theme-test/   # Theme system demonstration
+│   ├── components/       # UI components with theme support
 │   │   ├── Layout.tsx   # Main layout wrapper
-│   │   ├── Sidebar.tsx  # Navigation sidebar
-│   │   ├── TopBar.tsx   # Header with profile/sign out
-│   │   ├── TableOfContents.tsx
-│   │   └── ui/          # shadcn/ui components
-│   ├── lib/             # Utility functions
+│   │   ├── Sidebar.tsx  # Navigation with semantic theme tokens
+│   │   ├── TopBar.tsx   # Header with intelligent theme toggle
+│   │   ├── theme-provider.tsx # next-themes wrapper
+│   │   └── ui/          # shadcn/ui components with Sneller branding
+│   ├── lib/             # Utilities
 │   │   ├── supabase.ts  # Supabase configuration
 │   │   ├── utils.ts     # Utility functions
 │   │   └── query-provider.tsx # TanStack Query setup
 │   └── middleware.ts    # Next.js auth middleware
-├── public/              # Static assets (logo, manifest)
+├── public/              # Static assets (logo, manifest, media)
 ├── docs/                # Documentation
 ├── .env.local          # Environment variables (NOT committed)
-├── next.config.js      # Next.js configuration
+├── next.config.js      # Next.js 16 configuration
 ├── tsconfig.json       # TypeScript configuration
-├── tailwind.config.js  # Tailwind configuration
+├── tailwind.config.js  # Tailwind with Sneller 2026 design system
 └── package.json        # Dependencies and scripts
 ```
 

@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
-import { Menu, LogOut, User as UserIcon, Moon, Sun } from 'lucide-react'
+import { Menu, LogOut, User as UserIcon, Moon, Sun, Monitor } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import Link from 'next/link'
 
 interface TopBarProps {
@@ -14,34 +15,43 @@ interface TopBarProps {
 export default function TopBar({ onSidebarToggle }: TopBarProps) {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
 
-  // Initialize dark mode from localStorage
+  // Ensure theme is mounted to prevent hydration mismatch
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const initialDarkMode = savedTheme === 'dark' || (!savedTheme && prefersDark)
-    
-    setIsDarkMode(initialDarkMode)
-    
-    if (initialDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    setMounted(true)
   }, [])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode
-    setIsDarkMode(newDarkMode)
-    
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
+  const cycleTheme = () => {
+    // Once user clicks, switch between light and dark (override system)
+    if (theme === 'light' || theme === 'system') {
+      setTheme('dark')
     } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
+      setTheme('light')
     }
+  }
+
+  const getThemeIcon = () => {
+    if (!mounted) return <Sun className="h-5 w-5" />
+    
+    // Show opposite of current effective theme (what clicking will do)
+    const effectiveTheme = theme === 'system' 
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme
+    
+    return effectiveTheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />
+  }
+
+  const getThemeLabel = () => {
+    if (!mounted) return 'Toggle theme'
+    
+    // Show what clicking will do based on current effective theme
+    const effectiveTheme = theme === 'system' 
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme
+    
+    return effectiveTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
   }
 
   useEffect(() => {
@@ -66,14 +76,14 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-card border-b border-border h-16">
       <div className="flex items-center justify-between h-full px-4">
         {/* Left side */}
         <div className="flex items-center">
           {/* Mobile menu button */}
           <button
             onClick={onSidebarToggle}
-            className="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+            className="md:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Open sidebar"
           >
             <Menu className="h-5 w-5" />
@@ -86,7 +96,7 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
               alt="Sneller Logo"
               className="w-8 h-8"
             />
-            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            <span className="text-xl font-heading font-bold text-foreground">
               AMBER
             </span>
           </div>
@@ -94,14 +104,14 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
-          {/* Dark mode toggle */}
+          {/* Theme toggle - cycles through light -> dark -> system */}
           <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-            title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            onClick={cycleTheme}
+            className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+            title={getThemeLabel()}
+            aria-label={getThemeLabel()}
           >
-            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {getThemeIcon()}
           </button>
 
           {/* User menu */}
@@ -109,15 +119,15 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
             <div className="flex items-center space-x-3">
               <Link
                 href="/profile"
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 title="My Profile"
               >
-                <UserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                <UserIcon className="h-5 w-5" />
               </Link>
 
               <button
                 onClick={handleSignOut}
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 title="Sign out"
               >
                 <LogOut className="h-4 w-4" />

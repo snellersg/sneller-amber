@@ -95,7 +95,7 @@ const products = [
 export default function ProductKnowledgePage() {
   return (
     <Layout>
-      <div className="max-w-6xl mx-auto">
+      <div className="page-product-knowledge max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="mb-4 text-3xl font-bold text-gray-900 uppercase dark:text-white">
@@ -126,8 +126,8 @@ export default function ProductKnowledgePage() {
                         <span
                           className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
                             product.badge === 'Snow'
-                              ? 'bg-[#0A93D5]/10 text-[#0A93D5] ring-[#0A93D5]/20'
-                              : 'bg-secondary/20 text-secondary-foreground ring-secondary/30'
+                              ? 'bg-primary/10 text-primary ring-primary/20'
+                              : 'bg-accent/10 text-accent-foreground ring-accent/20 dark:bg-accent/20 dark:text-accent dark:ring-accent/30'
                           }`}
                         >
                           {product.badge === 'Snow' ? 'WR' : product.badge === 'Lawn' ? 'LM' : product.badge}

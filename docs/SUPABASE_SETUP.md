@@ -33,8 +33,8 @@ Complete guide for setting up Supabase authentication for Sneller AMBER.
 2. Add your credentials:
 
 ```env
-REACT_APP_SUPABASE_URL=https://your-project.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=your-anon-key-here
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
 3. **Never commit `.env.local`** - it's already in `.gitignore`

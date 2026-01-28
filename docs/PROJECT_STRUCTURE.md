@@ -1,53 +1,53 @@
 # Sneller AMBER - Project Structure
 
 ## Overview
-This document describes the organization of the Sneller AMBER project.
+This document describes the organization of the Sneller AMBER Next.js application with Sneller 2026 design system and production-grade theming.
 
 ## Directory Structure
 
 ```
 sneller-amber-v2/
-├── docs/                              # 📚 All documentation
+├── docs/                              # 📚 Current documentation
 │   ├── GETTING_STARTED.md            # Setup and development guide
-│   ├── ARCHITECTURE.md               # Technical architecture
+│   ├── ARCHITECTURE.md               # Technical architecture (Next.js 16)
 │   ├── SUPABASE_SETUP.md             # Supabase configuration
 │   ├── ADMIN_APPROVAL_GUIDE.md       # Admin approval system guide
 │   ├── TROUBLESHOOTING.md            # Common issues and solutions
-│   ├── UI_STYLING_GUIDE.md           # UI styling patterns and conventions
-│   ├── AUDIT_LOG_SYSTEM.md           # Account audit logging system
-│   ├── RECENT_UPDATES.md             # Recent changes and improvements
-│   ├── NOVEMBER_2025_UPDATES.md      # November UI consistency updates
-│   ├── DECEMBER_2025_UPDATES.md      # December badge system updates
 │   ├── NETLIFY_DEPLOYMENT.md         # Deployment configuration
-│   ├── SESSION_MANAGEMENT_FIX.md     # Session management fixes
 │   └── PROJECT_STRUCTURE.md          # This file - project organization
 │
-├── src/                               # ⚛️ Next.js application source
+├── src/                               # ⚛️ Next.js 16 App Router source
 │   ├── app/                          # App Router pages
-│   │   ├── layout.tsx               # Root layout with metadata
+│   │   ├── layout.tsx               # Root layout with fonts and providers
 │   │   ├── page.js                  # Homepage (auth redirect)
-│   │   ├── globals.css              # Global styles with overflow controls
-│   │   ├── providers.tsx            # TanStack Query provider
+│   │   ├── globals.css              # Global styles with Sneller 2026 CSS variables
+│   │   ├── providers.tsx            # TanStack Query + ThemeProvider
 │   │   ├── login/page.tsx           # Login page
-│   │   ├── active-accounts/
-│   │   │   ├── page.tsx             # Account management list with filters
-│   │   │   └── [id]/page.tsx        # Individual account details with WR/LM services
-│   │   ├── admin/page.tsx           # Admin panel with Sneller blue branding
+│   │   ├── admin/page.tsx           # Admin panel with user management
 │   │   ├── profile/page.tsx         # User profile page
-│   │   ├── sheets-and-docs/page.tsx # Sheets & Docs page
-│   │   ├── core-processes/page.tsx  # Core business processes
-│   │   ├── core-services/page.tsx   # Core service offerings with badge system
-│   │   ├── add-on-services/page.tsx # Add-on service offerings with badge system
-│   │   ├── product-knowledge/page.tsx # Product specifications with badge system
-│   │   ├── tools/page.tsx           # Tools page
-│   │   ├── tools-platforms/page.tsx # Software platforms used
-│   │   └── guides/page.js           # Process guides with standardized layout
+│   │   ├── sheets-and-docs/page.tsx # Document management
+│   │   ├── core-processes/page.tsx  # Business processes
+│   │   ├── core-services/page.tsx   # Core service offerings (WR/LM badges)
+│   │   ├── add-on-services/page.tsx # Additional services (WR/LM badges)
+│   │   ├── product-knowledge/page.tsx # Product specs (WR/LM badges)
+│   │   ├── tools-platforms/page.tsx # Software platforms
+│   │   ├── guides/                  # Process guide system
+│   │   │   ├── page.js              # Guide listing
+│   │   │   └── [slug]/page.tsx      # Individual guide pages
+│   │   └── theme-test/page.tsx      # Theme system showcase
 │   │
 │   ├── components/                   # React components
-│   │   ├── ui/                       # shadcn/ui components
-│   │   │   ├── badge.tsx
-│   │   │   ├── button.tsx
-│   │   │   ├── card.tsx
+│   │   ├── Layout.tsx               # Main layout wrapper
+│   │   ├── Sidebar.tsx              # Navigation with theme tokens
+│   │   ├── TopBar.tsx               # Header with next-themes integration
+│   │   ├── TableOfContents.tsx      # Guide navigation
+│   │   ├── theme-provider.tsx       # next-themes wrapper component
+│   │   └── ui/                      # shadcn/ui components
+│   │       ├── badge.tsx            # Themed badge component
+│   │       ├── button.tsx           # Button variants with theme support
+│   │       ├── card.tsx             # Card components
+│   │       ├── input.tsx            # Form inputs
+│   │       └── ...                  # Other UI components
 │   │   │   └── tooltip.jsx
 │   │   ├── Layout.tsx                # Main layout wrapper
 │   │   ├── Sidebar.tsx               # Navigation sidebar

@@ -7,7 +7,7 @@ interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const badgeVariants = {
   default: "bg-primary text-primary-foreground",
-  outline: "border border-input bg-transparent",
+  outline: "border border-border bg-transparent text-foreground",
   secondary: "bg-secondary text-secondary-foreground",
   destructive: "bg-destructive text-destructive-foreground"
 }
@@ -19,7 +19,7 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
       {
         ref,
         className: cn(
-          "inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold transition-colors",
+          "inline-flex items-center rounded-sm px-2 py-1 text-xs font-semibold transition-colors",
           badgeVariants[variant],
           className
         ),

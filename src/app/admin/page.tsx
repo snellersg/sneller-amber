@@ -343,7 +343,7 @@ export default function AdminPage() {
                         <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                             user.role === 'admin' 
-                              ? 'bg-[#0A93D5]/10 text-[#0A93D5] border border-[#0A93D5]/30 dark:bg-[#0A93D5]/20 dark:text-[#0A93D5] dark:border-[#0A93D5]/40' 
+                              ? 'bg-primary/10 text-primary border border-primary/30' 
                               : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                           }`}>
                             {user.role === 'admin' && (
@@ -407,7 +407,7 @@ export default function AdminPage() {
                               /* Promote Button */
                               <button
                                 onClick={() => toggleUserRole(user.id, user.role || 'user')}
-                                className="inline-flex items-center p-1 sm:p-1.5 rounded text-white bg-[#0A93D5] hover:bg-[#0A93D5]/90 dark:bg-[#0A93D5] dark:hover:bg-[#0A93D5]/90 transition-colors"
+                                className="inline-flex items-center p-2 rounded-sm text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
                                 title="Promote to Admin"
                               >
                                 <Crown className="w-3 h-3 sm:w-4 sm:h-4" />

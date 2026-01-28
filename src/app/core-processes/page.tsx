@@ -146,7 +146,7 @@ const processes = [
 export default function CoreProcessesPage() {
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto">
+      <div className="page-core-processes max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white uppercase mb-4">
@@ -183,7 +183,7 @@ export default function CoreProcessesPage() {
                 <ul className="space-y-2">
                   {process.steps.map((step, stepIdx) => (
                     <li key={stepIdx} className="flex items-start">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 shrink-0"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
                       <span className="text-gray-700 dark:text-gray-300">{step}</span>
                     </li>
                   ))}
