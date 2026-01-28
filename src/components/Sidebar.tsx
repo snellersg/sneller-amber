@@ -140,7 +140,7 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
                         onClick={onClose}
                       >
                         <Icon className="h-5 w-5 text-muted-foreground group-hover:text-foreground" />
-                        <span className="flex-1">{item.label}</span>
+                        <span className="flex-1 whitespace-nowrap">{item.label}</span>
                         <ExternalLink className="h-4 w-4 text-muted-foreground" />
                       </a>
                     </li>
@@ -166,7 +166,7 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
                         <Icon className={`h-5 w-5 ${
                           isItemActive ? 'text-foreground' : 'text-muted-foreground'
                         }`} />
-                        <span>{item.label}</span>
+                        <span className="whitespace-nowrap">{item.label}</span>
                       </Link>
                     </li>
                   )
