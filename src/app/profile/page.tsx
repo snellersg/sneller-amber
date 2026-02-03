@@ -285,7 +285,7 @@ export default function UserProfile() {
               </h3>
               <div className="flex gap-2">
                 <button
-                  onClick={() => user && fetchProfile(user.id, true)}
+                  onClick={() => user && fetchProfile(user.id)}
                   disabled={loading}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors font-medium disabled:opacity-50"
                   title="Refresh profile data"
