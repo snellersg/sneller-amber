@@ -68,6 +68,7 @@ export default function UserProfile() {
 
         console.log('User authenticated:', user.email)
         setUser(user)
+        setFullName(user.user_metadata?.full_name || '')
         await fetchProfile(user.id)
       } catch (error) {
         console.error('Auth error:', error)
@@ -364,11 +365,11 @@ export default function UserProfile() {
                     placeholder="Enter your full name"
                   />
                 ) : (
-                  <p className={!(profile?.full_name || user?.user_metadata?.full_name)
+                  <p className={!fullName
                     ? "text-sm text-gray-500 dark:text-gray-400 italic" 
                     : "text-sm font-medium text-gray-900 dark:text-white"
                   }>
-                    {profile?.full_name || user?.user_metadata?.full_name || 'Not set'}
+                    {fullName || 'Not set'}
                   </p>
                 )}
               </div>
