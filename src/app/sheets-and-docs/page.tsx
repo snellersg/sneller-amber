@@ -5,7 +5,19 @@ import { ExternalLink, HelpCircle } from 'lucide-react'
 import Layout from '../../components/Layout'
 import { Badge } from '../../components/ui/badge'
 
-const sections = [
+interface SheetDocItem {
+  title: string;
+  url: string;
+  description: string;
+  badge?: string;
+}
+
+interface SheetDocSection {
+  title: string;
+  items: SheetDocItem[];
+}
+
+const sections: SheetDocSection[] = [
   {
     title: "General",
     items: [
