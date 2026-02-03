@@ -14,8 +14,7 @@ import {
   EyeOff,
   Check,
   XCircle,
-  Loader2,
-  RefreshCw
+  Loader2
 } from 'lucide-react'
 
 interface UserProfileData {
@@ -78,6 +77,12 @@ export default function UserProfile() {
 
     checkUser()
   }, [router])
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchProfile(user.id)
+    }
+  }, [user?.id])
 
   const ensureUserRecord = async (authUser: User) => {
     const { data: existing, error: existingError } = await supabase
@@ -301,43 +306,32 @@ export default function UserProfile() {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase">
                 Profile Information
               </h3>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => user && fetchProfile(user.id)}
-                  disabled={loading}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors font-medium disabled:opacity-50"
-                  title="Refresh profile data"
-                >
-                  <RefreshCw className={loading ? "h-3 w-3 animate-spin" : "h-3 w-3"} />
-                  Refresh
-                </button>
-                <button
-                  onClick={() => {
-                    if (editing) {
-                      handleUpdateProfile()
-                    } else {
-                      setEditing(true)
-                      setFullName(profile?.full_name || '')
-                    }
-                  }}
-                  disabled={loading}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary hover:bg-primary/90 text-white rounded transition-colors font-medium disabled:opacity-50"
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                      Saving...
-                    </>
-                  ) : editing ? (
-                    <>
-                      <Save className="h-3 w-3" />
-                      Save
-                    </>
-                  ) : (
-                    'Edit'
-                  )}
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  if (editing) {
+                    handleUpdateProfile()
+                  } else {
+                    setEditing(true)
+                    setFullName(profile?.full_name || '')
+                  }
+                }}
+                disabled={loading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary hover:bg-primary/90 text-white rounded transition-colors font-medium disabled:opacity-50"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                    Saving...
+                  </>
+                ) : editing ? (
+                  <>
+                    <Save className="h-3 w-3" />
+                    Save
+                  </>
+                ) : (
+                  'Edit'
+                )}
+              </button>
             </div>
             
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
