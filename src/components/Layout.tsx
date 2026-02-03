@@ -32,31 +32,13 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at for existing sessions
           try {
-            const { data: updated, error: updateError } = await supabase
+            const { error: updateError } = await supabase
               .from('users')
               .update({ last_sign_in_at: new Date().toISOString() })
               .eq('id', user.id)
-              .select('id')
-              .maybeSingle()
 
             if (updateError) {
               console.error('Error updating last_sign_in_at:', updateError)
-            }
-
-            if (!updated) {
-              const { error: insertError } = await supabase
-                .from('users')
-                .insert({
-                  id: user.id,
-                  email: user.email,
-                  full_name: user.user_metadata?.full_name || '',
-                  last_sign_in_at: new Date().toISOString(),
-                  role: user.user_metadata?.role || 'user'
-                })
-
-              if (insertError && insertError.code !== '23505') {
-                console.error('Error inserting user for last_sign_in_at:', insertError)
-              }
             }
           } catch (updateErr) {
             console.error('Error in last_sign_in_at update:', updateErr)
@@ -85,31 +67,13 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at when user session is detected
           try {
-            const { data: updated, error } = await supabase
+            const { error } = await supabase
               .from('users')
               .update({ last_sign_in_at: new Date().toISOString() })
               .eq('id', session.user.id)
-              .select('id')
-              .maybeSingle()
             
             if (error) {
               console.error('Error updating last_sign_in_at:', error)
-            }
-
-            if (!updated) {
-              const { error: insertError } = await supabase
-                .from('users')
-                .insert({
-                  id: session.user.id,
-                  email: session.user.email,
-                  full_name: session.user.user_metadata?.full_name || '',
-                  last_sign_in_at: new Date().toISOString(),
-                  role: session.user.user_metadata?.role || 'user'
-                })
-
-              if (insertError && insertError.code !== '23505') {
-                console.error('Error inserting user for last_sign_in_at:', insertError)
-              }
             }
           } catch (error) {
             console.error('Error in last_sign_in_at update:', error)

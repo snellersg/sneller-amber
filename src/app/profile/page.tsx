@@ -111,40 +111,46 @@ export default function UserProfile() {
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      const { data: byId, error: byIdError } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .maybeSingle()
 
-      if (error) {
-        throw error
+      if (byIdError) {
+        throw byIdError
       }
 
-      if (!data && user) {
-        await ensureUserRecord(user)
-        const { data: retryData, error: retryError } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle()
-
-        if (retryError) throw retryError
-
-        if (retryData) {
-          setProfile(retryData)
-          setFullName(retryData.full_name || '')
-        } else if (user?.user_metadata?.full_name) {
-          setFullName(user.user_metadata.full_name)
-        }
-
+      if (byId) {
+        setProfile(byId)
+        setFullName(byId.full_name || '')
         return
       }
 
-      if (data) {
-        setProfile(data)
-        setFullName(data.full_name || '')
-      } else if (user?.user_metadata?.full_name) {
+      // Fallback by email in case the users table row uses email as the id or id mismatch
+      if (user?.email) {
+        const { data: byEmail, error: byEmailError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', user.email)
+          .maybeSingle()
+
+        if (byEmailError) {
+          throw byEmailError
+        }
+
+        if (byEmail) {
+          setProfile(byEmail)
+          setFullName(byEmail.full_name || '')
+          return
+        }
+      }
+
+      if (user) {
+        await ensureUserRecord(user)
+      }
+
+      if (user?.user_metadata?.full_name) {
         setFullName(user.user_metadata.full_name)
       }
     } catch (err: any) {
@@ -166,47 +172,26 @@ export default function UserProfile() {
 
       if (authUpdateError) throw authUpdateError
 
-      const { data: updatedProfile, error: updateError } = await supabase
+      const { error: updateByIdError } = await supabase
         .from('users')
         .update({
           full_name: fullName,
           email: user.email
         })
         .eq('id', user.id)
-        .select()
-        .maybeSingle()
 
-      if (updateError) throw updateError
-
-      if (!updatedProfile) {
-        const { data: insertedProfile, error: insertError } = await supabase
+      if (updateByIdError) {
+        // If update by id fails, try by email as a fallback
+        await supabase
           .from('users')
-          .insert({
-            id: user.id,
-            email: user.email,
-            full_name: fullName,
-            role: profile?.role || 'user'
-          })
-          .select()
-          .single()
-
-        if (insertError && insertError.code !== '23505') throw insertError
-
-        if (insertedProfile) {
-          setProfile(insertedProfile)
-          setFullName(insertedProfile.full_name || '')
-        }
+          .update({ full_name: fullName })
+          .eq('email', user.email)
       }
 
       setMessage('Profile updated successfully!')
       setEditing(false)
 
-      if (updatedProfile) {
-        setProfile(updatedProfile)
-        setFullName(updatedProfile.full_name || '')
-      } else {
-        await fetchProfile(user.id)
-      }
+      await fetchProfile(user.id)
     } catch (err: any) {
       setError(err.message || 'Failed to update profile')
     } finally {
