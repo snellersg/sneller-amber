@@ -52,15 +52,21 @@ export default function UserProfile() {
   useEffect(() => {
     const checkUser = async () => {
       try {
+        console.log('Checking user authentication...')
         const { data: { user }, error } = await supabase.auth.getUser()
         
-        if (error) throw error
+        if (error) {
+          console.error('Auth error:', error)
+          throw error
+        }
         
         if (!user) {
+          console.log('No user found, redirecting to login')
           router.push('/login')
           return
         }
 
+        console.log('User authenticated:', user.email)
         setUser(user)
         await fetchProfile(user.id)
       } catch (error) {
@@ -72,8 +78,9 @@ export default function UserProfile() {
     checkUser()
   }, [router])
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, forceRefresh = false) => {
     try {
+      console.log('Fetching profile for user:', userId)
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -82,10 +89,11 @@ export default function UserProfile() {
 
       if (error && error.code === 'PGRST116') {
         // User record doesn't exist, create one
-        console.log('Creating user record for:', userId)
+        console.log('User record not found, creating new record for:', userId)
         const { data: authUser } = await supabase.auth.getUser()
         
         if (authUser.user) {
+          console.log('Creating user with email:', authUser.user.email)
           const { data: newUserData, error: insertError } = await supabase
             .from('users')
             .insert({
@@ -101,9 +109,14 @@ export default function UserProfile() {
 
           if (insertError) {
             console.error('Error creating user record:', insertError)
+            // Try to show a more helpful error message
+            if (insertError.code === '42501') {
+              console.error('Permission denied - check RLS policies')
+            }
             return
           }
 
+          console.log('User record created successfully:', newUserData)
           if (newUserData) {
             setProfile(newUserData)
             setFullName(newUserData.full_name || '')
@@ -113,15 +126,17 @@ export default function UserProfile() {
       }
 
       if (error) {
+        console.error('Database error:', error)
         throw error
       }
 
+      console.log('Profile data fetched:', data)
       if (data) {
         setProfile(data)
         setFullName(data.full_name || '')
       }
     } catch (err: any) {
-      console.error('Error fetching profile:', err)
+      console.error('Error in fetchProfile:', err)
     }
   }
 
@@ -133,6 +148,7 @@ export default function UserProfile() {
     setMessage('')
 
     try {
+      console.log('Updating profile with full_name:', fullName)
       const { error: updateError } = await supabase
         .from('users')
         .update({
@@ -141,16 +157,19 @@ export default function UserProfile() {
         })
         .eq('id', user.id)
 
-      if (updateError) throw updateError
+      if (updateError) {
+        console.error('Update error:', updateError)
+        throw updateError
+      }
 
+      console.log('Profile updated successfully')
       setMessage('Profile updated successfully!')
       setEditing(false)
 
-      // Refresh profile data
-      if (user) {
-        await fetchProfile(user.id)
-      }
+      // Force refresh profile data
+      await fetchProfile(user.id, true)
     } catch (err: any) {
+      console.error('Error updating profile:', err)
       setError(err.message || 'Failed to update profile')
     } finally {
       setLoading(false)
@@ -235,6 +254,23 @@ export default function UserProfile() {
           </div>
         )}
 
+        {/* Debug Information */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg">
+            <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Debug Info:</h4>
+            <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 font-mono">
+              <div>User ID: {user?.id || 'null'}</div>
+              <div>User Email: {user?.email || 'null'}</div>
+              <div>Profile Loaded: {profile ? 'Yes' : 'No'}</div>
+              <div>Profile ID: {profile?.id || 'null'}</div>
+              <div>Profile Email: {profile?.email || 'null'}</div>
+              <div>Profile Full Name: {profile?.full_name || 'null'}</div>
+              <div>Profile Last Sign In: {profile?.last_sign_in_at || 'null'}</div>
+              <div>Form Full Name Value: {fullName || 'null'}</div>
+            </div>
+          </div>
+        )}
+
         {/* Profile Information */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-3 sm:p-6">
@@ -242,32 +278,45 @@ export default function UserProfile() {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase">
                 Profile Information
               </h3>
-              <button
-                onClick={() => {
-                  if (editing) {
-                    handleUpdateProfile()
-                  } else {
-                    setEditing(true)
-                    setFullName(profile?.full_name || '')
-                  }
-                }}
-                disabled={loading}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary hover:bg-primary/90 text-white rounded transition-colors font-medium disabled:opacity-50"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                    Saving...
-                  </>
-                ) : editing ? (
-                  <>
-                    <Save className="h-3 w-3" />
-                    Save
-                  </>
-                ) : (
-                  'Edit'
-                )}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => user && fetchProfile(user.id, true)}
+                  disabled={loading}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors font-medium disabled:opacity-50"
+                  title="Refresh profile data"
+                >
+                  <div className={loading ? "animate-spin rounded-full h-3 w-3 border-b-2 border-white" : "h-3 w-3"}>
+                    {!loading && "🔄"}
+                  </div>
+                  Refresh
+                </button>
+                <button
+                  onClick={() => {
+                    if (editing) {
+                      handleUpdateProfile()
+                    } else {
+                      setEditing(true)
+                      setFullName(profile?.full_name || '')
+                    }
+                  }}
+                  disabled={loading}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary hover:bg-primary/90 text-white rounded transition-colors font-medium disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                      Saving...
+                    </>
+                  ) : editing ? (
+                    <>
+                      <Save className="h-3 w-3" />
+                      Save
+                    </>
+                  ) : (
+                    'Edit'
+                  )}
+                </button>
+              </div>
             </div>
             
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">

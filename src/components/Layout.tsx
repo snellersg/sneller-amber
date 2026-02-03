@@ -32,6 +32,7 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at for existing sessions
           try {
+            console.log('Checking user record existence for:', user.id)
             const { data: existingUser, error: fetchError } = await supabase
               .from('users')
               .select('id')
@@ -40,8 +41,8 @@ export default function Layout({ children }: LayoutProps) {
 
             if (fetchError && fetchError.code === 'PGRST116') {
               // User doesn't exist in users table, create them
-              console.log('Creating user record in Layout for:', user.id)
-              const { error: insertError } = await supabase
+              console.log('Creating user record in Layout for:', user.id, user.email)
+              const { data: newUser, error: insertError } = await supabase
                 .from('users')
                 .insert({
                   id: user.id,
@@ -51,12 +52,20 @@ export default function Layout({ children }: LayoutProps) {
                   last_sign_in_at: new Date().toISOString(),
                   role: 'user'
                 })
+                .select()
+                .single()
 
               if (insertError) {
-                console.error('Error creating user record:', insertError)
+                console.error('Error creating user record in Layout:', insertError)
+                if (insertError.code === '42501') {
+                  console.error('Permission denied - check RLS policies for users table')
+                }
+              } else {
+                console.log('User record created successfully in Layout:', newUser)
               }
             } else if (!fetchError) {
               // User exists, update last sign-in
+              console.log('Updating last sign-in for existing user:', user.id)
               const { error: updateError } = await supabase
                 .from('users')
                 .update({ last_sign_in_at: new Date().toISOString() })
@@ -64,7 +73,11 @@ export default function Layout({ children }: LayoutProps) {
               
               if (updateError) {
                 console.error('Error updating last_sign_in_at:', updateError)
+              } else {
+                console.log('Last sign-in updated successfully')
               }
+            } else {
+              console.error('Error checking user existence:', fetchError)
             }
           } catch (updateErr) {
             console.error('Error in last_sign_in_at update:', updateErr)
