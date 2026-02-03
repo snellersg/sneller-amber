@@ -14,7 +14,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [user, setUser] = useState<any>(null)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function Layout({ children }: LayoutProps) {
         if (error) throw error
         
         if (user) {
-          setUser(user)
+          setUserEmail(user.email || null)
           // Check if user is admin from metadata (support both property names)
           const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
           setIsAdmin(adminStatus)
@@ -44,12 +44,12 @@ export default function Layout({ children }: LayoutProps) {
             console.error('Error in last_sign_in_at update:', updateErr)
           }
         } else {
-          setUser(null)
+          setUserEmail(null)
           setIsAdmin(false)
         }
       } catch (error) {
         console.error('Error checking user:', error)
-        setUser(null)
+        setUserEmail(null)
         setIsAdmin(false)
       }
     }
@@ -61,7 +61,7 @@ export default function Layout({ children }: LayoutProps) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          setUser(session.user)
+          setUserEmail(session.user.email || null)
           const adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
           setIsAdmin(adminStatus)
           
@@ -79,7 +79,7 @@ export default function Layout({ children }: LayoutProps) {
             console.error('Error in last_sign_in_at update:', error)
           }
         } else {
-          setUser(null)
+          setUserEmail(null)
           setIsAdmin(false)
         }
       }

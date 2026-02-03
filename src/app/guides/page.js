@@ -1,9 +1,8 @@
 'use client'
 
-import React from 'react'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
-import { Construction, Calendar, ArrowRight, FileText, Users, Calculator, Briefcase, DollarSign } from 'lucide-react'
+import { Users, Briefcase, DollarSign, Calendar, FileText, ArrowRight, Construction } from 'lucide-react'
 
 // Simple Badge component
 const Badge = ({ children, variant = 'default', className = '' }) => {
@@ -206,9 +205,7 @@ export default function GuidesPage() {
 
         {/* Categories */}
         <div className="space-y-8">
-          {guideCategories.map((category) => {
-            const IconComponent = category.icon
-            return (
+          {guideCategories.map((category) => (
               <div key={category.title} className="space-y-4">
                 {/* Category Header */}
                 <div className="pb-3 border-b border-gray-200 dark:border-gray-700">
@@ -273,8 +270,7 @@ export default function GuidesPage() {
                   ))}
                 </div>
               </div>
-            )
-          })}
+            ))}
         </div>
 
         {/* Footer Note */}

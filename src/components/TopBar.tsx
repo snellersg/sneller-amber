@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
-import { Menu, LogOut, User as UserIcon, Moon, Sun, Monitor } from 'lucide-react'
+import { Menu, LogOut, User as UserIcon, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 

@@ -1,20 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Loader2 } from 'lucide-react'
 
 export default function HomePage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser()
-        
-        if (error) throw error
+        const { data: { user } } = await supabase.auth.getUser()
         
         // Authenticated users go to Sheets & Docs, unauthenticated to login
         if (user) {
@@ -22,7 +19,7 @@ export default function HomePage() {
         } else {
           router.push('/login')
         }
-      } catch (error) {
+      } catch {
         // On error, redirect to login
         router.push('/login')
       }

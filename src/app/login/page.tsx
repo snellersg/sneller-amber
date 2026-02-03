@@ -67,16 +67,15 @@ export default function LoginPage() {
         setPassword('')
         setConfirmPassword('')
       } else {
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
 
         if (signInError) throw signInError
 
-        if (data.user) {
-          router.push('/sheets-and-docs')
-        }
+        // Successful login - redirect to sheets and docs
+        router.push('/sheets-and-docs')
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred')

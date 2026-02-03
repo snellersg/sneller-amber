@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(req: NextRequest) {
+export async function middleware(_req: NextRequest) {
   // During build time or when environment variables are missing, just continue
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.next()
