@@ -32,13 +32,25 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at for existing sessions
           try {
-            const { error: updateError } = await supabase
+            const timestamp = new Date().toISOString()
+            const { error: updateByIdError } = await supabase
               .from('users')
-              .update({ last_sign_in_at: new Date().toISOString() })
+              .update({ last_sign_in_at: timestamp })
               .eq('id', user.id)
 
-            if (updateError) {
-              console.error('Error updating last_sign_in_at:', updateError)
+            if (updateByIdError) {
+              console.error('Error updating last_sign_in_at by id:', updateByIdError)
+            }
+
+            if (user.email) {
+              const { error: updateByEmailError } = await supabase
+                .from('users')
+                .update({ last_sign_in_at: timestamp })
+                .eq('email', user.email)
+
+              if (updateByEmailError) {
+                console.error('Error updating last_sign_in_at by email:', updateByEmailError)
+              }
             }
           } catch (updateErr) {
             console.error('Error in last_sign_in_at update:', updateErr)
@@ -67,13 +79,25 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at when user session is detected
           try {
-            const { error } = await supabase
+            const timestamp = new Date().toISOString()
+            const { error: updateByIdError } = await supabase
               .from('users')
-              .update({ last_sign_in_at: new Date().toISOString() })
+              .update({ last_sign_in_at: timestamp })
               .eq('id', session.user.id)
             
-            if (error) {
-              console.error('Error updating last_sign_in_at:', error)
+            if (updateByIdError) {
+              console.error('Error updating last_sign_in_at by id:', updateByIdError)
+            }
+
+            if (session.user.email) {
+              const { error: updateByEmailError } = await supabase
+                .from('users')
+                .update({ last_sign_in_at: timestamp })
+                .eq('email', session.user.email)
+
+              if (updateByEmailError) {
+                console.error('Error updating last_sign_in_at by email:', updateByEmailError)
+              }
             }
           } catch (error) {
             console.error('Error in last_sign_in_at update:', error)
