@@ -57,7 +57,7 @@ type GuidesData = Record<string, Guide>;
 // All available guides with basic info
 const guides: GuidesData = {
   'acm-sales-client-handoff-meeting': {
-    title: 'ACM/Sales - Client Handoff Meeting',
+    title: 'ACM/Sales - Client Handoff Meeting Prep',
     description: 'Complete workflow for transitioning new clients from sales to account management',
     category: 'Meetings',
     isComplete: true,
@@ -107,8 +107,28 @@ const guides: GuidesData = {
     estimatedTime: '15 minutes',
     difficulty: 'Beginner',
     lastUpdated: 'January 2026',
-    live: false,
+    live: true,
     sections: [
+      {
+        title: 'Our L10 Document System',
+        content: 'Our L10 document is the shared system we use to track, assign, and resolve issues across all L10 teams—so everyone can see what\'s being worked on, by whom, and what the current status is. When an issue is added, it stays connected to its related to-dos, ownership, and progress, which builds confidence that concerns will be addressed and that you\'ll receive an answer back (even if the outcome isn\'t exactly what you hoped for).\n\nThe document also makes it easy to share issues between different L10s without losing context. To keep issues clear and healthy for team morale, we prefer linking issues to an Asana task when context is needed—rather than relying on short, contextless "spreadsheet issues" that can be misread. L10 to-dos can sync with Asana so they live alongside our other work, helping us prioritize throughout the week (not just right before the meeting), increasing collaboration and visibility. L10 items are coded to match the L10 agenda so they\'re searchable later, and we keep a permanent record of past issues and solutions to understand what was solved, how, and by who.',
+        steps: [
+          '• All L10 teams use the shared document for transparency and accountability',
+          '• Issues remain connected to their to-dos, ownership, and progress tracking',
+          '• Link issues to Asana tasks for additional context when needed',
+          '• L10 to-dos sync with Asana for better weekly prioritization',
+          '• Items are coded to match L10 agenda for easy searching',
+          '• Keep permanent record of past issues and solutions',
+          '• Asana Note: Use Asana for one-off issues. Don\'t use it to manage systemic or recurring annual work—bring systemic issues to Gavin or Henry.'
+        ],
+        videos: [
+          {
+            src: 'https://drive.google.com/file/d/1EK-PrISaq6oOriyb9Z5v8kxwh7ns5M46/preview',
+            title: 'L10 Document System Overview',
+            description: 'Visual walkthrough of how our L10 document system works for tracking and resolving issues across all teams.'
+          }
+        ]
+      },
       {
         title: 'Understanding the L10 Format',
         content: 'The Level 10 Meeting format is designed for efficient weekly leadership meetings.',
@@ -192,7 +212,7 @@ const guides: GuidesData = {
   'create-a-construction-work-order': {
     title: 'Create a Construction Work Order (CWO)',
     description: 'Process for creating construction work orders in BossLM',
-    category: 'Estimating & Contracting',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '20 minutes',
     difficulty: 'Intermediate',
@@ -237,7 +257,7 @@ const guides: GuidesData = {
   'create-a-work-order': {
     title: 'Create a Work Order (WO)',
     description: 'Standard work order creation and management procedures',
-    category: 'Estimating & Contracting',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '15 minutes',
     difficulty: 'Beginner',
@@ -282,7 +302,7 @@ const guides: GuidesData = {
   'create-a-lawn-contract': {
     title: 'Create a Lawn Contract',
     description: 'Complete process for lawn service contract creation and setup',
-    category: 'Estimating & Contracting',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '30 minutes',
     difficulty: 'Intermediate',
@@ -327,7 +347,7 @@ const guides: GuidesData = {
   'create-a-winter-contract': {
     title: 'Create a Winter Contract',
     description: 'Winter service contract creation with service level specifications',
-    category: 'Estimating & Contracting',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '35 minutes',
     difficulty: 'Advanced',
@@ -372,7 +392,7 @@ const guides: GuidesData = {
   'working-a-snow-event': {
     title: 'Working a Snow Event',
     description: 'Complete workflow for managing snow event operations from morning to evening',
-    category: 'Workflows',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '20-30 minutes',
     difficulty: 'Intermediate',
@@ -417,7 +437,7 @@ const guides: GuidesData = {
   'cascading-customer-communication-to-ops': {
     title: 'Cascading Customer Communication to Ops',
     description: 'Process for effectively communicating customer needs to operations teams',
-    category: 'Workflows',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '20 minutes',
     difficulty: 'Intermediate',
@@ -462,7 +482,7 @@ const guides: GuidesData = {
   'measure-maps-in-sitefotos': {
     title: 'Creating/Editing LM & SP Maps',
     description: 'Guide for measuring and editing landscape maintenance and snow plow maps',
-    category: 'Workflows',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '40 minutes',
     difficulty: 'Advanced',
@@ -518,7 +538,7 @@ const guides: GuidesData = {
   'create-tickets-for-ops': {
     title: 'Create Tickets for Ops',
     description: 'Process for creating operational tickets and work assignments',
-    category: 'Workflows',
+    category: 'Operational',
     isComplete: true,
     estimatedTime: '15 minutes',
     difficulty: 'Beginner',
@@ -826,17 +846,21 @@ export default function GuidePage() {
                   <div className="mt-6 space-y-4">
                     {section.videos.map((video, vidIndex) => (
                       <div key={vidIndex} className="space-y-2">
-                        <video 
-                          controls 
-                          className="w-full max-w-2xl rounded-lg shadow-md"
-                        >
-                          <source src={video.src} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                        {video.title && (
-                          <h4 className="font-medium text-gray-900 dark:text-white">
-                            {video.title}
-                          </h4>
+                        {video.src.includes('drive.google.com') ? (
+                          <iframe
+                            src={video.src}
+                            className="w-full max-w-2xl rounded-lg shadow-md aspect-video"
+                            allowFullScreen
+                            frameBorder="0"
+                          ></iframe>
+                        ) : (
+                          <video 
+                            controls 
+                            className="w-full max-w-2xl rounded-lg shadow-md"
+                          >
+                            <source src={video.src} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
                         )}
                         {video.description && (
                           <p className="text-sm text-gray-600 dark:text-gray-400">

@@ -81,7 +81,7 @@ const guideCategories = [
     guides: [
       {
         slug: 'acm-sales-client-handoff-meeting',
-        title: 'ACM/Sales - Client Handoff Meeting',
+        title: 'ACM/Sales - Client Handoff Meeting Prep',
         description: 'Complete workflow for transitioning new clients from sales to account management',
         updated: 'January 2026',
         hasContent: true,
@@ -90,19 +90,19 @@ const guideCategories = [
       {
         slug: 'use-the-l10-document',
         title: 'How to use the L10 Document',
-        description: 'L10 meeting structure integrated with Asana task management system',
-        updated: 'January 2026',
+        description: 'Complete guide for utilizing L10 documentation in operations',
+        updated: 'February 2026',
         hasContent: true,
-        live: false
+        live: true
       }
     ]
   },
   {
-    title: 'Bidding',
-    description: 'Estimating, work orders, and contract creation',
-    icon: Calculator,
-    color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-    iconColor: 'text-gray-600 dark:text-gray-400',
+    title: 'Operational',
+    description: 'Daily operations, estimating, work orders, contracts, and process management',
+    icon: Briefcase,
+    color: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
+    iconColor: 'text-blue-600 dark:text-blue-400',
     guides: [
       {
         slug: 'create-a-construction-work-order',
@@ -135,16 +135,7 @@ const guideCategories = [
         updated: 'January 2026',
         hasContent: true,
         live: false
-      }
-    ]
-  },
-  {
-    title: 'Workflows',
-    description: 'Daily operations, customer communication, and process management',
-    icon: Briefcase,
-    color: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
-    iconColor: 'text-blue-600 dark:text-blue-400',
-    guides: [
+      },
       {
         slug: 'work-a-snow-event',
         title: 'Work a Snow Event',

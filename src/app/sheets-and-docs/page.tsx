@@ -38,7 +38,6 @@ const sections = [
         title: "25/26 Data for Customer Reporting",
         url: "https://lookerstudio.google.com/u/0/reporting/935959fe-0330-4a4d-a088-7ceb4b0757e2/page/p_aywo571rod",
         description: "Looker Studio dashboard with data for 2025/2026 customer reporting and analytics.",
-        badge: "NEW",
       },
       {
         title: "ACM/Steve Snow Convo Cheat Sheet",
