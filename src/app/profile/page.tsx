@@ -80,7 +80,39 @@ export default function UserProfile() {
         .eq('id', userId)
         .single()
 
-      if (error && error.code !== 'PGRST116') {
+      if (error && error.code === 'PGRST116') {
+        // User record doesn't exist, create one
+        console.log('Creating user record for:', userId)
+        const { data: authUser } = await supabase.auth.getUser()
+        
+        if (authUser.user) {
+          const { data: newUserData, error: insertError } = await supabase
+            .from('users')
+            .insert({
+              id: userId,
+              email: authUser.user.email,
+              full_name: '',
+              created_at: new Date().toISOString(),
+              last_sign_in_at: new Date().toISOString(),
+              role: 'user'
+            })
+            .select()
+            .single()
+
+          if (insertError) {
+            console.error('Error creating user record:', insertError)
+            return
+          }
+
+          if (newUserData) {
+            setProfile(newUserData)
+            setFullName(newUserData.full_name || '')
+          }
+        }
+        return
+      }
+
+      if (error) {
         throw error
       }
 

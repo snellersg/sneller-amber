@@ -32,13 +32,39 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at for existing sessions
           try {
-            const { error: updateError } = await supabase
+            const { data: existingUser, error: fetchError } = await supabase
               .from('users')
-              .update({ last_sign_in_at: new Date().toISOString() })
+              .select('id')
               .eq('id', user.id)
-            
-            if (updateError) {
-              console.error('Error updating last_sign_in_at:', updateError)
+              .single()
+
+            if (fetchError && fetchError.code === 'PGRST116') {
+              // User doesn't exist in users table, create them
+              console.log('Creating user record in Layout for:', user.id)
+              const { error: insertError } = await supabase
+                .from('users')
+                .insert({
+                  id: user.id,
+                  email: user.email,
+                  full_name: '',
+                  created_at: new Date().toISOString(),
+                  last_sign_in_at: new Date().toISOString(),
+                  role: 'user'
+                })
+
+              if (insertError) {
+                console.error('Error creating user record:', insertError)
+              }
+            } else if (!fetchError) {
+              // User exists, update last sign-in
+              const { error: updateError } = await supabase
+                .from('users')
+                .update({ last_sign_in_at: new Date().toISOString() })
+                .eq('id', user.id)
+              
+              if (updateError) {
+                console.error('Error updating last_sign_in_at:', updateError)
+              }
             }
           } catch (updateErr) {
             console.error('Error in last_sign_in_at update:', updateErr)
@@ -67,13 +93,39 @@ export default function Layout({ children }: LayoutProps) {
           
           // Update last_sign_in_at when user session is detected
           try {
-            const { error } = await supabase
+            const { data: existingUser, error: fetchError } = await supabase
               .from('users')
-              .update({ last_sign_in_at: new Date().toISOString() })
+              .select('id')
               .eq('id', session.user.id)
-            
-            if (error) {
-              console.error('Error updating last_sign_in_at:', error)
+              .single()
+
+            if (fetchError && fetchError.code === 'PGRST116') {
+              // User doesn't exist in users table, create them
+              console.log('Creating user record in auth handler for:', session.user.id)
+              const { error: insertError } = await supabase
+                .from('users')
+                .insert({
+                  id: session.user.id,
+                  email: session.user.email,
+                  full_name: '',
+                  created_at: new Date().toISOString(),
+                  last_sign_in_at: new Date().toISOString(),
+                  role: 'user'
+                })
+
+              if (insertError) {
+                console.error('Error creating user record:', insertError)
+              }
+            } else if (!fetchError) {
+              // User exists, update last sign-in
+              const { error } = await supabase
+                .from('users')
+                .update({ last_sign_in_at: new Date().toISOString() })
+                .eq('id', session.user.id)
+              
+              if (error) {
+                console.error('Error updating last_sign_in_at:', error)
+              }
             }
           } catch (error) {
             console.error('Error in last_sign_in_at update:', error)
