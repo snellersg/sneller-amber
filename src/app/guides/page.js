@@ -162,11 +162,11 @@ const guideCategories = [
       },
       {
         slug: 'work-through-lm-renewals',
-        title: 'Work Through LM Renewals',
-        description: 'Complete process for managing lawn maintenance contract renewals',
-        updated: 'January 2026',
+        title: 'LM Renewal Walkthrough',
+        description: 'Complete process for managing landscape maintenance contract renewals',
+        updated: 'February 2026',
         hasContent: true,
-        live: false
+        live: true
       }
     ]
   },

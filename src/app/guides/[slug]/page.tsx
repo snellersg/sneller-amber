@@ -1,9 +1,189 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Calendar, Clock, FileText, Construction } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowLeft, FileText, Construction, Copy, Check } from 'lucide-react'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+
+// Copy button component for template text
+const CopyButton = ({ text }: { text: string }) => {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy text: ', err)
+    }
+  }
+
+  return (
+    <Button
+      onClick={handleCopy}
+      variant="outline"
+      size="sm"
+      className="flex items-center gap-2 ml-auto"
+    >
+      {copied ? (
+        <>
+          <Check className="w-3 h-3" />
+          Copied
+        </>
+      ) : (
+        <>
+          <Copy className="w-3 h-3" />
+          Copy
+        </>
+      )}
+    </Button>
+  )
+}
+
+// Format text with basic markdown-like styling
+const formatText = (text: string) => {
+  // Handle code blocks
+  if (text.includes('```')) {
+    const parts = text.split('```')
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        return (
+          <div key={index} className="mt-4 mb-4">
+            <Card className="bg-muted">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">Template Text</span>
+                  <CopyButton text={part.trim()} />
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <pre className="font-mono text-xs leading-relaxed whitespace-pre-wrap">
+                  {part.trim()}
+                </pre>
+              </CardContent>
+            </Card>
+          </div>
+        )
+      }
+      return <span key={index}>{formatInlineText(part)}</span>
+    })
+  }
+  return formatInlineText(text)
+}
+
+// Format inline text elements
+const formatInlineText = (text: string) => {
+  // Handle paragraph breaks (double newlines)
+  if (text.includes('\n\n')) {
+    const paragraphs = text.split('\n\n')
+    return (
+      <>
+        {paragraphs.map((paragraph, index) => (
+          <div key={index} className={index > 0 ? "mt-3" : ""}>
+            {formatSingleParagraph(paragraph.trim())}
+          </div>
+        ))}
+      </>
+    )
+  }
+  
+  return formatSingleParagraph(text)
+}
+
+// Format a single paragraph with inline elements
+const formatSingleParagraph = (text: string) => {
+  // Handle inline code
+  text = text.replace(/`([^`]+)`/g, '<code class="bg-muted px-1 py-0.5 rounded text-xs font-mono">$1</code>')
+  
+  // Handle bold text
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold">$1</strong>')
+  
+  // Handle arrows
+  text = text.replace(/→/g, '<span class="text-primary">→</span>')
+  
+  return <span dangerouslySetInnerHTML={{ __html: text }} />
+}
+
+// Render numbered steps
+const renderSteps = (steps: string[]) => {
+  return (
+    <ol className="space-y-4">
+      {steps.map((step, index) => {
+        const trimmedStep = step.trim()
+        
+        // Check if it's a numbered step
+        const numberedMatch = trimmedStep.match(/^(\d+)\.\s*(.*)$/)
+        if (numberedMatch) {
+          const [, number, content] = numberedMatch
+          
+          // Check for sub-bullets, but ignore bullets inside code blocks
+          const lines = content.split('\n')
+          const mainContent = lines[0]
+          
+          // Only look for sub-bullets if we're not in a code block
+          let subItems: string[] = []
+          let contentToRender = content // Default to full content
+          
+          if (!content.includes('```')) {
+            subItems = lines.slice(1).filter(part => part.trim().match(/^[\s]*[•\-\*]\s/))
+            // If we have sub-bullets, only render the main content
+            if (subItems.length > 0) {
+              contentToRender = mainContent
+            }
+          }
+          
+          return (
+            <li key={index} className="flex items-start gap-3">
+              <span className="text-primary font-semibold flex-shrink-0 mt-0.5">
+                {number}.
+              </span>
+              <div className="flex-1">
+                <div className="text-gray-700 dark:text-gray-300 leading-6">{formatText(contentToRender)}</div>
+                {subItems.length > 0 && (
+                  <ul className="mt-2 ml-0 space-y-2">
+                    {subItems.map((subItem, subIndex) => (
+                      <li key={subIndex} className="flex items-start">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2.5 mr-3 shrink-0"></div>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {formatText(subItem.replace(/^\s*[•\-\*]\s*/, ''))}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          )
+        }
+        
+        // Handle bullet points
+        if (trimmedStep.match(/^[•\-\*]\s/)) {
+          const content = trimmedStep.replace(/^[•\-\*]\s*/, '')
+          return (
+            <li key={index} className="flex items-start">
+              <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
+              <div className="text-gray-700 dark:text-gray-300">{formatText(content)}</div>
+            </li>
+          )
+        }
+        
+        // Fallback
+        return (
+          <li key={index} className="flex items-start gap-3">
+            <span className="text-primary font-semibold flex-shrink-0 mt-0.5">
+              {index + 1}.
+            </span>
+            <div className="text-gray-700 dark:text-gray-300">{formatText(trimmedStep)}</div>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
 
 // Type definitions
 interface GuideImage {
@@ -41,10 +221,7 @@ interface GuideContact {
 interface Guide {
   title: string;
   description: string;
-  category: string;
   isComplete: boolean;
-  estimatedTime: string;
-  difficulty: string;
   lastUpdated: string;
   live: boolean;
   sections: GuideSection[];
@@ -59,10 +236,7 @@ const guides: GuidesData = {
   'acm-sales-client-handoff-meeting': {
     title: 'ACM/Sales - Client Handoff Meeting Prep',
     description: 'Complete workflow for transitioning new clients from sales to account management',
-    category: 'Meetings',
     isComplete: true,
-    estimatedTime: '10-15 minutes',
-    difficulty: 'Beginner',
     lastUpdated: 'January 2026',
     live: true,
     sections: [
@@ -102,10 +276,7 @@ const guides: GuidesData = {
   'use-the-l10-document': {
     title: 'How to use the L10 Document',
     description: 'Complete guide for utilizing L10 documentation in operations',
-    category: 'Meetings',
     isComplete: true,
-    estimatedTime: '15 minutes',
-    difficulty: 'Beginner',
     lastUpdated: 'January 2026',
     live: true,
     sections: [
@@ -167,10 +338,7 @@ const guides: GuidesData = {
   'identifying-pe-opportunities': {
     title: 'Identifying PE Opportunities',
     description: 'Proactive identification and tracking of property enhancement opportunities',
-    category: 'Estimating & Contracting',
     isComplete: true,
-    estimatedTime: '25 minutes',
-    difficulty: 'Intermediate',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -212,10 +380,7 @@ const guides: GuidesData = {
   'create-a-construction-work-order': {
     title: 'Create a Construction Work Order (CWO)',
     description: 'Process for creating construction work orders in BossLM',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '20 minutes',
-    difficulty: 'Intermediate',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -257,10 +422,7 @@ const guides: GuidesData = {
   'create-a-work-order': {
     title: 'Create a Work Order (WO)',
     description: 'Standard work order creation and management procedures',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '15 minutes',
-    difficulty: 'Beginner',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -302,10 +464,7 @@ const guides: GuidesData = {
   'create-a-lawn-contract': {
     title: 'Create a Lawn Contract',
     description: 'Complete process for lawn service contract creation and setup',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '30 minutes',
-    difficulty: 'Intermediate',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -347,10 +506,7 @@ const guides: GuidesData = {
   'create-a-winter-contract': {
     title: 'Create a Winter Contract',
     description: 'Winter service contract creation with service level specifications',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '35 minutes',
-    difficulty: 'Advanced',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -392,10 +548,7 @@ const guides: GuidesData = {
   'working-a-snow-event': {
     title: 'Working a Snow Event',
     description: 'Complete workflow for managing snow event operations from morning to evening',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '20-30 minutes',
-    difficulty: 'Intermediate',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -437,10 +590,7 @@ const guides: GuidesData = {
   'cascading-customer-communication-to-ops': {
     title: 'Cascading Customer Communication to Ops',
     description: 'Process for effectively communicating customer needs to operations teams',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '20 minutes',
-    difficulty: 'Intermediate',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -482,10 +632,7 @@ const guides: GuidesData = {
   'measure-maps-in-sitefotos': {
     title: 'Creating/Editing LM & SP Maps',
     description: 'Guide for measuring and editing landscape maintenance and snow plow maps',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '40 minutes',
-    difficulty: 'Advanced',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -538,10 +685,7 @@ const guides: GuidesData = {
   'create-tickets-for-ops': {
     title: 'Create Tickets for Ops',
     description: 'Process for creating operational tickets and work assignments',
-    category: 'Operational',
     isComplete: true,
-    estimatedTime: '15 minutes',
-    difficulty: 'Beginner',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -580,58 +724,48 @@ const guides: GuidesData = {
       }
     ]
   },
-  'working-through-lm-renewals': {
-    title: 'Working Through LM Renewals',
+  'work-through-lm-renewals': {
+    title: 'LM Renewal Walkthrough',
     description: 'Complete process for managing landscape maintenance contract renewals',
-    category: 'Business Development',
     isComplete: true,
-    estimatedTime: '45 minutes',
-    difficulty: 'Advanced',
-    lastUpdated: 'January 2026',
-    live: false,
+    lastUpdated: 'February 2026',
+    live: true,
     sections: [
       {
-        title: 'Renewal Planning and Timeline',
-        content: 'Strategic planning and timeline management for successful contract renewals.',
+        title: 'Phase 1: Research + PES Setup',
+        content: 'Begin the renewal process by researching historical data and creating Property Estimating Sheets (PES) for each property.',
         steps: [
-          '• Begin renewal process 90 days before contract expiration',
-          '• Review current contract performance and service history',
-          '• Analyze pricing adjustments needed for inflation and costs',
-          '• Schedule site visits to assess any property changes',
-          '• Prepare renewal proposal with updated terms and pricing'
+          '1. Open the **LM Renewals/Retentions** document.',
+          '2. Go to the `onsitehourstakeoff` tab.',
+          '3. Scroll to columns `Z–AH` and begin filling in the `?` cells using the average data found in columns `D–T`.',
+          '4. **Flag questionable numbers:**\n   • Verify anything that looks off with the team\n   • Review carefully before finalizing any property → LM Budgets that seem incorrect or clearly need adjusting',
+          '5. For each property you review in the `onsitehourstakeoff` tab:\n   • Find the same property on the `LM {YEAR}` tab\n   • In `Column O`, mark the status as **InProgress**',
+          '6. Open the **PES Template** `Template 00 LM {YEAR} Sheet with Takeoffs` and create a new copy for each property:\n   • Click `File → Make a copy`\n   • Name the file: `{BOSS PROPERTY NAME} - PES Takeoffs {YEAR}`',
+          '7. In the new PES file, enter the data from columns `Z–AH` in the `onsitehourstakeoff` tab for the corresponding property.',
+          '8. Save the completed PES file in the `{YEAR} LM PES Sheets` Google Drive folder.',
+          '9. After the PES file is completed and saved:\n   • Return to the renewal document\n   • In the `LM {YEAR}` tab, change `Column O` to **Researched** for that property'
         ]
       },
       {
-        title: 'Client Relationship Management',
-        content: 'Building and maintaining strong client relationships for successful renewals.',
+        title: 'Phase 2: BossLM Updates + Contract Prep',
+        content: 'Update BossLM with new takeoffs and prepare updated contracts with proper pricing and terms.',
         steps: [
-          '• Schedule face-to-face meetings with key decision makers',
-          '• Present annual service review highlighting achievements',
-          '• Address any service issues or concerns proactively',
-          '• Demonstrate value added through the contract period',
-          '• Gather feedback on service satisfaction and improvement areas'
+          '1. Compare the renewal document **onsite takeoffs** against the new PES sheet you created to confirm they match.',
+          '2. Update the takeoffs in **BossLM** for that property.',
+          '3. Once BossLM takeoffs are updated, pull the **new LM contract**.',
+          '4. Compare against last year\'s contract and update as needed:\n   • Drive times\n   • Minimums\n   • Any extra services\n   • **Pricing should be 3% higher**, unless it\'s already increased by 3% or more',
+          '5. Verify map accuracy against the BossLM takeoffs.',
+          '6. In the renewal spreadsheet:\n   • Add notes describing what changed\n   • Highlight changes in **yellow**\n   • Add links in the spreadsheet for quick access:\n     • Link to the new contract\n     • Link to the new PES'
         ]
       },
       {
-        title: 'Renewal Negotiation Process',
-        content: 'Professional approach to negotiating contract terms and pricing.',
+        title: 'Phase 3: Delivery + Client Email',
+        content: 'Prepare and send renewal contracts to clients with professional communication and clear expectations.',
         steps: [
-          '• Present renewal proposal with clear value proposition',
-          '• Justify any pricing increases with market data and costs',
-          '• Offer flexible terms or service modifications if needed',
-          '• Address competitive concerns with service differentiation',
-          '• Negotiate win-win solutions that benefit both parties'
-        ]
-      },
-      {
-        title: 'Contract Finalization',
-        content: 'Steps to finalize renewed contracts and ensure smooth transition.',
-        steps: [
-          '• Prepare final contract documents with agreed terms',
-          '• Schedule contract signing with appropriate stakeholders',
-          '• Update service specifications and crew assignments',
-          '• Communicate renewal success to operations team',
-          '• Plan service improvements or changes for new contract period'
+          '1. Create a new email in **Helpdesk** for each renewal\'s primary contact.',
+          '2. Add renewal messaging using the template below:\n\n```\nGood afternoon,\n\nI hope you\'re doing well. It\'s that time of year when we prepare and send out our Landscape Maintenance renewal contracts, and your current contract has expired.\n\nThank you for being a loyal Sneller client — we truly appreciate the opportunity to continue working with you. Attached to this email is your lawn maintenance proposal for the upcoming season. To help us plan for spring cleanups and mulch prep, we ask that signed renewals be returned by Friday, March 6. As the weather permits, we hope to begin work the first full week of March.\n\nA couple of quick notes as you review the proposal:\n- If mulch is deferred this season, pricing may increase. We\'ve found that reduced mulch leads to higher labor and material needs to maintain the same level of weed control.\n- Please mark each optional service as Yes or No. If you select Yes but would like to delay or discuss the service, just note that for us. Selecting No does not prevent you from adding the service later — it simply won\'t be included in this contract without your authorization.\n\nWe appreciate your continued partnership and look forward to another great season.\n\nThank you,\n```',
+          '3. Attach all new contracts pertaining to the account.',
+          '4. Send the email, then update the renewal document status to **Delivered** for each respective property once completed.'
         ]
       }
     ]
@@ -639,10 +773,7 @@ const guides: GuidesData = {
   'submitting-pos': {
     title: 'Submitting PO\'s',
     description: 'Process for submitting purchase orders and procurement requests',
-    category: 'Business Development',
     isComplete: true,
-    estimatedTime: '20 minutes',
-    difficulty: 'Intermediate',
     lastUpdated: 'January 2026',
     live: false,
     sections: [
@@ -752,14 +883,7 @@ export default function GuidePage() {
               This guide is currently under development and will be available soon. 
               Check back later for comprehensive step-by-step instructions.
             </p>
-            <div className="max-w-md p-6 mx-auto mb-8 text-left rounded-lg bg-gray-50 dark:bg-gray-800">
-              <h3 className="mb-3 font-semibold text-gray-900 dark:text-white">Guide Details</h3>
-              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <p><strong>Category:</strong> {guide.category}</p>
-                <p><strong>Estimated Time:</strong> {guide.estimatedTime}</p>
-                <p><strong>Difficulty:</strong> {guide.difficulty}</p>
-              </div>
-            </div>
+
             <Link 
               href="/guides" 
               className="inline-flex items-center px-6 py-3 text-white transition-colors rounded-lg bg-primary hover:bg-primary/90"
@@ -787,90 +911,86 @@ export default function GuidePage() {
         </div>
 
         {/* Guide Header */}
-        <div className="mb-8">
-          <h1 className="mb-3 text-4xl font-semibold font-heading text-foreground">
+        <div className="px-4 mb-8 md:px-8">
+          <h1 className="mb-3 text-3xl font-bold text-gray-900 dark:text-white uppercase">
             {guide.title}
           </h1>
-          <p className="text-lg text-muted-foreground">
-            {guide.description}
-          </p>
+          <div className="text-lg text-gray-600 dark:text-gray-300">
+            {formatText(guide.description)}
+          </div>
         </div>
 
         {/* Guide Content */}
         {guide.isComplete && guide.sections ? (
-          <div className="space-y-8">
+          <div className="px-4 md:px-8">
             {guide.sections.map((section, index) => (
-              <div key={index} className="space-y-4">
-                <h2 className="pb-2 text-2xl font-bold text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">
-                  {section.title}
-                </h2>
-                {section.content && (
-                  <p className="mb-4 text-gray-600 dark:text-gray-300">
-                    {section.content}
-                  </p>
-                )}
-                {section.steps && (
-                  <div className="ml-4">
-                    <ul className="space-y-2">
-                      {section.steps.map((step, stepIndex) => (
-                        <li key={stepIndex} className="text-gray-700 dark:text-gray-300">
-                          {step}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              <div key={index} className="mb-12">
+                <div className="mb-6">
+                  <h2 className="mb-4 text-2xl font-semibold text-gray-900 dark:text-white uppercase">
+                    {section.title}
+                  </h2>
+                  {section.content && (
+                    <div className="mb-6 text-gray-700 dark:text-gray-300 leading-7">
+                      {formatText(section.content)}
+                    </div>
+                  )}
+                </div>
                 
-                {/* Images */}
-                {section.images && (
-                  <div className="mt-6 space-y-4">
-                    {section.images.map((image, imgIndex) => (
-                      <div key={imgIndex} className="space-y-2">
-                        <img 
-                          src={image.src} 
-                          alt={image.alt}
-                          className="w-full max-w-2xl rounded-lg shadow-md"
-                        />
-                        {image.caption && (
-                          <p className="text-sm italic text-gray-500 dark:text-gray-400">
-                            {image.caption}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div>
+                  {section.steps && renderSteps(section.steps)}
+                  
+                  {/* Images */}
+                  {section.images && (
+                    <div className="mt-8 space-y-8">
+                      {section.images.map((image, imgIndex) => (
+                        <div key={imgIndex} className="space-y-3">
+                          <img 
+                            src={image.src} 
+                            alt={image.alt}
+                            className="w-full max-w-4xl border rounded-lg shadow-sm"
+                          />
+                          {image.caption && (
+                            <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+                              {image.caption}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-                {/* Videos */}
-                {section.videos && (
-                  <div className="mt-6 space-y-4">
-                    {section.videos.map((video, vidIndex) => (
-                      <div key={vidIndex} className="space-y-2">
-                        {video.src.includes('drive.google.com') ? (
-                          <iframe
-                            src={video.src}
-                            className="w-full max-w-2xl rounded-lg shadow-md aspect-video"
-                            allowFullScreen
-                            frameBorder="0"
-                          ></iframe>
-                        ) : (
-                          <video 
-                            controls 
-                            className="w-full max-w-2xl rounded-lg shadow-md"
-                          >
-                            <source src={video.src} type="video/mp4" />
-                            Your browser does not support the video tag.
-                          </video>
-                        )}
-                        {video.description && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {video.description}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  {/* Videos */}
+                  {section.videos && (
+                    <div className="mt-8 space-y-8">
+                      {section.videos.map((video, vidIndex) => (
+                        <div key={vidIndex} className="space-y-4">
+                          {video.src.includes('drive.google.com') ? (
+                            <iframe
+                              src={video.src}
+                              className="w-full max-w-4xl border rounded-lg shadow-sm aspect-video"
+                              allowFullScreen
+                              frameBorder="0"
+                            ></iframe>
+                          ) : (
+                            <video 
+                              src={video.src} 
+                              controls
+                              className="w-full max-w-4xl border rounded-lg shadow-sm"
+                            />
+                          )}
+                          {video.title && (
+                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{video.title}</h4>
+                          )}
+                          {video.description && (
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              {video.description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
