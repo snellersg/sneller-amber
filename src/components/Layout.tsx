@@ -29,6 +29,20 @@ export default function Layout({ children }: LayoutProps) {
           // Check if user is admin from metadata (support both property names)
           const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
           setIsAdmin(adminStatus)
+          
+          // Update last_sign_in_at for existing sessions
+          try {
+            const { error: updateError } = await supabase
+              .from('users')
+              .update({ last_sign_in_at: new Date().toISOString() })
+              .eq('id', user.id)
+            
+            if (updateError) {
+              console.error('Error updating last_sign_in_at:', updateError)
+            }
+          } catch (updateErr) {
+            console.error('Error in last_sign_in_at update:', updateErr)
+          }
         } else {
           setUser(null)
           setIsAdmin(false)
@@ -46,11 +60,24 @@ export default function Layout({ children }: LayoutProps) {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email)
         if (session?.user) {
           setUser(session.user)
           const adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
           setIsAdmin(adminStatus)
+          
+          // Update last_sign_in_at when user session is detected
+          try {
+            const { error } = await supabase
+              .from('users')
+              .update({ last_sign_in_at: new Date().toISOString() })
+              .eq('id', session.user.id)
+            
+            if (error) {
+              console.error('Error updating last_sign_in_at:', error)
+            }
+          } catch (error) {
+            console.error('Error in last_sign_in_at update:', error)
+          }
         } else {
           setUser(null)
           setIsAdmin(false)

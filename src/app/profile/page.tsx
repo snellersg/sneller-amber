@@ -8,8 +8,6 @@ import Layout from '@/components/Layout'
 import {
   User as UserIcon,
   Mail,
-  Phone,
-  Building2,
   Save,
   Lock,
   Eye,
@@ -19,21 +17,23 @@ import {
   Loader2
 } from 'lucide-react'
 
-interface UserProfile {
+interface UserProfileData {
   id: string
+  email: string
   full_name: string
-  department: string
-  phone: string
   created_at: string
-  updated_at: string
-  last_active?: string
+  last_sign_in_at: string
+  status: string
+  role: string
+  approved_by?: string
+  approved_at?: string
 }
 
 export default function UserProfile() {
   // Force reload - compact styling update
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [profile, setProfile] = useState<UserProfileData | null>(null)
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -41,8 +41,6 @@ export default function UserProfile() {
 
   // Profile form state
   const [fullName, setFullName] = useState('')
-  const [department, setDepartment] = useState('')
-  const [phone, setPhone] = useState('')
 
   // Password change state
   const [showPasswordForm, setShowPasswordForm] = useState(false)
@@ -77,7 +75,7 @@ export default function UserProfile() {
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
         .eq('id', userId)
         .single()
@@ -89,8 +87,6 @@ export default function UserProfile() {
       if (data) {
         setProfile(data)
         setFullName(data.full_name || '')
-        setDepartment(data.department || '')
-        setPhone(data.phone || '')
       }
     } catch (err: any) {
       console.error('Error fetching profile:', err)
@@ -106,14 +102,12 @@ export default function UserProfile() {
 
     try {
       const { error: updateError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
+        .from('users')
+        .update({
           full_name: fullName,
-          department: department,
-          phone: phone,
-          updated_at: new Date().toISOString()
+          last_sign_in_at: new Date().toISOString()
         })
+        .eq('id', user.id)
 
       if (updateError) throw updateError
 
@@ -223,8 +217,6 @@ export default function UserProfile() {
                   } else {
                     setEditing(true)
                     setFullName(profile?.full_name || '')
-                    setDepartment(profile?.department || '')
-                    setPhone(profile?.phone || '')
                   }
                 }}
                 disabled={loading}
@@ -260,7 +252,7 @@ export default function UserProfile() {
               </div>
 
               {/* Full Name */}
-              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+              <div className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
                     <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
@@ -284,57 +276,78 @@ export default function UserProfile() {
                   </p>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
 
-              {/* Department */}
+        {/* Account Information */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-3 sm:p-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase mb-4">
+              Account Information
+            </h3>
+            
+            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+              {/* User ID */}
               <div className="p-3 border-b border-gray-200 dark:border-gray-600">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                    <Building2 className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Department</span>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">User ID</span>
                 </div>
-                {editing ? (
-                  <input
-                    type="text"
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Enter your department"
-                  />
-                ) : (
-                  <p className={!profile?.department 
-                    ? "text-sm text-gray-500 dark:text-gray-400 italic" 
-                    : "text-sm font-medium text-gray-900 dark:text-white"
-                  }>
-                    {profile?.department || 'Not set'}
-                  </p>
-                )}
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded inline-block">
+                  {user?.id}
+                </p>
               </div>
 
-              {/* Phone */}
+              {/* Created Date */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Member Since</span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {profile?.created_at 
+                    ? new Date(profile.created_at).toLocaleDateString()
+                    : user?.created_at
+                    ? new Date(user.created_at).toLocaleDateString()
+                    : 'Unknown'}
+                </p>
+              </div>
+
+              {/* Last Sign In */}
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Last Sign In</span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {profile?.last_sign_in_at 
+                    ? new Date(profile.last_sign_in_at).toLocaleDateString()
+                    : 'Never'}
+                </p>
+              </div>
+
+              {/* Email Confirmed */}
               <div className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                    <Phone className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+                    <Mail className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Phone Number</span>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Email Status</span>
                 </div>
-                {editing ? (
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Enter your phone number"
-                  />
-                ) : (
-                  <p className={!profile?.phone 
-                    ? "text-sm text-gray-500 dark:text-gray-400 italic" 
-                    : "text-sm font-medium text-gray-900 dark:text-white"
-                  }>
-                    {profile?.phone || 'Not set'}
-                  </p>
-                )}
+                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                  user?.email_confirmed_at
+                    ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
+                    : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
+                }`}>
+                  {user?.email_confirmed_at ? 'Verified' : 'Pending Verification'}
+                </span>
               </div>
             </div>
           </div>
@@ -449,77 +462,6 @@ export default function UserProfile() {
                   <p className="text-xs text-gray-500 dark:text-gray-500">Click "Change" above to update your password</p>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Account Information */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-3 sm:p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white uppercase mb-4">
-              Account Information
-            </h3>
-            
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
-              {/* User ID */}
-              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                  </div>
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">User ID</span>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded inline-block">
-                  {user?.id}
-                </p>
-              </div>
-
-              {/* Created Date */}
-              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                  </div>
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Member Since</span>
-                </div>
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {profile?.created_at 
-                    ? new Date(profile.created_at).toLocaleDateString()
-                    : user?.created_at
-                    ? new Date(user.created_at).toLocaleDateString()
-                    : 'Unknown'}
-                </p>
-              </div>
-
-              {/* Last Updated */}
-              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                    <UserIcon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                  </div>
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Last Updated</span>
-                </div>
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString() : 'Never'}
-                </p>
-              </div>
-
-              {/* Email Confirmed */}
-              <div className="p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-                    <Mail className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                  </div>
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Email Status</span>
-                </div>
-                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                  user?.email_confirmed_at
-                    ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
-                    : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
-                }`}>
-                  {user?.email_confirmed_at ? 'Verified' : 'Pending Verification'}
-                </span>
-              </div>
             </div>
           </div>
         </div>

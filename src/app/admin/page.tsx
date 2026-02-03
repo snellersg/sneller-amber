@@ -5,37 +5,14 @@ import { supabase } from '@/lib/supabase'
 import Layout from '@/components/Layout'
 import { Users, Shield, RefreshCw, Loader2, Plus, Trash2, Crown, CheckCircle } from 'lucide-react'
 
-// Add viewport meta for fixed mobile experience
-if (typeof window !== 'undefined') {
-  const viewport = document.querySelector('meta[name="viewport"]')
-  if (viewport) {
-    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
-  } else {
-    const meta = document.createElement('meta')
-    meta.name = 'viewport'
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-    document.head.appendChild(meta)
-  }
-}
-
 interface User {
   id: string
   email: string
   full_name: string
   created_at: string
   last_sign_in_at: string
-  status?: string
+  status?: string // Calculated from auth data, not stored in DB
   role?: string
-}
-
-interface AuditLog {
-  id: string
-  action: string
-  user_email?: string
-  user_id?: string
-  target_user_email?: string
-  details?: any
-  created_at: string
 }
 
 interface AllowedDomain {
@@ -75,7 +52,7 @@ export default function AdminPage() {
           full_name: 'Brendon Dalaba',
           created_at: new Date().toISOString(),
           last_sign_in_at: 'Never',
-          status: 'active' as string,
+          status: 'verified' as string,
           role: 'admin' as string
         }]
         
@@ -83,18 +60,36 @@ export default function AdminPage() {
         return
       }
 
-      // Map users with basic data
-      const usersWithActivity = usersData?.map(user => ({
-        id: user.id,
-        email: user.email,
-        full_name: user.full_name || user.email.split('@')[0] || 'Unknown',
-        created_at: user.created_at,
-        last_sign_in_at: user.last_sign_in_at || 'Never',
-        status: user.status || 'active',
-        role: user.role || 'user'
-      })) || []
+      // Get current user's auth data to check their verification status
+      const { data: { user: currentUser } } = await supabase.auth.getUser()
 
-      setUsers(usersWithActivity)
+      // Map users with email verification status
+      const usersWithStatus = usersData?.map(user => {
+        // Check if this is the current user by email (more reliable than ID matching)
+        const isCurrentUser = currentUser && user.email === currentUser.email
+        let emailVerified = true // Default to verified for users in the system
+        
+        if (isCurrentUser) {
+          // For current user, use actual auth verification status
+          emailVerified = !!currentUser.email_confirmed_at
+        } else {
+          // For other users, assume verified since they're in the database
+          // (they likely completed registration process to be here)
+          emailVerified = true
+        }
+        
+        return {
+          id: user.id,
+          email: user.email,
+          full_name: user.full_name || user.email.split('@')[0] || 'Unknown',
+          created_at: user.created_at,
+          last_sign_in_at: user.last_sign_in_at || 'Never',
+          status: emailVerified ? 'verified' : 'pending',
+          role: user.role || 'user'
+        }
+      }) || []
+
+      setUsers(usersWithStatus)
       
     } catch (error) {
       console.error('Error in fetchUsers:', error)
@@ -187,52 +182,9 @@ export default function AdminPage() {
         return
       }
 
-      // Log the action
-      await supabase
-        .from('admin_audit_log_backup')
-        .insert({
-          action: `${action}_user`,
-          user_id: userId,
-          admin_user_id: 'brendon.dalaba@snellersg.com', // Current admin
-          details: `User role changed from ${currentRole} to ${newRole}`
-        })
-
       fetchUsers()
     } catch (error) {
       console.error('Error in toggleUserRole:', error)
-    }
-  }
-
-  const toggleUserStatus = async (userId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'active' ? 'suspended' : 'active'
-    const action = newStatus === 'active' ? 'approve' : 'suspend'
-    
-    if (!confirm(`${action} this user?`)) return
-
-    try {
-      const { error } = await supabase
-        .from('users')
-        .update({ status: newStatus })
-        .eq('id', userId)
-
-      if (error) {
-        console.error('Error updating user status:', error)
-        return
-      }
-
-      // Log the action
-      await supabase
-        .from('admin_audit_log_backup')
-        .insert({
-          action: `${action}_user`,
-          user_id: userId,
-          admin_user_id: 'brendon.dalaba@snellersg.com', // Current admin
-          details: `User status changed from ${currentStatus} to ${newStatus}`
-        })
-
-      fetchUsers()
-    } catch (error) {
-      console.error('Error in toggleUserStatus:', error)
     }
   }
 
@@ -250,21 +202,17 @@ export default function AdminPage() {
         return
       }
 
-      // Log the action
-      await supabase
-        .from('admin_audit_log_backup')
-        .insert({
-          action: 'delete_user',
-          user_id: userId,
-          admin_user_id: 'brendon.dalaba@snellersg.com', // Current admin
-          details: `User ${userEmail} permanently deleted`
-        })
-
       fetchUsers()
     } catch (error) {
       console.error('Error in deleteUser:', error)
     }
   }
+
+  useEffect(() => {
+    // Fetch both datasets on initial load to populate counts
+    fetchUsers()
+    fetchAllowedDomains()
+  }, [])
 
   useEffect(() => {
     if (activeTab === 'users') {
@@ -288,7 +236,7 @@ export default function AdminPage() {
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Registered Users
+              REGISTERED USERS
             </h2>
             <button
               onClick={fetchUsers}
@@ -312,6 +260,9 @@ export default function AdminPage() {
                     <tr>
                       <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
                         User
+                      </th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
+                        Status
                       </th>
                       <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
                         Role
@@ -339,6 +290,18 @@ export default function AdminPage() {
                               {user.email}
                             </p>
                           </div>
+                        </td>
+                        <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                            user.status === 'verified' 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200' 
+                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200'
+                          }`}>
+                            {user.status === 'verified' && (
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                            )}
+                            {user.status === 'verified' ? 'Verified' : 'Unverified'}
+                          </span>
                         </td>
                         <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -372,27 +335,6 @@ export default function AdminPage() {
                         </td>
                         <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-1 sm:space-x-2">
-                            {/* Conditional Action Buttons based on user status */}
-                            {user.status === 'pending' ? (
-                              /* Approve Button for pending users */
-                              <button
-                                onClick={() => toggleUserStatus(user.id, user.status || 'pending')}
-                                className="inline-flex items-center p-1 sm:p-1.5 rounded text-white bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 transition-colors"
-                                title="Approve User"
-                              >
-                                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                              </button>
-                            ) : (
-                              /* Suspend Button for active users */
-                              <button
-                                onClick={() => toggleUserStatus(user.id, user.status || 'active')}
-                                className="inline-flex items-center p-1 sm:p-1.5 rounded text-white bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 transition-colors"
-                                title="Suspend User"
-                              >
-                                <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
-                              </button>
-                            )}
-                            
                             {/* Role Toggle Button */}
                             {user.role === 'admin' ? (
                               /* Demote Button */
@@ -452,7 +394,7 @@ export default function AdminPage() {
           </div>
 
           <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2 sm:mb-3">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white uppercase mb-2 sm:mb-3">
               Add New Domain
             </h3>
             <form onSubmit={addDomain} className="space-y-3 sm:space-y-0 sm:flex sm:flex-row sm:gap-4">
@@ -543,8 +485,8 @@ export default function AdminPage() {
     <Layout>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="mb-4 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-              Admin Dashboard
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white uppercase">
+              ADMIN PANEL
             </h1>
             <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               Manage users and configure access controls

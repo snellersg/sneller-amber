@@ -70,8 +70,8 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
-    return pathname === path || pathname.startsWith(path + '/');
-  };
+    return pathname === path || pathname.startsWith(path + '/')
+  }
 
   return (
     <div className="flex flex-col h-full">

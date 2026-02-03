@@ -60,14 +60,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
           }
         })
 
-      console.log('Found headings:', headingArray) // Debug log
-      console.log('Found headings:', headingArray) // Debug log
-      
-      // Temporary debug log for L10 guide
-      if (window.location.pathname.includes('use-the-l10-document')) {
-        console.log('L10 Guide - Found headings:', headingArray)
-        console.log('L10 Guide - All heading elements before filtering:', Array.from(mainContent.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(h => ({ tag: h.tagName, text: h.textContent, id: h.id })))
-      }
+
       
       setHeadings(headingArray)
     }
