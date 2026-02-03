@@ -14,7 +14,8 @@ import {
   EyeOff,
   Check,
   XCircle,
-  Loader2
+  Loader2,
+  RefreshCw
 } from 'lucide-react'
 
 interface UserProfileData {
@@ -79,6 +80,19 @@ export default function UserProfile() {
   }, [router])
 
   const ensureUserRecord = async (authUser: User) => {
+    const { data: existing, error: existingError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', authUser.id)
+      .maybeSingle()
+
+    if (existingError) {
+      console.error('Error checking user record:', existingError)
+      return
+    }
+
+    if (existing) return
+
     const payload = {
       id: authUser.id,
       email: authUser.email,
@@ -86,12 +100,12 @@ export default function UserProfile() {
       role: 'user'
     }
 
-    const { error } = await supabase
+    const { error: insertError } = await supabase
       .from('users')
-      .upsert(payload, { onConflict: 'id', ignoreDuplicates: true })
+      .insert(payload)
 
-    if (error) {
-      console.error('Error ensuring user record:', error)
+    if (insertError && insertError.code !== '23505') {
+      console.error('Error ensuring user record:', insertError)
     }
   }
 
@@ -154,16 +168,35 @@ export default function UserProfile() {
 
       const { data: updatedProfile, error: updateError } = await supabase
         .from('users')
-        .upsert({
-          id: user.id,
-          email: user.email,
+        .update({
           full_name: fullName,
-          role: profile?.role || 'user'
-        }, { onConflict: 'id' })
+          email: user.email
+        })
+        .eq('id', user.id)
         .select()
-        .single()
+        .maybeSingle()
 
       if (updateError) throw updateError
+
+      if (!updatedProfile) {
+        const { data: insertedProfile, error: insertError } = await supabase
+          .from('users')
+          .insert({
+            id: user.id,
+            email: user.email,
+            full_name: fullName,
+            role: profile?.role || 'user'
+          })
+          .select()
+          .single()
+
+        if (insertError && insertError.code !== '23505') throw insertError
+
+        if (insertedProfile) {
+          setProfile(insertedProfile)
+          setFullName(insertedProfile.full_name || '')
+        }
+      }
 
       setMessage('Profile updated successfully!')
       setEditing(false)
@@ -290,9 +323,7 @@ export default function UserProfile() {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors font-medium disabled:opacity-50"
                   title="Refresh profile data"
                 >
-                  <div className={loading ? "animate-spin rounded-full h-3 w-3 border-b-2 border-white" : "h-3 w-3"}>
-                    {!loading && "🔄"}
-                  </div>
+                  <RefreshCw className={loading ? "h-3 w-3 animate-spin" : "h-3 w-3"} />
                   Refresh
                 </button>
                 <button
