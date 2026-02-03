@@ -78,65 +78,63 @@ export default function UserProfile() {
     checkUser()
   }, [router])
 
-  const fetchProfile = async (userId: string, forceRefresh = false) => {
+  const ensureUserRecord = async (authUser: User) => {
+    const payload = {
+      id: authUser.id,
+      email: authUser.email,
+      full_name: authUser.user_metadata?.full_name || '',
+      role: 'user'
+    }
+
+    const { error } = await supabase
+      .from('users')
+      .upsert(payload, { onConflict: 'id', ignoreDuplicates: true })
+
+    if (error) {
+      console.error('Error ensuring user record:', error)
+    }
+  }
+
+  const fetchProfile = async (userId: string) => {
     try {
-      console.log('Fetching profile for user:', userId)
       const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
-        .single()
-
-      if (error && error.code === 'PGRST116') {
-        // User record doesn't exist, create one
-        console.log('User record not found, creating new record for:', userId)
-        const { data: authUser } = await supabase.auth.getUser()
-        
-        if (authUser.user) {
-          console.log('Creating user with email:', authUser.user.email)
-          const { data: newUserData, error: insertError } = await supabase
-            .from('users')
-            .insert({
-              id: userId,
-              email: authUser.user.email,
-              full_name: '',
-              created_at: new Date().toISOString(),
-              last_sign_in_at: new Date().toISOString(),
-              role: 'user'
-            })
-            .select()
-            .single()
-
-          if (insertError) {
-            console.error('Error creating user record:', insertError)
-            // Try to show a more helpful error message
-            if (insertError.code === '42501') {
-              console.error('Permission denied - check RLS policies')
-            }
-            return
-          }
-
-          console.log('User record created successfully:', newUserData)
-          if (newUserData) {
-            setProfile(newUserData)
-            setFullName(newUserData.full_name || '')
-          }
-        }
-        return
-      }
+        .maybeSingle()
 
       if (error) {
-        console.error('Database error:', error)
         throw error
       }
 
-      console.log('Profile data fetched:', data)
+      if (!data && user) {
+        await ensureUserRecord(user)
+        const { data: retryData, error: retryError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle()
+
+        if (retryError) throw retryError
+
+        if (retryData) {
+          setProfile(retryData)
+          setFullName(retryData.full_name || '')
+        } else if (user?.user_metadata?.full_name) {
+          setFullName(user.user_metadata.full_name)
+        }
+
+        return
+      }
+
       if (data) {
         setProfile(data)
         setFullName(data.full_name || '')
+      } else if (user?.user_metadata?.full_name) {
+        setFullName(user.user_metadata.full_name)
       }
     } catch (err: any) {
-      console.error('Error in fetchProfile:', err)
+      console.error('Error fetching profile:', err)
     }
   }
 
@@ -148,28 +146,35 @@ export default function UserProfile() {
     setMessage('')
 
     try {
-      console.log('Updating profile with full_name:', fullName)
-      const { error: updateError } = await supabase
+      const { error: authUpdateError } = await supabase.auth.updateUser({
+        data: { full_name: fullName }
+      })
+
+      if (authUpdateError) throw authUpdateError
+
+      const { data: updatedProfile, error: updateError } = await supabase
         .from('users')
-        .update({
+        .upsert({
+          id: user.id,
+          email: user.email,
           full_name: fullName,
-          last_sign_in_at: new Date().toISOString()
-        })
-        .eq('id', user.id)
+          role: profile?.role || 'user'
+        }, { onConflict: 'id' })
+        .select()
+        .single()
 
-      if (updateError) {
-        console.error('Update error:', updateError)
-        throw updateError
-      }
+      if (updateError) throw updateError
 
-      console.log('Profile updated successfully')
       setMessage('Profile updated successfully!')
       setEditing(false)
 
-      // Force refresh profile data
-      await fetchProfile(user.id, true)
+      if (updatedProfile) {
+        setProfile(updatedProfile)
+        setFullName(updatedProfile.full_name || '')
+      } else {
+        await fetchProfile(user.id)
+      }
     } catch (err: any) {
-      console.error('Error updating profile:', err)
       setError(err.message || 'Failed to update profile')
     } finally {
       setLoading(false)
@@ -349,11 +354,11 @@ export default function UserProfile() {
                     placeholder="Enter your full name"
                   />
                 ) : (
-                  <p className={!profile?.full_name 
+                  <p className={!(profile?.full_name || user?.user_metadata?.full_name)
                     ? "text-sm text-gray-500 dark:text-gray-400 italic" 
                     : "text-sm font-medium text-gray-900 dark:text-white"
                   }>
-                    {profile?.full_name || 'Not set'}
+                    {profile?.full_name || user?.user_metadata?.full_name || 'Not set'}
                   </p>
                 )}
               </div>
@@ -408,8 +413,10 @@ export default function UserProfile() {
                   <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Last Sign In</span>
                 </div>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {profile?.last_sign_in_at 
+                  {profile?.last_sign_in_at
                     ? new Date(profile.last_sign_in_at).toLocaleDateString()
+                    : user?.last_sign_in_at
+                    ? new Date(user.last_sign_in_at).toLocaleDateString()
                     : 'Never'}
                 </p>
               </div>
