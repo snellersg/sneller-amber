@@ -148,10 +148,12 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
                   <button
                     onClick={() => scrollToHeading(heading.id)}
                     className={`text-left w-full px-2 py-1 rounded transition-colors cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                      heading.level === 2 ? 'text-xs font-medium' : 'text-xs pl-4 font-normal'
+                      heading.level === 1 ? 'text-xs font-bold' : heading.level === 2 ? 'text-xs pl-4 font-medium' : 'text-xs pl-8 font-normal'
                     } ${
                       activeId === heading.id
                         ? 'font-medium text-white bg-primary'
+                        : heading.level === 1
+                        ? 'text-gray-900 dark:text-gray-100'
                         : heading.level === 2
                         ? 'text-gray-900 dark:text-gray-100'
                         : 'text-gray-600 dark:text-gray-400'
@@ -184,10 +186,12 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
                 <button
                   onClick={() => scrollToHeading(heading.id)}
                   className={`text-left w-full px-2 py-1 rounded transition-colors cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    heading.level === 2 ? 'text-xs font-medium' : 'text-xs pl-4 font-normal'
+                    heading.level === 1 ? 'text-xs font-bold' : heading.level === 2 ? 'text-xs pl-4 font-medium' : 'text-xs pl-8 font-normal'
                   } ${
                     activeId === heading.id
                       ? 'font-medium text-white bg-primary'
+                      : heading.level === 1
+                      ? 'text-gray-900 dark:text-gray-100'
                       : heading.level === 2
                       ? 'text-gray-900 dark:text-gray-100'
                       : 'text-gray-600 dark:text-gray-400'

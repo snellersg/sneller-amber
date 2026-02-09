@@ -84,7 +84,9 @@ const guideCategories = [
         description: 'Complete workflow for transitioning new clients from sales to account management',
         updated: 'January 2026',
         hasContent: true,
-        live: true
+        live: true,
+        category: 'Meetings',
+        season: 'GENERAL'
       },
       {
         slug: 'use-the-l10-document',
@@ -92,7 +94,9 @@ const guideCategories = [
         description: 'Complete guide for utilizing L10 documentation in operations',
         updated: 'February 2026',
         hasContent: true,
-        live: true
+        live: true,
+        category: 'Meetings',
+        season: 'GENERAL'
       }
     ]
   },
@@ -109,7 +113,9 @@ const guideCategories = [
         description: 'Process for creating construction work orders in BossLM',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'GENERAL'
       },
       {
         slug: 'create-a-work-order',
@@ -117,7 +123,9 @@ const guideCategories = [
         description: 'Standard work order creation and management procedures',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'GENERAL'
       },
       {
         slug: 'create-a-lawn-contract',
@@ -125,7 +133,9 @@ const guideCategories = [
         description: 'Complete process for lawn service contract creation and setup',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'LM'
       },
       {
         slug: 'create-a-winter-contract',
@@ -133,7 +143,9 @@ const guideCategories = [
         description: 'Winter service contract creation with service level specifications',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'WR'
       },
       {
         slug: 'work-a-snow-event',
@@ -141,7 +153,9 @@ const guideCategories = [
         description: 'Complete workflow for managing snow event operations from morning to evening',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'WR'
       },
       {
         slug: 'measure-maps-in-sitefotos',
@@ -149,7 +163,9 @@ const guideCategories = [
         description: 'Map creation and editing procedures using SiteFotos platform',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'LM'
       },
       {
         slug: 'create-tickets-for-ops',
@@ -157,7 +173,9 @@ const guideCategories = [
         description: 'Ticket creation workflow for operational requests and issues',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Operational',
+        season: 'GENERAL'
       },
       {
         slug: 'work-through-lm-renewals',
@@ -165,7 +183,19 @@ const guideCategories = [
         description: 'Complete process for managing landscape maintenance contract renewals',
         updated: 'February 2026',
         hasContent: true,
-        live: true
+        live: true,
+        category: 'Operational',
+        season: 'LM'
+      },
+      {
+        slug: 'wr-renewal-walkthrough',
+        title: 'WR Renewal Walkthrough',
+        description: 'Coming soon: workflow for managing WR renewal processes',
+        updated: 'February 2026',
+        hasContent: false,
+        live: false,
+        category: 'Operational',
+        season: 'WR'
       }
     ]
   },
@@ -182,7 +212,9 @@ const guideCategories = [
         description: 'Purchase order submission process and approval workflows',
         updated: 'January 2026',
         hasContent: true,
-        live: false
+        live: false,
+        category: 'Financial',
+        season: 'GENERAL'
       }
     ]
   }
@@ -204,11 +236,25 @@ export default function GuidesPage() {
         </div>
 
         {/* Categories */}
-        <div className="space-y-8">
-          {guideCategories.map((category) => (
+        <div className="space-y-12">
+          {guideCategories.map((category) => {
+            // Group guides by season
+            const guidesByseason = category.guides.reduce((acc, guide) => {
+              if (!acc[guide.season]) {
+                acc[guide.season] = [];
+              }
+              acc[guide.season].push(guide);
+              return acc;
+            }, {});
+
+            // Define season order
+            const seasonOrder = ['GENERAL', 'WR', 'LM'];
+            const orderedSeasons = seasonOrder.filter(season => guidesByseason[season]?.length > 0);
+
+            return (
               <div key={category.title} className="space-y-4">
                 {/* Category Header */}
-                <div className="pb-3 border-b border-gray-200 dark:border-gray-700">
+                <div className="pb-3">
                   <h2 className="mb-2 text-2xl font-bold text-gray-900 uppercase dark:text-white">
                     {category.title}
                   </h2>
@@ -217,60 +263,76 @@ export default function GuidesPage() {
                   </p>
                 </div>
 
-                {/* Guides Grid */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {category.guides.map((guide) => (
-                    <Card 
-                      key={guide.slug} 
-                      className={`flex flex-col h-full ${!guide.live ? 'opacity-60' : ''}`}
-                    >
-                      <CardHeader className="flex-shrink-0">
-                        <div className="space-y-3">
-                          <CardTitle className="leading-snug">
-                            {guide.title}
-                          </CardTitle>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="flex-shrink-0 w-3 h-3 text-gray-400" />
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              Updated {guide.updated}
-                            </span>
-                          </div>
+                {/* Season Subsections */}
+                <div className="space-y-4">
+                  {orderedSeasons.map((season) => (
+                    <div key={season} className="space-y-3">
+                      {/* Season Header */}
+                      <div className="flex items-center gap-2">
+                        <div className="text-lg font-semibold text-gray-800 dark:text-gray-200 uppercase">
+                          {season}
                         </div>
-                      </CardHeader>
+                        <div className="h-px bg-gray-300 dark:bg-gray-600 flex-1"></div>
+                      </div>
 
-                      <CardContent className="flex flex-col justify-between flex-1 space-y-3">
-                        <CardDescription className="flex-1">
-                          {guide.description}
-                        </CardDescription>
+                      {/* Season Guides Grid */}
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        {guidesByseason[season].map((guide) => (
+                          <Card 
+                            key={guide.slug} 
+                            className={`flex flex-col h-full ${!guide.live ? 'opacity-60' : ''}`}
+                          >
+                            <CardHeader className="flex-shrink-0">
+                              <div className="space-y-3">
+                                <CardTitle className="leading-snug">
+                                  {guide.title}
+                                </CardTitle>
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="flex-shrink-0 w-3 h-3 text-gray-400" />
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    Updated {guide.updated}
+                                  </span>
+                                </div>
+                              </div>
+                            </CardHeader>
 
-                        {guide.live ? (
-                          guide.hasContent ? (
-                            <Button 
-                              href={`/guides/${guide.slug}`}
-                              className="w-full mt-auto"
-                            >
-                              <FileText className="w-3 h-3" />
-                              View Guide
-                              <ArrowRight className="w-3 h-3" />
-                            </Button>
-                          ) : (
-                            <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
-                              <Construction className="w-3 h-3" />
-                              Under Development
-                            </div>
-                          )
-                        ) : (
-                          <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed">
-                            <Construction className="w-3 h-3" />
-                            Coming Soon
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
+                            <CardContent className="flex flex-col justify-between flex-1 space-y-3">
+                              <CardDescription className="flex-1">
+                                {guide.description}
+                              </CardDescription>
+
+                              {guide.live ? (
+                                guide.hasContent ? (
+                                  <Button 
+                                    href={`/guides/${guide.slug}`}
+                                    className="w-full mt-auto"
+                                  >
+                                    <FileText className="w-3 h-3" />
+                                    View Guide
+                                    <ArrowRight className="w-3 h-3" />
+                                  </Button>
+                                ) : (
+                                  <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
+                                    <Construction className="w-3 h-3" />
+                                    Under Development
+                                  </div>
+                                )
+                              ) : (
+                                <div className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-lg text-sm font-medium px-3 py-1.5 w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed">
+                                  <Construction className="w-3 h-3" />
+                                  Coming Soon
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
-            ))}
+            );
+          })}
         </div>
 
         {/* Footer Note */}
