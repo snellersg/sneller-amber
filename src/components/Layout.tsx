@@ -72,14 +72,6 @@ export default function Layout({ children }: LayoutProps) {
           } catch (updateErr) {
             console.error('Error in last_sign_in_at update:', updateErr)
           }
-
-              if (updateByEmailError) {
-                console.error('Error updating last_sign_in_at by email:', updateByEmailError)
-              }
-            }
-          } catch (updateErr) {
-            console.error('Error in last_sign_in_at update:', updateErr)
-          }
         } else {
           setUserEmail(null)
           setIsAdmin(false)
