@@ -29,8 +29,51 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'users' | 'domains'>('users')
   const [newDomain, setNewDomain] = useState('')
   const [domainNotes, setDomainNotes] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+
+  // Check if current user is admin before allowing access
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+        
+        if (authError || !user) {
+          console.error('Auth error:', authError)
+          setAuthLoading(false)
+          return
+        }
+
+        setUserEmail(user.email || null)
+
+        // Check if user is admin from database
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('email', user.email)
+          .single()
+
+        if (userError) {
+          console.error('Error checking admin status:', userError)
+          setIsAdmin(false)
+        } else {
+          setIsAdmin(userData?.role === 'admin')
+        }
+      } catch (error) {
+        console.error('Error in checkAdminStatus:', error)
+        setIsAdmin(false)
+      } finally {
+        setAuthLoading(false)
+      }
+    }
+
+    checkAdminStatus()
+  }, [])
 
   const fetchUsers = async () => {
+    if (!isAdmin) return
+    
     setLoading(true)
     try {
       // Fetch all users from the new consolidated users table
@@ -99,6 +142,8 @@ export default function AdminPage() {
   }
 
   const fetchAllowedDomains = async () => {
+    if (!isAdmin) return
+    
     setLoading(true)
     try {
       const { data, error } = await supabase
@@ -209,18 +254,22 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    // Fetch both datasets on initial load to populate counts
-    fetchUsers()
-    fetchAllowedDomains()
-  }, [])
+    // Only fetch data if user is confirmed admin
+    if (isAdmin && !authLoading) {
+      fetchUsers()
+      fetchAllowedDomains()
+    }
+  }, [isAdmin, authLoading])
 
   useEffect(() => {
+    if (!isAdmin || authLoading) return
+    
     if (activeTab === 'users') {
       fetchUsers()
     } else if (activeTab === 'domains') {
       fetchAllowedDomains()
     }
-  }, [activeTab])
+  }, [activeTab, isAdmin, authLoading])
 
   const renderContent = () => {
     if (loading) {
@@ -484,14 +533,36 @@ export default function AdminPage() {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="mb-4 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white uppercase">
-              ADMIN PANEL
-            </h1>
-            <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">
-              Manage users and configure access controls
-            </p>
+        {authLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="ml-2 text-gray-600 dark:text-gray-400">Checking permissions...</span>
           </div>
+        ) : !isAdmin ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Shield className="h-16 w-16 text-gray-400 mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Access Denied
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
+              You don't have permission to access the admin panel.
+            </p>
+            {userEmail && (
+              <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                Signed in as: {userEmail}
+              </p>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="mb-4 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white uppercase">
+                ADMIN PANEL
+              </h1>
+              <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                Manage users and configure access controls
+              </p>
+            </div>
 
           <div className="border-b border-gray-200 dark:border-gray-700 mb-4 sm:mb-8">
             <nav className="-mb-px flex space-x-4 sm:space-x-8">
@@ -533,7 +604,9 @@ export default function AdminPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
             {renderContent()}
           </div>
-        </div>
+        </>
+        )}
+      </div>
     </Layout>
   )
 }

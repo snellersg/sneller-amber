@@ -26,8 +26,25 @@ export default function Layout({ children }: LayoutProps) {
         
         if (user) {
           setUserEmail(user.email || null)
-          // Check if user is admin from metadata (support both property names)
-          const adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
+          
+          // Check if user is admin from the users table in database
+          let adminStatus = false
+          try {
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('role')
+              .eq('email', user.email)
+              .single()
+            
+            if (!userError && userData?.role === 'admin') {
+              adminStatus = true
+            }
+          } catch (roleError) {
+            console.error('Error checking user role:', roleError)
+            // Fallback to checking user metadata
+            adminStatus = user.user_metadata?.isAdmin || user.user_metadata?.is_admin || false
+          }
+          
           setIsAdmin(adminStatus)
           
           // Update last_sign_in_at for existing sessions
@@ -55,6 +72,14 @@ export default function Layout({ children }: LayoutProps) {
           } catch (updateErr) {
             console.error('Error in last_sign_in_at update:', updateErr)
           }
+
+              if (updateByEmailError) {
+                console.error('Error updating last_sign_in_at by email:', updateByEmailError)
+              }
+            }
+          } catch (updateErr) {
+            console.error('Error in last_sign_in_at update:', updateErr)
+          }
         } else {
           setUserEmail(null)
           setIsAdmin(false)
@@ -74,7 +99,25 @@ export default function Layout({ children }: LayoutProps) {
       async (event, session) => {
         if (session?.user) {
           setUserEmail(session.user.email || null)
-          const adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
+          
+          // Check if user is admin from the users table in database
+          let adminStatus = false
+          try {
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('role')
+              .eq('email', session.user.email)
+              .single()
+            
+            if (!userError && userData?.role === 'admin') {
+              adminStatus = true
+            }
+          } catch (roleError) {
+            console.error('Error checking user role:', roleError)
+            // Fallback to checking user metadata
+            adminStatus = session.user.user_metadata?.isAdmin || session.user.user_metadata?.is_admin || false
+          }
+          
           setIsAdmin(adminStatus)
           
           // Update last_sign_in_at when user session is detected
