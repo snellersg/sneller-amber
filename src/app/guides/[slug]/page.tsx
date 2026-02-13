@@ -111,77 +111,83 @@ const formatSingleParagraph = (text: string) => {
 // Render numbered steps
 const renderSteps = (steps: string[]) => {
   return (
-    <ol className="space-y-4">
+    <div className="space-y-4">
       {steps.map((step, index) => {
         const trimmedStep = step.trim()
         
         // Check if it's a numbered step
-        const numberedMatch = trimmedStep.match(/^(\d+)\.\s*(.*)$/)
+        const numberedMatch = trimmedStep.match(/^(\d+)\.\s*(.*)$/s)
         if (numberedMatch) {
           const [, number, content] = numberedMatch
           
-          // Check for sub-bullets, but ignore bullets inside code blocks
-          const lines = content.split('\n')
-          const mainContent = lines[0]
-          
-          // Only look for sub-bullets if we're not in a code block
+          // Parse content to separate main content from sub-bullets
+          let mainContent = content
           let subItems: string[] = []
-          let contentToRender = content // Default to full content
           
-          if (!content.includes('```')) {
-            subItems = lines.slice(1).filter(part => part.trim().match(/^[\s]*[•\-\*]\s/))
-            // If we have sub-bullets, only render the main content
-            if (subItems.length > 0) {
-              contentToRender = mainContent
+          // Handle multi-line content with sub-bullets (ignore bullets inside code blocks)
+          if (content.includes('\n') && !content.includes('```')) {
+            const lines = content.split('\n')
+            const mainLine = lines[0]
+            const possibleSubItems = lines.slice(1)
+            
+            // Find sub-bullets (lines that start with whitespace + bullet)
+            const bulletLines = possibleSubItems.filter(line => {
+              const trimmedLine = line.trim()
+              return line.match(/^\s+[\u2022\u2023\u25E6\u2043\u2219\-\*]\s/) && trimmedLine.length > 0
+            })
+            
+            if (bulletLines.length > 0) {
+              mainContent = mainLine
+              subItems = bulletLines.map(line => line.replace(/^\s*[\u2022\u2023\u25E6\u2043\u2219\-\*]\s*/, ''))
             }
           }
           
           return (
-            <li key={index} className="flex items-start gap-3">
+            <div key={index} className="flex items-start gap-3">
               <span className="text-primary font-semibold flex-shrink-0 mt-0.5">
                 {number}.
               </span>
               <div className="flex-1">
-                <div className="text-gray-700 dark:text-gray-300 leading-6">{formatText(contentToRender)}</div>
+                <div className="text-gray-700 dark:text-gray-300 leading-6">{formatText(mainContent)}</div>
                 {subItems.length > 0 && (
-                  <ul className="mt-2 ml-0 space-y-2">
+                  <ul className="mt-2 ml-0 space-y-1">
                     {subItems.map((subItem, subIndex) => (
                       <li key={subIndex} className="flex items-start">
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2.5 mr-3 shrink-0"></div>
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 mr-3 shrink-0"></div>
                         <span className="text-gray-600 dark:text-gray-400">
-                          {formatText(subItem.replace(/^\s*[•\-\*]\s*/, ''))}
+                          {formatText(subItem)}
                         </span>
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
-            </li>
+            </div>
           )
         }
         
-        // Handle bullet points
-        if (trimmedStep.match(/^[•\-\*]\s/)) {
-          const content = trimmedStep.replace(/^[•\-\*]\s*/, '')
+        // Handle bullet points (unordered list items)
+        if (trimmedStep.match(/^[\u2022\u2023\u25E6\u2043\u2219\-\*]\s/)) {
+          const content = trimmedStep.replace(/^[\u2022\u2023\u25E6\u2043\u2219\-\*]\s*/, '')
           return (
-            <li key={index} className="flex items-start">
+            <div key={index} className="flex items-start">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 shrink-0"></div>
               <div className="text-gray-700 dark:text-gray-300">{formatText(content)}</div>
-            </li>
+            </div>
           )
         }
         
-        // Fallback
+        // Fallback for non-numbered items
         return (
-          <li key={index} className="flex items-start gap-3">
+          <div key={index} className="flex items-start gap-3">
             <span className="text-primary font-semibold flex-shrink-0 mt-0.5">
               {index + 1}.
             </span>
             <div className="text-gray-700 dark:text-gray-300">{formatText(trimmedStep)}</div>
-          </li>
+          </div>
         )
       })}
-    </ol>
+    </div>
   )
 }
 
