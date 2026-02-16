@@ -52,26 +52,21 @@ export default function UserProfile() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        console.log('Checking user authentication...')
         const { data: { user }, error } = await supabase.auth.getUser()
         
         if (error) {
-          console.error('Auth error:', error)
           throw error
         }
         
         if (!user) {
-          console.log('No user found, redirecting to login')
           router.push('/login')
           return
         }
 
-        console.log('User authenticated:', user.email)
         setUser(user)
         setFullName(user.user_metadata?.full_name || '')
         await fetchProfile(user.id)
       } catch (error) {
-        console.error('Auth error:', error)
         router.push('/login')
       }
     }
@@ -93,7 +88,6 @@ export default function UserProfile() {
       .maybeSingle()
 
     if (existingError) {
-      console.error('Error checking user record:', existingError)
       return
     }
 
@@ -111,7 +105,7 @@ export default function UserProfile() {
       .insert(payload)
 
     if (insertError && insertError.code !== '23505') {
-      console.error('Error ensuring user record:', insertError)
+      // Silent error handling for user record creation
     }
   }
 
@@ -160,7 +154,7 @@ export default function UserProfile() {
         setFullName(user.user_metadata.full_name)
       }
     } catch (err: any) {
-      console.error('Error fetching profile:', err)
+      // Silent error handling for profile fetch
     }
   }
 
@@ -279,23 +273,6 @@ export default function UserProfile() {
             <div className="flex items-center">
               <XCircle className="h-4 w-4 mr-2" />
               {error}
-            </div>
-          </div>
-        )}
-
-        {/* Debug Information */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg">
-            <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Debug Info:</h4>
-            <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 font-mono">
-              <div>User ID: {user?.id || 'null'}</div>
-              <div>User Email: {user?.email || 'null'}</div>
-              <div>Profile Loaded: {profile ? 'Yes' : 'No'}</div>
-              <div>Profile ID: {profile?.id || 'null'}</div>
-              <div>Profile Email: {profile?.email || 'null'}</div>
-              <div>Profile Full Name: {profile?.full_name || 'null'}</div>
-              <div>Profile Last Sign In: {profile?.last_sign_in_at || 'null'}</div>
-              <div>Form Full Name Value: {fullName || 'null'}</div>
             </div>
           </div>
         )}

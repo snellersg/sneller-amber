@@ -156,11 +156,46 @@ export default function AdminPage() {
         return
       }
 
-      setAllowedDomains(data || [])
+      const domains = data || []
+      setAllowedDomains(domains)
+
+      // Bootstrap default domains if none exist
+      if (domains.length === 0) {
+        await bootstrapDefaultDomains()
+      }
     } catch (error) {
       console.error('Error in fetchAllowedDomains:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const bootstrapDefaultDomains = async () => {
+    const defaultDomains = [
+      { domain: 'snellersg.com', notes: 'Primary company domain' },
+      { domain: 'snellerslandscaping.com', notes: 'Landscaping division domain' }
+    ]
+
+    try {
+      for (const domainData of defaultDomains) {
+        const { error } = await supabase
+          .from('allowed_domains')
+          .insert(domainData)
+
+        if (error && error.code !== '23505') { // Ignore duplicate key errors
+          console.error('Error adding default domain:', domainData.domain, error)
+        }
+      }
+      
+      // Refresh the list after adding defaults
+      const { data } = await supabase
+        .from('allowed_domains')
+        .select('*')
+        .order('added_at', { ascending: false })
+      
+      setAllowedDomains(data || [])
+    } catch (error) {
+      console.error('Error bootstrapping default domains:', error)
     }
   }
 

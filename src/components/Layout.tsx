@@ -3,9 +3,55 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { User } from '@supabase/supabase-js'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import TableOfContents from './TableOfContents'
+
+// Helper function to ensure user record exists in database
+const ensureUserRecord = async (authUser: User) => {
+  try {
+    const { data: existing, error: existingError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', authUser.id)
+      .maybeSingle()
+
+    if (existingError) {
+      console.error('Error checking user record:', existingError)
+      return false
+    }
+
+    if (existing) return true
+
+    const payload = {
+      id: authUser.id,
+      email: authUser.email,
+      full_name: authUser.user_metadata?.full_name || '',
+      role: 'user'
+    }
+
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert(payload)
+
+    if (insertError) {
+      if (insertError.code === '23505') {
+        // Duplicate key error - user already exists
+        console.log('User record already exists (duplicate key):', authUser.email)
+        return true
+      }
+      console.error('Error ensuring user record in Layout:', insertError)
+      return false
+    }
+    
+    console.log('User record ensured for:', authUser.email)
+    return true
+  } catch (error) {
+    console.error('Error in ensureUserRecord:', error)
+    return false
+  }
+}
 
 interface LayoutProps {
   children: React.ReactNode
@@ -26,6 +72,11 @@ export default function Layout({ children }: LayoutProps) {
         
         if (user) {
           setUserEmail(user.email || null)
+          
+          // Ensure user record exists in database (backup mechanism)
+          ensureUserRecord(user).catch(err => {
+            console.warn('Non-critical: Could not ensure user record:', err)
+          })
           
           // Check if user is admin from the users table in database
           let adminStatus = false
@@ -91,6 +142,11 @@ export default function Layout({ children }: LayoutProps) {
       async (event, session) => {
         if (session?.user) {
           setUserEmail(session.user.email || null)
+          
+          // Ensure user record exists in database (backup mechanism)
+          ensureUserRecord(session.user).catch(err => {
+            console.warn('Non-critical: Could not ensure user record:', err)
+          })
           
           // Check if user is admin from the users table in database
           let adminStatus = false

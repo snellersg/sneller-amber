@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { Mail, Lock, Loader2, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react'
@@ -19,9 +19,56 @@ export default function LoginPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const router = useRouter()
 
+  // Run database check on component mount in development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      checkDatabaseSetup()
+    }
+  }, [])
+
   const validateEmailDomain = (email: string) => {
     const allowedDomains = ['@snellersg.com', '@snellerslandscaping.com']
-    return allowedDomains.some(domain => email.toLowerCase().endsWith(domain))
+    const normalizedEmail = email.toLowerCase().trim()
+    return allowedDomains.some(domain => normalizedEmail.endsWith(domain))
+  }
+
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters long'
+    }
+    if (!/[A-Za-z]/.test(password)) {
+      return 'Password must contain at least one letter'
+    }
+    if (!/[0-9]/.test(password)) {
+      return 'Password must contain at least one number'
+    }
+    return null
+  }
+
+  // Diagnostic function to check database setup
+  const checkDatabaseSetup = async () => {
+    try {
+      console.log('Checking database setup...')
+      
+      // Check if allowed_domains table exists and has data
+      const { data: domains, error: domainsError } = await supabase
+        .from('allowed_domains')
+        .select('domain, is_active')
+        .limit(5)
+      
+      console.log('Allowed domains check:', { domains, domainsError })
+      
+      // Check if users table exists
+      const { data: users, error: usersError } = await supabase
+        .from('users')
+        .select('count')
+        .limit(1)
+      
+      console.log('Users table check:', { usersError })
+      
+    } catch (error) {
+      console.log('Database setup check failed:', error)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,8 +77,9 @@ export default function LoginPage() {
     setError('')
     setMessage('')
 
-    // Client-side domain validation
-    if (!validateEmailDomain(email)) {
+    // Client-side validation
+    const normalizedEmail = email.toLowerCase().trim()
+    if (!validateEmailDomain(normalizedEmail)) {
       setError('Only @snellersg.com and @snellerslandscaping.com email addresses are allowed')
       setLoading(false)
       return
@@ -39,9 +87,10 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        // Password validation for signup
-        if (password.length < 8) {
-          setError('Password must be at least 8 characters long')
+        // Enhanced password validation for signup
+        const passwordError = validatePassword(password)
+        if (passwordError) {
+          setError(passwordError)
           setLoading(false)
           return
         }
@@ -53,14 +102,55 @@ export default function LoginPage() {
         }
 
         const { data, error: signUpError } = await supabase.auth.signUp({
-          email,
+          email: normalizedEmail,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            data: {
+              full_name: '', // Ensure user_metadata is clean
+            }
           }
         })
 
-        if (signUpError) throw signUpError
+        if (signUpError) {
+          // More specific error handling for common issues
+          console.log('Full signup error details:', {
+            message: signUpError.message,
+            code: signUpError.code,
+            details: signUpError.details,
+            hint: signUpError.hint,
+            status: signUpError.status
+          })
+          
+          const errorMessage = signUpError.message?.toLowerCase() || ''
+          const errorCode = signUpError.code
+          
+          if (errorMessage.includes('domain') || 
+              errorMessage.includes('not allowed') ||
+              errorCode === '23503' || // foreign key violation
+              errorCode === 'P0001') { // raised exception from trigger
+            setError('Your email domain is not authorized for registration. Please contact brendon.dalaba@snellersg.com to add your domain.')
+          } else if (errorMessage.includes('relation') && errorMessage.includes('does not exist')) {
+            setError('Database configuration incomplete. Please contact your administrator to complete the setup.')
+          } else if (errorMessage.includes('function') && errorMessage.includes('does not exist')) {
+            setError('Database configuration incomplete. Please contact your administrator to complete the setup.')
+          } else if (errorMessage.includes('user already registered') || 
+                     errorMessage.includes('already been registered')) {
+            setError('This email address is already registered. Please try signing in instead.')
+          } else if (errorMessage.includes('invalid email')) {
+            setError('Please enter a valid email address.')
+          } else if (errorMessage.includes('weak password') || errorMessage.includes('password')) {
+            setError('Password is too weak. Please choose a stronger password with at least 8 characters.')
+          } else if (errorMessage.includes('database error saving') || 
+                     errorMessage.includes('saving new user') ||
+                     (errorMessage.includes('database') && errorMessage.includes('error'))) {
+            setError('Database configuration issue detected. This might be a temporary problem or require administrator setup. Please try again in a moment or contact brendon.dalaba@snellersg.com.')
+          } else {
+            setError(`Signup failed: ${signUpError.message || 'Please try again or contact support.'} (Error code: ${errorCode || 'unknown'})`)
+          }
+          setLoading(false)
+          return
+        }
 
         setMessage('Check your email for the confirmation link!')
         setEmail('')
@@ -68,7 +158,7 @@ export default function LoginPage() {
         setConfirmPassword('')
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
+          email: normalizedEmail,
           password,
         })
 
@@ -103,7 +193,8 @@ export default function LoginPage() {
     }
 
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      const normalizedEmail = email.toLowerCase().trim()
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
         redirectTo: `${window.location.origin}/reset-password`,
       })
 
@@ -239,9 +330,23 @@ export default function LoginPage() {
                   </button>
                 </div>
                 {isSignUp && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Minimum 8 characters
-                  </p>
+                  <div className="mt-1 text-xs space-y-1">
+                    <p className="text-muted-foreground">Password requirements:</p>
+                    <div className="space-y-0.5 text-xs">
+                      <div className={`flex items-center space-x-1 ${password.length >= 8 ? 'text-green-600' : 'text-gray-400'}`}>
+                        <span className="w-1 h-1 rounded-full bg-current"></span>
+                        <span>At least 8 characters</span>
+                      </div>
+                      <div className={`flex items-center space-x-1 ${/[A-Za-z]/.test(password) ? 'text-green-600' : 'text-gray-400'}`}>
+                        <span className="w-1 h-1 rounded-full bg-current"></span>
+                        <span>At least one letter</span>
+                      </div>
+                      <div className={`flex items-center space-x-1 ${/[0-9]/.test(password) ? 'text-green-600' : 'text-gray-400'}`}>
+                        <span className="w-1 h-1 rounded-full bg-current"></span>
+                        <span>At least one number</span>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -295,6 +400,16 @@ export default function LoginPage() {
             {error && (
               <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
                 {error}
+                {error.includes('domain') && (
+                  <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
+                    <p className="font-medium text-blue-900 dark:text-blue-100 mb-1">Authorized domains:</p>
+                    <ul className="list-disc ml-4 text-blue-700 dark:text-blue-200 text-xs space-y-1">
+                      <li>@snellersg.com</li>
+                      <li>@snellerslandscaping.com</li>
+                    </ul>
+                    <p className="mt-2 text-xs text-blue-600 dark:text-blue-300">Need your domain added? Contact: <span className="font-mono">brendon.dalaba@snellersg.com</span></p>
+                  </div>
+                )}
               </div>
             )}
 

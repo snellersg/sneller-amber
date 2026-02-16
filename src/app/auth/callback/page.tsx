@@ -2,6 +2,95 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { User } from '@supabase/supabase-js'
+
+// Helper function to notify admins of new user registration
+const notifyAdmins = async (newUser: User, supabase: any) => {
+  try {
+    // Get all admin users
+    const { data: admins, error: adminError } = await supabase
+      .from('users')
+      .select('email')
+      .eq('role', 'admin')
+
+    if (adminError) {
+      console.error('Error fetching admin users:', adminError)
+      return
+    }
+
+    if (!admins || admins.length === 0) {
+      console.warn('No admin users found to notify')
+      return
+    }
+
+    // For now, we'll log the notification
+    // In production, you might want to send emails or create in-app notifications
+    console.log('🚨 NEW USER REGISTRATION ALERT 🚨')
+    console.log('New user registered:', {
+      email: newUser.email,
+      id: newUser.id,
+      created_at: new Date().toISOString()
+    })
+    console.log('Admins to notify:', admins.map(admin => admin.email))
+    console.log('👆 Please review and approve this user in the admin panel')
+
+    // TODO: Implement actual notification system (email, in-app notifications, etc.)
+    // Example: await sendEmailNotification(admins, newUser)
+  } catch (error) {
+    console.error('Error notifying admins:', error)
+  }
+}
+
+// Helper function to ensure user record exists in database
+const ensureUserRecord = async (authUser: User, supabase: any) => {
+  try {
+    const { data: existing, error: existingError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', authUser.id)
+      .maybeSingle()
+
+    if (existingError) {
+      console.error('Error checking user record:', existingError)
+      return false
+    }
+
+    if (existing) {
+      console.log('User record already exists for:', authUser.email)
+      return true
+    }
+
+    const payload = {
+      id: authUser.id,
+      email: authUser.email,
+      full_name: authUser.user_metadata?.full_name || '',
+      role: 'user'
+    }
+
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert(payload)
+
+    if (insertError) {
+      if (insertError.code === '23505') {
+        // Duplicate key error - user already exists
+        console.log('User record already exists (duplicate key):', authUser.email)
+        return true
+      }
+      console.error('Error creating user record:', insertError)
+      return false
+    }
+
+    console.log('User record created successfully for:', authUser.email)
+    
+    // Notify admins of new user registration
+    await notifyAdmins(authUser, supabase)
+    return true
+  } catch (error) {
+    console.error('Unexpected error in ensureUserRecord:', error)
+    return false
+  }
+}
 
 export default function AuthCallback() {
   const router = useRouter()
@@ -24,6 +113,21 @@ export default function AuthCallback() {
             setStatus('error')
             setTimeout(() => router.push('/login'), 3000)
             return
+          }
+
+          // Ensure user record exists in database after successful auth
+          try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+              const success = await ensureUserRecord(user, supabase)
+              if (!success) {
+                console.warn('Warning: Could not create user database record. User can still proceed.')
+                // Don't block the auth flow - user can still access the app
+              }
+            }
+          } catch (userErr) {
+            console.warn('Warning: Could not create user record:', userErr)
+            // Don't block login for this error - user can still proceed
           }
         }
         
