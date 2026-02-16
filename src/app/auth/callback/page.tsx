@@ -4,11 +4,18 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
 
+// Type definitions
+interface Admin {
+  id?: string
+  email: string
+  role?: string
+}
+
 // Helper function to notify admins of new user registration
 const notifyAdmins = async (newUser: User, supabase: any) => {
   try {
     // Get all admin users
-    const { data: admins, error: adminError } = await supabase
+    const { data: admins, error: adminError }: { data: Admin[] | null, error: any } = await supabase
       .from('users')
       .select('email')
       .eq('role', 'admin')
@@ -31,7 +38,7 @@ const notifyAdmins = async (newUser: User, supabase: any) => {
       id: newUser.id,
       created_at: new Date().toISOString()
     })
-    console.log('Admins to notify:', admins.map(admin => admin.email))
+    console.log('Admins to notify:', admins.map((admin: Admin) => admin.email))
     console.log('👆 Please review and approve this user in the admin panel')
 
     // TODO: Implement actual notification system (email, in-app notifications, etc.)

@@ -116,10 +116,9 @@ export default function LoginPage() {
           // More specific error handling for common issues
           console.log('Full signup error details:', {
             message: signUpError.message,
-            code: signUpError.code,
-            details: signUpError.details,
-            hint: signUpError.hint,
-            status: signUpError.status
+            ...(signUpError.code && { code: signUpError.code }),
+            ...(signUpError.status && { status: signUpError.status }),
+            fullError: signUpError
           })
           
           const errorMessage = signUpError.message?.toLowerCase() || ''
