@@ -91,11 +91,23 @@ export async function GET(request: Request) {
     const usersWithVerificationStatus = (allUsers || []).map(profileUser => {
       const authUser = authData.users.find(authUser => authUser.id === profileUser.id)
       
+      // Use the more recent last_sign_in_at timestamp (database is usually more current)
+      let lastSignInAt = profileUser.last_sign_in_at;
+      if (authUser?.last_sign_in_at && profileUser.last_sign_in_at) {
+        // Compare timestamps and use the more recent one
+        const authTime = new Date(authUser.last_sign_in_at);
+        const dbTime = new Date(profileUser.last_sign_in_at);
+        lastSignInAt = authTime > dbTime ? authUser.last_sign_in_at : profileUser.last_sign_in_at;
+      } else if (authUser?.last_sign_in_at && !profileUser.last_sign_in_at) {
+        // Use auth timestamp if database doesn't have one
+        lastSignInAt = authUser.last_sign_in_at;
+      }
+      
       return {
         ...profileUser,
         email_confirmed_at: authUser?.email_confirmed_at || null,
         email_verified: !!authUser?.email_confirmed_at,
-        last_sign_in_at: authUser?.last_sign_in_at || profileUser.last_sign_in_at
+        last_sign_in_at: lastSignInAt
       }
     })
 
