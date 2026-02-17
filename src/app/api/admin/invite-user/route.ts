@@ -108,6 +108,138 @@ export async function POST(request: NextRequest) {
     const normalizedEmail = email.toLowerCase().trim();
     const tempPassword = generateSecurePassword();
 
+    // Check for and clean up any orphaned profiles before creating auth user
+    console.log(`Checking for existing profile with email: ${normalizedEmail}`);
+    const { data: existingProfile, error: profileCheckError } = await supabaseAdmin
+      .from("users")
+      .select("id, email")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+
+    if (existingProfile) {
+      console.log(`Found existing profile with ID: ${existingProfile.id}, cleaning up...`);
+      
+      // Check if this profile has a corresponding auth user
+      try {
+        const { data: authCheck, error: authCheckError } = await supabaseAdmin.auth.admin.getUserById(existingProfile.id);
+        
+        if (authCheckError) {
+          // Profile exists but no corresponding auth user - this is an orphaned profile
+          console.log("Orphaned profile detected (no auth user), deleting profile...");
+          const { error: deleteError } = await supabaseAdmin
+            .from("users")
+            .delete()
+            .eq("id", existingProfile.id);
+          
+          if (deleteError) {
+            console.error("Failed to delete orphaned profile:", deleteError);
+            return NextResponse.json(
+              { error: `Failed to clean up existing data for ${normalizedEmail}. Please contact support.` },
+              { status: 500 }
+            );
+          }
+          console.log("Orphaned profile deleted successfully");
+        } else {
+          // Both profile and auth user exist - user actually exists
+          console.log("User already exists with both auth and profile records");
+          return NextResponse.json(
+            { error: `User ${normalizedEmail} already exists and can log in. Use password reset if needed.` },
+            { status: 400 }
+          );
+        }
+      } catch (authCheckError) {
+        // Error checking auth - assume it's orphaned and delete
+        console.log("Error checking auth user, treating as orphaned profile");
+        const { error: deleteError } = await supabaseAdmin
+          .from("users")
+          .delete()
+          .eq("id", existingProfile.id);
+        
+        if (deleteError) {
+          console.error("Failed to delete potentially orphaned profile:", deleteError);
+          return NextResponse.json(
+            { error: `Failed to clean up existing data for ${normalizedEmail}. Please contact support.` },
+            { status: 500 }
+          );
+        }
+        console.log("Potentially orphaned profile deleted");
+      }
+    }
+
+    // Check for any auth users with this email (without corresponding profile)
+    console.log(`Checking for existing auth user with email: ${normalizedEmail}`);
+    try {
+      const { data: allUsers } = await supabaseAdmin.auth.admin.listUsers();
+      const existingAuthUser = allUsers.users?.find(user => user.email === normalizedEmail);
+      
+      if (existingAuthUser) {
+        console.log(`Found existing auth user with ID: ${existingAuthUser.id}`);
+        
+        // Check if this auth user has a profile
+        const { data: authProfile, error: authProfileError } = await supabaseAdmin
+          .from("users")
+          .select("id")
+          .eq("id", existingAuthUser.id)
+          .maybeSingle();
+        
+        if (!authProfile) {
+          // Auth user exists but no profile - create the profile
+          console.log("Auth user exists without profile, creating profile...");
+          const { error: profileError } = await supabaseAdmin
+            .from("users")
+            .insert({
+              id: existingAuthUser.id,
+              email: existingAuthUser.email,
+              full_name: existingAuthUser.email?.split("@")[0] || "New User",
+              role: role,
+              created_at: new Date().toISOString(),
+              last_sign_in_at: null,
+            });
+          
+          if (profileError) {
+            console.error("Failed to create profile for existing auth user:", profileError);
+            return NextResponse.json(
+              { error: `Failed to complete user setup for ${normalizedEmail}. Please contact support.` },
+              { status: 500 }
+            );
+          }
+          
+          // Update the user's password
+          const { error: passwordError } = await supabaseAdmin.auth.admin.updateUserById(
+            existingAuthUser.id,
+            { password: tempPassword }
+          );
+          
+          if (passwordError) {
+            console.error("Failed to set password for existing auth user:", passwordError);
+            return NextResponse.json(
+              { error: `User setup completed but failed to set password. Please use password reset.` },
+              { status: 500 }
+            );
+          }
+          
+          return NextResponse.json({
+            success: true,
+            user: {
+              id: existingAuthUser.id,
+              email: existingAuthUser.email,
+              tempPassword: tempPassword,
+            },
+          });
+        } else {
+          // Both auth user and profile exist
+          console.log("Complete user already exists");
+          return NextResponse.json(
+            { error: `User ${normalizedEmail} already exists and can log in. Use password reset if needed.` },
+            { status: 400 }
+          );
+        }
+      }
+    } catch (authListError) {
+      console.error("Error checking existing auth users:", authListError);
+      // Continue with creation - this is just a safety check
+    }
+
     // Check if the email domain is in allowed domains (diagnostic)
     const emailDomain = "@" + normalizedEmail.split("@")[1];
     console.log(`Attempting to create user for domain: ${emailDomain}`);

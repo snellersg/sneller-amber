@@ -80,6 +80,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const updateLastSignIn = async (authUser: User) => {
+    try {
+      // Update last_sign_in_at timestamp silently
+      const { error } = await supabase
+        .from("users")
+        .update({ 
+          last_sign_in_at: new Date().toISOString()
+        })
+        .eq("id", authUser.id);
+      
+      if (error) {
+        // Silent failure - don't disrupt user experience
+        console.log("Could not update last sign in:", error.message);
+      }
+    } catch (error) {
+      // Silent failure
+      console.log("Error updating last sign in:", error);
+    }
+  };
+
   const refreshAuth = async () => {
     try {
       // Add timeout to prevent hanging on auth check
@@ -230,6 +250,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(session.user);
         setUserEmail(session.user.email || null);
         await checkAdminStatus(session.user);
+        
+        // Update last sign in for SIGNED_IN events (not TOKEN_REFRESHED or INITIAL_SESSION)
+        if (event === "SIGNED_IN") {
+          await updateLastSignIn(session.user);
+        }
       }
 
       setIsLoading(false);
