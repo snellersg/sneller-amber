@@ -84,6 +84,38 @@ export async function POST(request: NextRequest) {
     const normalizedEmail = email.toLowerCase().trim()
     const tempPassword = generateSecurePassword()
 
+    // Check if the email domain is in allowed domains (diagnostic)
+    const emailDomain = '@' + normalizedEmail.split('@')[1]
+    console.log(`Attempting to create user for domain: ${emailDomain}`)
+    
+    try {
+      const { data: domainCheck, error: domainError } = await supabaseAdmin
+        .from('allowed_domains')
+        .select('domain')
+        .eq('domain', emailDomain)
+        .single()
+      
+      if (domainError || !domainCheck) {
+        console.log(`Domain ${emailDomain} not found in allowed_domains table. Adding it...`)
+        // Try to add the domain automatically
+        const { error: addDomainError } = await supabaseAdmin
+          .from('allowed_domains')
+          .insert({ 
+            domain: emailDomain,
+            notes: `Auto-added for admin invite: ${normalizedEmail}`
+          })
+        
+        if (addDomainError) {
+          console.error('Failed to auto-add domain:', addDomainError)
+          return NextResponse.json({ 
+            error: `Domain ${emailDomain} not allowed. Please add it to allowed domains first.` 
+          }, { status: 400 })
+        }
+      }
+    } catch (domainCheckError) {
+      console.error('Error checking domain:', domainCheckError)
+    }
+
     // Create the user in Supabase Auth using admin client
     const { data: authData, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
       email: normalizedEmail,
@@ -105,28 +137,53 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the user profile record
+    console.log(`Creating profile for user: ${authData.user.id}, email: ${authData.user.email}`)
+    
+    const profileData = {
+      id: authData.user.id,
+      email: authData.user.email,
+      full_name: authData.user.email?.split('@')[0] || 'New User',
+      role: role,
+      created_at: new Date().toISOString(),
+      last_sign_in_at: null
+    }
+    
+    console.log('Profile data to insert:', profileData)
+    
     const { error: profileError } = await supabaseAdmin
       .from('users')
-      .insert({
-        id: authData.user.id,
-        email: authData.user.email,
-        full_name: authData.user.email?.split('@')[0] || 'New User',
-        role: role,
-        created_at: new Date().toISOString(),
-        last_sign_in_at: null
-      })
+      .insert(profileData)
 
     if (profileError) {
-      console.error('Profile creation failed:', profileError.message)
+      console.error('Profile creation failed - Full error details:', {
+        message: profileError.message,
+        details: profileError.details,
+        hint: profileError.hint,
+        code: profileError.code
+      })
+      
       // Clean up the auth user if profile creation fails
       try {
         await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
+        console.log('Successfully cleaned up auth user after profile failure')
       } catch (cleanupError) {
         console.error('Failed to cleanup auth user:', cleanupError)
       }
       
+      // Provide more specific error message based on the error type
+      let userMessage = `Failed to create user profile: ${profileError.message}`
+      
+      if (profileError.code === '23505') {
+        userMessage = 'User already exists with this email or ID'
+      } else if (profileError.message.includes('permission') || profileError.message.includes('policy')) {
+        userMessage = `Database permission denied. Email domain "${emailDomain}" may not be authorized.`
+      } else if (profileError.message.includes('domain') || profileError.message.includes('email')) {
+        userMessage = `Email domain validation failed for "${emailDomain}". Please ensure the domain is properly configured.`
+      }
+      
       return NextResponse.json({ 
-        error: `Failed to create user profile: ${profileError.message}` 
+        error: userMessage,
+        details: process.env.NODE_ENV === 'development' ? profileError : undefined
       }, { status: 500 })
     }
 

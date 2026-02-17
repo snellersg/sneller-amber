@@ -206,7 +206,24 @@ export default function AdminPage() {
       }
 
       const domains = data || []
-      setAllowedDomains(domains)
+      
+      // Check if required domains exist (with @ prefix)
+      const requiredDomains = ['@snellersg.com', '@snellerslandscaping.com']
+      const existingDomains = domains.map(d => d.domain)
+      const missingDomains = requiredDomains.filter(domain => !existingDomains.includes(domain))
+      
+      if (missingDomains.length > 0) {
+        console.log('Missing required domains, adding:', missingDomains)
+        await ensureRequiredDomains(missingDomains)
+        // Refetch after adding missing domains
+        const { data: updatedData } = await supabase
+          .from('allowed_domains')
+          .select('*')
+          .order('added_at', { ascending: false })
+        setAllowedDomains(updatedData || [])
+      } else {
+        setAllowedDomains(domains)
+      }
 
       // Bootstrap default domains if none exist
       if (domains.length === 0) {
@@ -219,10 +236,33 @@ export default function AdminPage() {
     }
   }
 
+  const ensureRequiredDomains = async (missingDomains: string[]) => {
+    const domainData = missingDomains.map(domain => ({
+      domain,
+      notes: domain === '@snellersg.com' ? 'Primary company domain' : 'Legacy landscaping division domain'
+    }))
+
+    try {
+      for (const data of domainData) {
+        const { error } = await supabase
+          .from('allowed_domains')
+          .insert(data)
+
+        if (error && error.code !== '23505') {
+          console.error('Error ensuring domain:', data.domain, error)
+        } else {
+          console.log('Successfully ensured domain:', data.domain)
+        }
+      }
+    } catch (error) {
+      console.error('Error in ensureRequiredDomains:', error)
+    }
+  }
+
   const bootstrapDefaultDomains = async () => {
     const defaultDomains = [
-      { domain: 'snellersg.com', notes: 'Primary company domain' },
-      { domain: 'snellerslandscaping.com', notes: 'Landscaping division domain' }
+      { domain: '@snellersg.com', notes: 'Primary company domain' },
+      { domain: '@snellerslandscaping.com', notes: 'Legacy landscaping division domain' }
     ]
 
     try {
@@ -253,10 +293,16 @@ export default function AdminPage() {
     if (!newDomain.trim()) return
 
     try {
+      // Ensure domain has @ prefix for consistency
+      let formattedDomain = newDomain.toLowerCase().trim()
+      if (!formattedDomain.startsWith('@')) {
+        formattedDomain = '@' + formattedDomain
+      }
+
       const { error } = await supabase
         .from('allowed_domains')
         .insert({
-          domain: newDomain.toLowerCase().trim(),
+          domain: formattedDomain,
           notes: domainNotes.trim() || null
         })
 
