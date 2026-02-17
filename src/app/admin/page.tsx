@@ -35,7 +35,7 @@ interface AllowedDomain {
 
 export default function AdminPage() {
   const router = useRouter();
-  const { user, isAdmin, isLoading: authLoading } = useAuth();
+  const { user, isAdmin, userEmail, isLoading: authLoading } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [allowedDomains, setAllowedDomains] = useState<AllowedDomain[]>([]);
   const [loading, setLoading] = useState(true);
