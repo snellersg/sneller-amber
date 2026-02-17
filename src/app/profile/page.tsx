@@ -58,7 +58,9 @@ export default function UserProfile() {
         } = await supabase.auth.getUser();
 
         if (error) {
-          throw error;
+          console.error("Auth error:", error);
+          router.push("/login");
+          return;
         }
 
         if (!user) {
@@ -68,8 +70,8 @@ export default function UserProfile() {
 
         setUser(user);
         setFullName(user.user_metadata?.full_name || "");
-        await fetchProfile(user.id);
       } catch (error) {
+        console.error("User check error:", error);
         router.push("/login");
       }
     };
@@ -112,50 +114,41 @@ export default function UserProfile() {
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data: byId, error: byIdError } = await supabase
+      // Since IDs now match between auth and public.users, direct fetch should work
+      const { data: profile, error } = await supabase
         .from("users")
         .select("*")
         .eq("id", userId)
         .maybeSingle();
 
-      if (byIdError) {
-        throw byIdError;
-      }
-
-      if (byId) {
-        setProfile(byId);
-        setFullName(byId.full_name || "");
+      if (error) {
+        console.error("Error fetching profile:", error);
         return;
       }
 
-      // Fallback by email in case the users table row uses email as the id or id mismatch
-      if (user?.email) {
-        const { data: byEmail, error: byEmailError } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", user.email)
-          .maybeSingle();
-
-        if (byEmailError) {
-          throw byEmailError;
+      if (profile) {
+        setProfile(profile);
+        setFullName(profile.full_name || "");
+      } else {
+        console.log("No profile found for user ID:", userId);
+        // If no profile exists, create one (this shouldn't happen after ID repair)
+        if (user) {
+          await ensureUserRecord(user);
+          // Retry fetch after creating record
+          const { data: newProfile } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", userId)
+            .maybeSingle();
+          
+          if (newProfile) {
+            setProfile(newProfile);
+            setFullName(newProfile.full_name || "");
+          }
         }
-
-        if (byEmail) {
-          setProfile(byEmail);
-          setFullName(byEmail.full_name || "");
-          return;
-        }
-      }
-
-      if (user) {
-        await ensureUserRecord(user);
-      }
-
-      if (user?.user_metadata?.full_name) {
-        setFullName(user.user_metadata.full_name);
       }
     } catch (err: any) {
-      // Silent error handling for profile fetch
+      console.error("Profile fetch exception:", err);
     }
   };
 
@@ -167,31 +160,27 @@ export default function UserProfile() {
     setMessage("");
 
     try {
+      // Update auth metadata
       const { error: authUpdateError } = await supabase.auth.updateUser({
         data: { full_name: fullName },
       });
 
       if (authUpdateError) throw authUpdateError;
 
-      const { error: updateByIdError } = await supabase
+      // Update profile table - IDs now match, so this should always work
+      const { error: profileUpdateError } = await supabase
         .from("users")
         .update({
           full_name: fullName,
-          email: user.email,
         })
         .eq("id", user.id);
 
-      if (updateByIdError) {
-        // If update by id fails, try by email as a fallback
-        await supabase
-          .from("users")
-          .update({ full_name: fullName })
-          .eq("email", user.email);
-      }
+      if (profileUpdateError) throw profileUpdateError;
 
       setMessage("Profile updated successfully!");
       setEditing(false);
 
+      // Refresh profile data
       await fetchProfile(user.id);
     } catch (err: any) {
       setError(err.message || "Failed to update profile");
@@ -200,13 +189,27 @@ export default function UserProfile() {
     }
   };
 
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long";
+    }
+    if (!/[A-Za-z]/.test(password)) {
+      return "Password must contain at least one letter";
+    }
+    if (!/[0-9]/.test(password)) {
+      return "Password must contain at least one number";
+    }
+    return null;
+  };
+
   const handleChangePassword = async () => {
     setLoading(true);
     setError("");
     setMessage("");
 
-    if (newPassword.length < 8) {
-      setError("Password must be at least 8 characters long");
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
+      setError(passwordError);
       setLoading(false);
       return;
     }

@@ -102,9 +102,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const refreshAuth = async () => {
     try {
-      // Add timeout to prevent hanging on auth check
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Auth refresh timeout")), 8000),
+      // Add timeout to prevent hanging on auth check - increased timeout and better handling
+      const timeoutPromise = new Promise((resolve) =>
+        setTimeout(() => {
+          console.log("Auth refresh taking longer than expected, continuing with current state");
+          resolve({ data: { user: user }, error: { message: "Auth refresh timeout" } });
+        }, 15000) // Increased to 15 seconds
       );
 
       const authPromise = supabase.auth.getUser();
@@ -113,6 +116,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         data: { user: authUser },
         error,
       } = (await Promise.race([authPromise, timeoutPromise])) as any;
+
+      // Handle timeout gracefully - don't clear auth state
+      if (error?.message === "Auth refresh timeout") {
+        console.log("Auth refresh timed out, keeping current auth state");
+        return; // Preserve current state instead of clearing
+      }
 
       if (error) {
         // Handle invalid refresh token errors gracefully
@@ -140,20 +149,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUserEmail(authUser.email || null);
       await checkAdminStatus(authUser);
     } catch (error: any) {
-      console.error("Error refreshing auth:", error);
-
-      // Handle invalid refresh token errors
+      // Only clear auth state for serious errors, not timeouts
       if (
         error.message?.includes("Invalid Refresh Token") ||
         error.message?.includes("Refresh Token Not Found")
       ) {
         console.warn("Invalid refresh token detected, clearing auth state");
         await supabase.auth.signOut({ scope: "local" });
+        setUser(null);
+        setIsAdmin(false);
+        setUserEmail(null);
+      } else {
+        // For other errors (including network issues), just log and preserve state
+        console.log("Auth refresh error (preserving current state):", error.message);
       }
-
-      setUser(null);
-      setIsAdmin(false);
-      setUserEmail(null);
     }
   };
 

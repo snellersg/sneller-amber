@@ -40,11 +40,6 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  // Invitation state
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"user" | "admin">("user");
-  const [inviteLoading, setInviteLoading] = useState(false);
-  const [inviteMessage, setInviteMessage] = useState("");
 
   // Check if current user is admin before allowing access
   useEffect(() => {
@@ -424,72 +419,6 @@ export default function AdminPage() {
     }
   };
 
-
-
-  const inviteUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inviteEmail.trim()) return;
-
-    setInviteLoading(true);
-    setInviteMessage("");
-
-    try {
-      // Get current user's session token for admin verification
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        setInviteMessage("You must be logged in to invite users.");
-        return;
-      }
-
-      // Call the API route to create the user
-      const response = await fetch("/api/admin/invite-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          email: inviteEmail.toLowerCase().trim(),
-          role: inviteRole,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        // Only log if there's actual error content
-        if (result && (result.error || result.details)) {
-          console.error("Invite user failed:", result.error || result.details);
-        }
-        setInviteMessage(
-          `Failed to create user: ${result.error || "Unknown error"}`,
-        );
-        return;
-      }
-
-      if (result.success && result.user) {
-        setInviteMessage(
-          `✅ User invited successfully! Credentials:\n\nEmail: ${result.user.email}\nPassword: ${result.user.tempPassword}\n\n⚠️ Share these credentials securely and ask them to change the password immediately.`,
-        );
-        setInviteEmail("");
-        setInviteRole("user");
-        fetchUsers();
-      } else {
-        setInviteMessage(
-          "Failed to create user: Invalid response from server.",
-        );
-      }
-    } catch (error) {
-      console.error("Error in inviteUser:", error);
-      setInviteMessage("Failed to invite user. Please try again.");
-    } finally {
-      setInviteLoading(false);
-    }
-  };
-
   useEffect(() => {
     // Only fetch data if user is confirmed admin
     if (isAdmin && !authLoading) {
@@ -520,97 +449,13 @@ export default function AdminPage() {
     if (activeTab === "users") {
       return (
         <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               REGISTERED USERS
             </h2>
-          </div>
-
-          {/* User Invitation Form */}
-          <div className="mb-8">
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Invite New User
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Add new team members to the platform
-              </p>
-            </div>
-
-            <form onSubmit={inviteUser} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="inviteEmail"
-                    className="block text-sm font-medium text-gray-900 dark:text-gray-100"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="inviteEmail"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="user@snellersg.com"
-                    className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label
-                    htmlFor="inviteRole"
-                    className="block text-sm font-medium text-gray-900 dark:text-gray-100"
-                  >
-                    Role
-                  </label>
-                  <select
-                    id="inviteRole"
-                    value={inviteRole}
-                    onChange={(e) =>
-                      setInviteRole(e.target.value as "user" | "admin")
-                    }
-                    className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                  >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-
-                <div className="flex items-end md:col-span-2 xl:col-span-1">
-                  <button
-                    type="submit"
-                    disabled={inviteLoading}
-                    className="w-full btn-sneller inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {inviteLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="h-4 w-4" />
-                        Send Invitation
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {inviteMessage && (
-                <div
-                  className={`p-4 rounded-lg text-sm whitespace-pre-line ${
-                    inviteMessage.includes("✅")
-                      ? "status-success"
-                      : "status-error"
-                  }`}
-                >
-                  {inviteMessage}
-                </div>
-              )}
-            </form>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Users can register directly at the login page. New registrations will appear here after email verification.
+            </p>
           </div>
 
           {users.length === 0 ? (
