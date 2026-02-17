@@ -1,6 +1,13 @@
 -- ============================================================================
--- AMBER Database Setup Script
+-- AMBER Database Setup Script (IDEMPOTENT - Safe to run multiple times)
 -- Run this in Supabase SQL Editor: Dashboard → SQL Editor → New Query
+-- 
+-- This script is safe to run even if tables already exist.
+-- It will:
+-- - Create tables only if they don't exist (IF NOT EXISTS)
+-- - Drop and recreate policies (to update them)
+-- - Create/replace functions (to update them)
+-- - Insert domains only if they don't exist (ON CONFLICT DO NOTHING)
 -- ============================================================================
 
 -- 1. Create allowed_domains table
@@ -13,17 +20,18 @@ CREATE TABLE IF NOT EXISTS public.allowed_domains (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS on allowed_domains
+-- Enable RLS on allowed_domains (safe to run if already enabled)
 ALTER TABLE public.allowed_domains ENABLE ROW LEVEL SECURITY;
 
--- Allow all authenticated users to read allowed domains
+-- Drop existing policies if they exist, then recreate
+DROP POLICY IF EXISTS "Allow authenticated users to read allowed domains" ON public.allowed_domains;
 CREATE POLICY "Allow authenticated users to read allowed domains"
   ON public.allowed_domains
   FOR SELECT
   TO authenticated
   USING (true);
 
--- Only admins can insert/update/delete domains (we'll handle this via service role key)
+DROP POLICY IF EXISTS "Allow service role to manage domains" ON public.allowed_domains;
 CREATE POLICY "Allow service role to manage domains"
   ON public.allowed_domains
   FOR ALL
@@ -42,17 +50,18 @@ CREATE TABLE IF NOT EXISTS public.users (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS on users table
+-- Enable RLS on users table (safe to run if already enabled)
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
--- Users can read their own profile
+-- Drop existing policies if they exist, then recreate
+DROP POLICY IF EXISTS "Users can read own profile" ON public.users;
 CREATE POLICY "Users can read own profile"
   ON public.users
   FOR SELECT
   TO authenticated
   USING (auth.uid() = id);
 
--- Users can update their own profile (excluding role)
+DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
 CREATE POLICY "Users can update own profile"
   ON public.users
   FOR UPDATE
@@ -62,6 +71,7 @@ CREATE POLICY "Users can update own profile"
 
 -- Allow authenticated users to insert their own record
 -- This is crucial for signup to work!
+DROP POLICY IF EXISTS "Users can create own profile on signup" ON public.users;
 CREATE POLICY "Users can create own profile on signup"
   ON public.users
   FOR INSERT
@@ -69,6 +79,7 @@ CREATE POLICY "Users can create own profile on signup"
   WITH CHECK (auth.uid() = id);
 
 -- Service role can do anything (for admin operations)
+DROP POLICY IF EXISTS "Service role full access" ON public.users;
 CREATE POLICY "Service role full access"
   ON public.users
   FOR ALL
@@ -76,17 +87,11 @@ CREATE POLICY "Service role full access"
   USING (true)
   WITH CHECK (true);
 
--- Admins can read all users
-CREATE POLICY "Admins can read all users"
-  ON public.users
-  FOR SELECT
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+-- NOTE: We intentionally DO NOT add an "Admins can read all users" policy
+-- because it would create a circular dependency (checking if user is admin
+-- requires reading from the same table the policy protects).
+-- Instead, admin operations should use the service role key which bypasses RLS.
+-- Regular users can only read their own profile via the policy above.
 
 -- 3. Insert allowed email domains
 -- ============================================================================

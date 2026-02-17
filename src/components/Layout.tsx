@@ -1,37 +1,38 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { usePathname } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Sidebar from './Sidebar'
-import TopBar from './TopBar'
-import TableOfContents from './TableOfContents'
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import Sidebar from "./Sidebar";
+import TopBar from "./TopBar";
+import TableOfContents from "./TableOfContents";
 
 interface LayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { isAdmin, user } = useAuth()
-  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { isAdmin, user } = useAuth();
+  const pathname = usePathname();
 
   const handleSidebarToggle = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
+    setSidebarOpen(!sidebarOpen);
+  };
 
   const handleSidebarClose = () => {
-    setSidebarOpen(false)
-  }
+    setSidebarOpen(false);
+  };
 
   // Check if current page should show special layout (documentation pages)
-  const isDocumentationPage = pathname.startsWith('/core-services') ||
-    pathname.startsWith('/add-on-services') ||
-    pathname.startsWith('/product-knowledge') ||
-    pathname.startsWith('/guides') ||
-    pathname.startsWith('/core-processes') ||
-    pathname.startsWith('/tools') ||
-    pathname.startsWith('/sheets-and-docs')
+  const isDocumentationPage =
+    pathname.startsWith("/core-services") ||
+    pathname.startsWith("/add-on-services") ||
+    pathname.startsWith("/product-knowledge") ||
+    pathname.startsWith("/guides") ||
+    pathname.startsWith("/core-processes") ||
+    pathname.startsWith("/tools") ||
+    pathname.startsWith("/sheets-and-docs");
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -67,7 +68,13 @@ export default function Layout({ children }: LayoutProps) {
         <div className="flex flex-1 overflow-x-hidden md:ml-64">
           {/* Main Content */}
           <main className="flex-1 overflow-x-hidden">
-            <div className={isDocumentationPage ? "max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:px-8" : "max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:px-8"}>
+            <div
+              className={
+                isDocumentationPage
+                  ? "max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:px-8"
+                  : "max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:px-8"
+              }
+            >
               {/* Mobile Table of Contents */}
               {isDocumentationPage && (
                 <div className="mb-6 xl:hidden">
@@ -89,5 +96,5 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

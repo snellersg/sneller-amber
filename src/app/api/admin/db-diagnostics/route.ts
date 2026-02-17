@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-import { NextResponse } from 'next/server'
+import { createClient } from "@supabase/supabase-js";
+import { NextResponse } from "next/server";
 
 // Create admin client with service role key (server-side only)
 const supabaseAdmin = createClient(
@@ -8,131 +8,131 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-)
+      persistSession: false,
+    },
+  },
+);
 
 export async function GET() {
   const diagnostics: any = {
     timestamp: new Date().toISOString(),
-    checks: {}
-  }
+    checks: {},
+  };
 
   try {
     // Check 1: Can we connect to Supabase?
     diagnostics.checks.connection = {
-      status: 'checking',
-      url: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'configured' : 'missing'
-    }
+      status: "checking",
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL ? "configured" : "missing",
+    };
 
     // Check 2: Does users table exist?
     try {
       const { data, error } = await supabaseAdmin
-        .from('users')
-        .select('count')
-        .limit(1)
-      
+        .from("users")
+        .select("count")
+        .limit(1);
+
       diagnostics.checks.usersTable = {
-        status: error ? 'error' : 'ok',
+        status: error ? "error" : "ok",
         exists: !error,
         error: error?.message,
-        hint: error?.hint
-      }
+        hint: error?.hint,
+      };
     } catch (err: any) {
       diagnostics.checks.usersTable = {
-        status: 'error',
+        status: "error",
         exists: false,
-        error: err.message
-      }
+        error: err.message,
+      };
     }
 
     // Check 3: Does allowed_domains table exist?
     try {
       const { data, error } = await supabaseAdmin
-        .from('allowed_domains')
-        .select('*')
-      
+        .from("allowed_domains")
+        .select("*");
+
       diagnostics.checks.allowedDomainsTable = {
-        status: error ? 'error' : 'ok',
+        status: error ? "error" : "ok",
         exists: !error,
         domainsCount: data?.length || 0,
-        domains: data?.map(d => ({ domain: d.domain, isActive: d.is_active })) || [],
-        error: error?.message
-      }
+        domains:
+          data?.map((d) => ({ domain: d.domain, isActive: d.is_active })) || [],
+        error: error?.message,
+      };
     } catch (err: any) {
       diagnostics.checks.allowedDomainsTable = {
-        status: 'error',
+        status: "error",
         exists: false,
-        error: err.message
-      }
+        error: err.message,
+      };
     }
 
     // Check 4: Test INSERT permission on users table
     try {
       // Try a test insert (we'll immediately roll it back by design)
-      const testUserId = '00000000-0000-0000-0000-000000000000'
+      const testUserId = "00000000-0000-0000-0000-000000000000";
       const { error } = await supabaseAdmin
-        .from('users')
+        .from("users")
         .insert({
           id: testUserId,
-          email: 'test@test.com',
-          full_name: 'Test User',
-          role: 'user'
+          email: "test@test.com",
+          full_name: "Test User",
+          role: "user",
         })
         .select()
-        .limit(0) // Don't actually insert
+        .limit(0); // Don't actually insert
 
       diagnostics.checks.usersTableInsertPermission = {
-        status: error ? 'error' : 'ok',
-        canInsert: !error || error.code === '23505', // Duplicate key is ok for this test
+        status: error ? "error" : "ok",
+        canInsert: !error || error.code === "23505", // Duplicate key is ok for this test
         error: error?.message,
-        code: error?.code
-      }
+        code: error?.code,
+      };
 
       // Clean up if somehow the test insert worked
       if (!error) {
-        await supabaseAdmin
-          .from('users')
-          .delete()
-          .eq('id', testUserId)
+        await supabaseAdmin.from("users").delete().eq("id", testUserId);
       }
     } catch (err: any) {
       diagnostics.checks.usersTableInsertPermission = {
-        status: 'error',
+        status: "error",
         canInsert: false,
-        error: err.message
-      }
+        error: err.message,
+      };
     }
 
     // Check 5: Service role key configured?
     diagnostics.checks.serviceRoleKey = {
-      status: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'configured' : 'missing',
-      configured: !!process.env.SUPABASE_SERVICE_ROLE_KEY
-    }
+      status: process.env.SUPABASE_SERVICE_ROLE_KEY ? "configured" : "missing",
+      configured: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    };
 
     // Overall status
     const allChecksOk = Object.values(diagnostics.checks).every(
-      (check: any) => check.status === 'ok' || check.status === 'configured'
-    )
+      (check: any) => check.status === "ok" || check.status === "configured",
+    );
 
-    diagnostics.overallStatus = allChecksOk ? 'healthy' : 'issues_detected'
-    diagnostics.recommendation = allChecksOk 
-      ? 'Database is properly configured.'
-      : 'Database configuration issues detected. Please run supabase_setup.sql script.'
+    diagnostics.overallStatus = allChecksOk ? "healthy" : "issues_detected";
+    diagnostics.recommendation = allChecksOk
+      ? "Database is properly configured."
+      : "Database configuration issues detected. Please run supabase_setup.sql script.";
 
-    return NextResponse.json(diagnostics, { 
+    return NextResponse.json(diagnostics, {
       status: 200,
       headers: {
-        'Cache-Control': 'no-store, max-age=0'
-      }
-    })
-
+        "Cache-Control": "no-store, max-age=0",
+      },
+    });
   } catch (error: any) {
-    return NextResponse.json({
-      status: 'error',
-      error: error.message,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        status: "error",
+        error: error.message,
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    );
   }
 }
