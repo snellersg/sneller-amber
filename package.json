@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "next build",
-    "dev": "next dev -p 3003",
+    "dev": "next dev -p 3010",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "next start"

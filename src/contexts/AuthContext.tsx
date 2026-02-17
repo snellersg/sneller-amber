@@ -102,12 +102,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const refreshAuth = async () => {
     try {
-      // Add timeout to prevent hanging on auth check - increased timeout and better handling
-      const timeoutPromise = new Promise((resolve) =>
+      // Add timeout to prevent hanging on auth check - simplified timeout handling
+      const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => {
-          console.log("Auth refresh taking longer than expected, continuing with current state");
-          resolve({ data: { user: user }, error: { message: "Auth refresh timeout" } });
-        }, 15000) // Increased to 15 seconds
+          reject(new Error("Auth refresh timeout"));
+        }, 15000) // 15 second timeout
       );
 
       const authPromise = supabase.auth.getUser();
@@ -116,12 +115,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         data: { user: authUser },
         error,
       } = (await Promise.race([authPromise, timeoutPromise])) as any;
-
-      // Handle timeout gracefully - don't clear auth state
-      if (error?.message === "Auth refresh timeout") {
-        console.log("Auth refresh timed out, keeping current auth state");
-        return; // Preserve current state instead of clearing
-      }
 
       if (error) {
         // Handle invalid refresh token errors gracefully
@@ -132,9 +125,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           console.warn("Invalid refresh token detected, clearing auth state");
           await supabase.auth.signOut({ scope: "local" });
         }
-        setUser(null);
-        setIsAdmin(false);
-        setUserEmail(null);
+        console.log("Auth refresh error (preserving current state):", error.message);
+        // Don't clear state on timeout - just log and continue
+        if (error.message !== "Auth refresh timeout") {
+          setUser(null);
+          setIsAdmin(false);
+          setUserEmail(null);
+        }
         return;
       }
 
@@ -149,7 +146,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUserEmail(authUser.email || null);
       await checkAdminStatus(authUser);
     } catch (error: any) {
-      // Only clear auth state for serious errors, not timeouts
+      // Handle different types of errors appropriately
+      if (error.message === "Auth refresh timeout") {
+        console.log("Auth refresh timed out, preserving current state");
+        // Don't clear auth state on timeout - just continue with current state
+        return;
+      }
+      
       if (
         error.message?.includes("Invalid Refresh Token") ||
         error.message?.includes("Refresh Token Not Found")
@@ -160,7 +163,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAdmin(false);
         setUserEmail(null);
       } else {
-        // For other errors (including network issues), just log and preserve state
+        // For other errors (network issues, etc.), just log and preserve state
         console.log("Auth refresh error (preserving current state):", error.message);
       }
     }
