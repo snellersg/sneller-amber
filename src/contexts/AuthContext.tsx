@@ -34,11 +34,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkAdminStatus = async (authUser: User) => {
     try {
-      const { data: userData, error: userError } = await supabase
+      // Add timeout to prevent hanging on database queries
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Admin check timeout')), 5000)
+      )
+      
+      const queryPromise = supabase
         .from('users')
         .select('role')
         .eq('email', authUser.email)
         .single()
+      
+      const { data: userData, error: userError } = await Promise.race([
+        queryPromise,
+        timeoutPromise
+      ]) as any
       
       if (!userError && userData?.role === 'admin') {
         setIsAdmin(true)
@@ -49,13 +59,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     } catch (error) {
       console.error('Error checking admin status:', error)
-      setIsAdmin(false)
+      // Fallback to user metadata on error
+      const metadataAdmin = authUser.user_metadata?.isAdmin || authUser.user_metadata?.is_admin || false
+      setIsAdmin(metadataAdmin)
     }
   }
 
   const refreshAuth = async () => {
     try {
-      const { data: { user: authUser }, error } = await supabase.auth.getUser()
+      // Add timeout to prevent hanging on auth check
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Auth refresh timeout')), 8000)
+      )
+      
+      const authPromise = supabase.auth.getUser()
+      
+      const { data: { user: authUser }, error } = await Promise.race([
+        authPromise,
+        timeoutPromise
+      ]) as any
       
       if (error || !authUser) {
         setUser(null)
@@ -78,15 +100,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     let refreshInterval: NodeJS.Timeout | null = null
     let subscription: any = null
+    let initTimeout: NodeJS.Timeout | null = null
 
-    // Initial auth check
+    // Initial auth check with timeout
     const initAuth = async () => {
       setIsLoading(true)
-      await refreshAuth()
-      setIsLoading(false)
+      try {
+        await refreshAuth()
+      } catch (error) {
+        console.error('Error during initial auth:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    initAuth()
+    // Set a maximum timeout for initialization (10 seconds)
+    initTimeout = setTimeout(() => {
+      console.warn('Auth initialization timeout - forcing loading to false')
+      setIsLoading(false)
+    }, 10000)
+
+    initAuth().then(() => {
+      // Clear the timeout if init completes successfully
+      if (initTimeout) {
+        clearTimeout(initTimeout)
+        initTimeout = null
+      }
+    })
 
     // Set up session refresh (every 50 minutes) - only in browser
     if (typeof window !== 'undefined') {
@@ -132,6 +172,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       subscription?.unsubscribe()
       if (refreshInterval) {
         clearInterval(refreshInterval)
+      }
+      if (initTimeout) {
+        clearTimeout(initTimeout)
       }
     }
   }, []) // Empty dependency array to prevent infinite re-renders
