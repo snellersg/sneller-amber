@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useCallback, useMemo, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const [userEmail, setUserEmail] = useState<string | null>(null)
 
-  const checkAdminStatus = useCallback(async (authUser: User) => {
+  const checkAdminStatus = async (authUser: User) => {
     try {
       const { data: userData, error: userError } = await supabase
         .from('users')
@@ -51,9 +51,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error('Error checking admin status:', error)
       setIsAdmin(false)
     }
-  }, [])
+  }
 
-  const refreshAuth = useCallback(async () => {
+  const refreshAuth = async () => {
     try {
       const { data: { user: authUser }, error } = await supabase.auth.getUser()
       
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsAdmin(false)
       setUserEmail(null)
     }
-  }, [checkAdminStatus])
+  }
 
   useEffect(() => {
     let refreshInterval: NodeJS.Timeout | null = null
@@ -134,18 +134,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         clearInterval(refreshInterval)
       }
     }
-  }, [refreshAuth, checkAdminStatus])
-
-  const contextValue = useMemo(() => ({
-    user,
-    isAdmin,
-    isLoading,
-    userEmail,
-    refreshAuth
-  }), [user, isAdmin, isLoading, userEmail, refreshAuth])
+  }, []) // Empty dependency array to prevent infinite re-renders
 
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{
+      user,
+      isAdmin,
+      isLoading,
+      userEmail,
+      refreshAuth
+    }}>
       {children}
     </AuthContext.Provider>
   )
