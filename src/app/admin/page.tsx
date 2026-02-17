@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import {
   Users,
@@ -32,121 +34,55 @@ interface AllowedDomain {
 }
 
 export default function AdminPage() {
+  const router = useRouter();
+  const { user, isAdmin, isLoading: authLoading } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [allowedDomains, setAllowedDomains] = useState<AllowedDomain[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"users" | "domains">("users");
   const [newDomain, setNewDomain] = useState("");
   const [domainNotes, setDomainNotes] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
 
-  // Check if current user is admin before allowing access
+  // Redirect if not authenticated or not admin
   useEffect(() => {
-    const checkAdminStatus = async () => {
-      try {
-        const {
-          data: { user },
-          error: authError,
-        } = await supabase.auth.getUser();
-
-        if (authError || !user) {
-          console.error("Auth error:", authError);
-          setIsAdmin(false);
-          setUserEmail(null);
-          setAuthLoading(false);
-          return;
-        }
-
-        setUserEmail(user.email || null);
-
-        // Check if user is admin from database
-        const { data: userData, error: userError } = await supabase
-          .from("users")
-          .select("role")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        // Only process real errors (not empty objects)
-        const hasRealError = userError && typeof userError === 'object' && 
-          (userError.message || userError.code || userError.details);
-        
-        if (hasRealError) {
-          console.error("Error checking admin status:", userError);
-          setIsAdmin(false);
-        } else if (userData?.role === "admin") {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } catch (error) {
-        console.error("Error in checkAdminStatus:", error);
-        setIsAdmin(false);
-        setUserEmail(null);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-
-    // Initial check
-    checkAdminStatus();
-
-    // Listen for auth state changes to handle session expiration/refresh
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Admin page - Auth state change:", event, !!session?.user);
-
-      if (event === "SIGNED_OUT" || !session?.user) {
-        setIsAdmin(false);
-        setUserEmail(null);
-        setAuthLoading(false);
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login");
         return;
       }
-
-      if (
-        event === "TOKEN_REFRESHED" ||
-        event === "SIGNED_IN" ||
-        event === "INITIAL_SESSION"
-      ) {
-        // Re-check admin status when session is refreshed or user signs in
-        setUserEmail(session.user.email || null);
-
-        try {
-          const { data: userData, error: userError } = await supabase
-            .from("users")
-            .select("role")
-            .eq("id", session.user.id)
-            .maybeSingle();
-
-          // Only process real errors (not empty objects)
-          const hasRealError = userError && typeof userError === 'object' && 
-            (userError.message || userError.code || userError.details);
-          
-          if (hasRealError) {
-            console.error(
-              "Error checking admin status on session refresh:",
-              userError,
-            );
-            setIsAdmin(false);
-          } else if (userData?.role === "admin") {
-            setIsAdmin(true);
-          } else {
-            setIsAdmin(false);
-          }
-        } catch (error) {
-          console.error("Error in session refresh admin check:", error);
-          setIsAdmin(false);
-        } finally {
-          setAuthLoading(false);
-        }
+      if (!isAdmin) {
+        router.push("/");
+        return;
       }
-    });
+    }
+  }, [authLoading, user, isAdmin, router]);
 
-    // Cleanup subscription
-    return () => subscription.unsubscribe();
-  }, []);
+  // Load data when authenticated as admin
+  useEffect(() => {
+    if (!authLoading && user && isAdmin) {
+      fetchUsers();
+      fetchAllowedDomains();
+    }
+  }, [authLoading, user, isAdmin]);
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <p className="text-gray-600">Checking admin access...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render anything if not authenticated or not admin (will redirect)
+  if (!user || !isAdmin) {
+    return null;
+  }
 
   const fetchUsers = async () => {
     if (!isAdmin) {

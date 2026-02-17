@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 import Layout from "@/components/Layout";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   User as UserIcon,
   Mail,
@@ -30,9 +31,8 @@ interface UserProfileData {
 }
 
 export default function UserProfile() {
-  // Force reload - compact styling update
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, isLoading: authLoading } = useAuth();
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,41 +49,44 @@ export default function UserProfile() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Redirect to login if not authenticated
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const {
-          data: { user },
-          error,
-        } = await supabase.auth.getUser();
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [authLoading, user, router]);
 
-        if (error) {
-          console.error("Auth error:", error);
-          router.push("/login");
-          return;
-        }
-
-        if (!user) {
-          router.push("/login");
-          return;
-        }
-
-        setUser(user);
-        setFullName(user.user_metadata?.full_name || "");
-      } catch (error) {
-        console.error("User check error:", error);
-        router.push("/login");
-      }
-    };
-
-    checkUser();
-  }, [router]);
+  // Initialize profile data when user is available
+  useEffect(() => {
+    if (user) {
+      setFullName(user.user_metadata?.full_name || "");
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user?.id) {
       fetchProfile(user.id);
     }
   }, [user?.id]);
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <p className="text-gray-600">Loading profile...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render anything if user is null (will redirect to login)
+  if (!user) {
+    return null;
+  }
 
   const ensureUserRecord = async (authUser: User) => {
     const { data: existing, error: existingError } = await supabase

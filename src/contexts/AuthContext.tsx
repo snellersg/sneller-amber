@@ -200,7 +200,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     });
 
-    // Set up session refresh (every 50 minutes) - only in browser
+    // Set up session refresh (every 30 minutes) - only in browser
+    // More frequent refresh to prevent session timeouts causing hangs
     if (typeof window !== "undefined") {
       refreshInterval = setInterval(
         async () => {
@@ -208,7 +209,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             // Check if we have a valid session before attempting refresh
             const {
               data: { session },
+              error: sessionError,
             } = await supabase.auth.getSession();
+
+            if (sessionError) {
+              console.error("Error getting session:", sessionError);
+              return;
+            }
 
             if (!session) {
               console.log("No active session, skipping auto-refresh");
@@ -224,24 +231,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               // If refresh token is invalid, clear the session and stop trying
               if (
                 error.message?.includes("Invalid Refresh Token") ||
-                error.message?.includes("Refresh Token Not Found")
+                error.message?.includes("Refresh Token Not Found") ||
+                error.message?.includes("refresh_token_not_found")
               ) {
                 console.warn(
                   "Invalid refresh token detected, clearing session",
                 );
-                await supabase.auth.signOut();
+                await supabase.auth.signOut({ scope: "local" });
                 if (refreshInterval) {
                   clearInterval(refreshInterval);
                   refreshInterval = null;
                 }
               }
+            } else {
+              console.log("Session refreshed successfully");
             }
           } catch (error) {
             console.error("Error during session refresh:", error);
           }
         },
-        50 * 60 * 1000,
-      ); // 50 minutes
+        30 * 60 * 1000,
+      ); // 30 minutes - more frequent to prevent timeouts
     }
 
     // Listen for auth state changes
