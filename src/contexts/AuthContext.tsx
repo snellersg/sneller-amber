@@ -174,26 +174,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let subscription: any = null;
     let initTimeout: NodeJS.Timeout | null = null;
 
-    // Initial auth check with timeout
+    // Simplified initialization - no complex auth checking
     const initAuth = async () => {
-      setIsLoading(true);
+      console.log("Starting auth initialization...");
       try {
-        await refreshAuth();
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log("Got session:", !!session?.user);
+        
+        if (session?.user) {
+          setUser(session.user);
+          setUserEmail(session.user.email || null);
+          await checkAdminStatus(session.user);
+        } else {
+          setUser(null);
+          setUserEmail(null);
+          setIsAdmin(false);
+        }
       } catch (error) {
-        console.error("Error during initial auth:", error);
+        console.error("Auth init error:", error);
+        setUser(null);
+        setUserEmail(null);
+        setIsAdmin(false);
       } finally {
+        console.log("Setting loading to false");
         setIsLoading(false);
       }
     };
 
-    // Set a maximum timeout for initialization (10 seconds)
+    // Emergency timeout - 5 seconds max
     initTimeout = setTimeout(() => {
-      console.warn("Auth initialization timeout - forcing loading to false");
+      console.warn("EMERGENCY: Auth timeout - forcing loading off");
       setIsLoading(false);
-    }, 10000);
+    }, 5000);
 
-    initAuth().then(() => {
-      // Clear the timeout if init completes successfully
+    // Start initialization
+    initAuth().finally(() => {
       if (initTimeout) {
         clearTimeout(initTimeout);
         initTimeout = null;
