@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
 import { Menu, LogOut, User as UserIcon, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
 
 interface TopBarProps {
@@ -14,7 +14,7 @@ interface TopBarProps {
 
 export default function TopBar({ onSidebarToggle }: TopBarProps) {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const { user, userEmail } = useAuth()
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 
@@ -53,22 +53,6 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
     
     return effectiveTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
   }
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-    }
-
-    getUser()
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()

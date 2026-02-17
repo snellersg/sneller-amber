@@ -61,14 +61,19 @@ export default function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const pathname = usePathname()
 
   useEffect(() => {
     const checkUser = async () => {
       try {
+        setIsLoading(true)
         const { data: { user }, error } = await supabase.auth.getUser()
         
-        if (error) throw error
+        if (error) {
+          console.error('Auth error in Layout:', error)
+          throw error
+        }
         
         if (user) {
           setUserEmail(user.email || null)
@@ -101,27 +106,12 @@ export default function Layout({ children }: LayoutProps) {
           // Update last_sign_in_at for existing sessions
           try {
             const timestamp = new Date().toISOString()
-            const { error: updateByIdError } = await supabase
+            await supabase
               .from('users')
               .update({ last_sign_in_at: timestamp })
               .eq('id', user.id)
-
-            if (updateByIdError) {
-              console.error('Error updating last_sign_in_at by id:', updateByIdError)
-            }
-
-            if (user.email) {
-              const { error: updateByEmailError } = await supabase
-                .from('users')
-                .update({ last_sign_in_at: timestamp })
-                .eq('email', user.email)
-
-              if (updateByEmailError) {
-                console.error('Error updating last_sign_in_at by email:', updateByEmailError)
-              }
-            }
           } catch (updateErr) {
-            console.error('Error in last_sign_in_at update:', updateErr)
+            console.error('Error updating last_sign_in_at:', updateErr)
           }
         } else {
           setUserEmail(null)
@@ -131,16 +121,42 @@ export default function Layout({ children }: LayoutProps) {
         console.error('Error checking user:', error)
         setUserEmail(null)
         setIsAdmin(false)
+      } finally {
+        setIsLoading(false)
       }
     }
 
-    // Check user on mount
+    // Initial check
     checkUser()
+
+    // Set up session refresh interval (every 50 minutes, tokens expire after 60 minutes)
+    const refreshInterval = setInterval(async () => {
+      try {
+        console.log('Refreshing session for persistent login...')
+        const { error } = await supabase.auth.refreshSession()
+        if (error) {
+          console.error('Session refresh failed:', error)
+        } else {
+          console.log('Session refreshed successfully')
+        }
+      } catch (error) {
+        console.error('Error during session refresh:', error)
+      }
+    }, 50 * 60 * 1000) // 50 minutes
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (session?.user) {
+        console.log('Layout - Auth state change:', event, !!session?.user)
+        
+        if (event === 'SIGNED_OUT' || !session?.user) {
+          setUserEmail(null)
+          setIsAdmin(false)
+          setIsLoading(false)
+          return
+        }
+
+        if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN' || session?.user) {
           setUserEmail(session.user.email || null)
           
           // Ensure user record exists in database (backup mechanism)
@@ -171,37 +187,24 @@ export default function Layout({ children }: LayoutProps) {
           // Update last_sign_in_at when user session is detected
           try {
             const timestamp = new Date().toISOString()
-            const { error: updateByIdError } = await supabase
+            await supabase
               .from('users')
               .update({ last_sign_in_at: timestamp })
               .eq('id', session.user.id)
-            
-            if (updateByIdError) {
-              console.error('Error updating last_sign_in_at by id:', updateByIdError)
-            }
-
-            if (session.user.email) {
-              const { error: updateByEmailError } = await supabase
-                .from('users')
-                .update({ last_sign_in_at: timestamp })
-                .eq('email', session.user.email)
-
-              if (updateByEmailError) {
-                console.error('Error updating last_sign_in_at by email:', updateByEmailError)
-              }
-            }
           } catch (error) {
-            console.error('Error in last_sign_in_at update:', error)
+            console.error('Error updating last_sign_in_at:', error)
           }
-        } else {
-          setUserEmail(null)
-          setIsAdmin(false)
         }
+        
+        setIsLoading(false)
       }
     )
 
-    // Cleanup subscription
-    return () => subscription.unsubscribe()
+    // Cleanup
+    return () => {
+      subscription.unsubscribe()
+      clearInterval(refreshInterval)
+    }
   }, [])
 
   const handleSidebarToggle = () => {

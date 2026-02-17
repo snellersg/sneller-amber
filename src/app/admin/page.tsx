@@ -46,6 +46,8 @@ export default function AdminPage() {
         
         if (authError || !user) {
           console.error('Auth error:', authError)
+          setIsAdmin(false)
+          setUserEmail(null)
           setAuthLoading(false)
           return
         }
@@ -68,12 +70,54 @@ export default function AdminPage() {
       } catch (error) {
         console.error('Error in checkAdminStatus:', error)
         setIsAdmin(false)
+        setUserEmail(null)
       } finally {
         setAuthLoading(false)
       }
     }
 
+    // Initial check
     checkAdminStatus()
+
+    // Listen for auth state changes to handle session expiration/refresh
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Admin page - Auth state change:', event, !!session?.user)
+      
+      if (event === 'SIGNED_OUT' || !session?.user) {
+        setIsAdmin(false)
+        setUserEmail(null)
+        setAuthLoading(false)
+        return
+      }
+
+      if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN' || session?.user) {
+        // Re-check admin status when session is refreshed or user signs in
+        setUserEmail(session.user.email || null)
+        
+        try {
+          const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('role')
+            .eq('email', session.user.email)
+            .single()
+
+          if (userError) {
+            console.error('Error checking admin status on session refresh:', userError)
+            setIsAdmin(false)
+          } else {
+            setIsAdmin(userData?.role === 'admin')
+          }
+        } catch (error) {
+          console.error('Error in session refresh admin check:', error)
+          setIsAdmin(false)
+        } finally {
+          setAuthLoading(false)
+        }
+      }
+    })
+
+    // Cleanup subscription
+    return () => subscription.unsubscribe()
   }, [])
 
   const fetchUsers = async () => {
