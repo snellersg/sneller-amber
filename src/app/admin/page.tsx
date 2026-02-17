@@ -117,7 +117,7 @@ export default function AdminPage() {
       if (
         event === "TOKEN_REFRESHED" ||
         event === "SIGNED_IN" ||
-        session?.user
+        event === "INITIAL_SESSION"
       ) {
         // Re-check admin status when session is refreshed or user signs in
         setUserEmail(session.user.email || null);
@@ -158,17 +158,22 @@ export default function AdminPage() {
   }, []);
 
   const fetchUsers = async () => {
-    if (!isAdmin) return;
+    if (!isAdmin) {
+      console.log('[fetchUsers] Skipping - user is not admin');
+      return;
+    }
 
     setLoading(true);
     try {
       // Get auth session for API call
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        console.error('No session available');
+        console.error('[fetchUsers] No session available');
         setLoading(false);
         return;
       }
+
+      console.log('[fetchUsers] Fetching users from API...');
 
       // Fetch users from API route (uses service role key to bypass RLS)
       const response = await fetch('/api/admin/get-users', {
@@ -179,12 +184,13 @@ export default function AdminPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        console.error('Error fetching users:', error);
+        console.error('[fetchUsers] API error:', error);
         setLoading(false);
         return;
       }
 
       const { users: usersData } = await response.json();
+      console.log('[fetchUsers] Received', usersData?.length || 0, 'users from API');
 
       // Get current user's auth data to check their verification status
       const {
@@ -212,9 +218,10 @@ export default function AdminPage() {
           };
         }) || [];
 
+      console.log('[fetchUsers] Setting', usersWithStatus.length, 'users to state');
       setUsers(usersWithStatus);
     } catch (error) {
-      console.error("Error in fetchUsers:", error);
+      console.error("[fetchUsers] Exception:", error);
     } finally {
       setLoading(false);
     }
