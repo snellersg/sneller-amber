@@ -72,9 +72,36 @@ export async function GET(request: Request) {
       )
     }
 
-    console.log('[get-users] Successfully fetched', allUsers?.length || 0, 'users')
+    console.log('[get-users] Successfully fetched', allUsers?.length || 0, 'users from database')
 
-    return NextResponse.json({ users: allUsers || [] })
+    // Fetch auth users to get email verification status
+    const { data: authData, error: authFetchError } = await supabaseAdmin.auth.admin.listUsers()
+    
+    if (authFetchError) {
+      console.error('[get-users] Error fetching auth users:', authFetchError)
+      return NextResponse.json(
+        { error: 'Failed to fetch auth data', details: authFetchError.message },
+        { status: 500 }
+      )
+    }
+
+    console.log('[get-users] Successfully fetched', authData.users?.length || 0, 'users from auth')
+
+    // Merge profile data with auth verification status
+    const usersWithVerificationStatus = (allUsers || []).map(profileUser => {
+      const authUser = authData.users.find(authUser => authUser.id === profileUser.id)
+      
+      return {
+        ...profileUser,
+        email_confirmed_at: authUser?.email_confirmed_at || null,
+        email_verified: !!authUser?.email_confirmed_at,
+        last_sign_in_at: authUser?.last_sign_in_at || profileUser.last_sign_in_at
+      }
+    })
+
+    console.log('[get-users] Merged verification status for all users')
+
+    return NextResponse.json({ users: usersWithVerificationStatus })
   } catch (error: any) {
     console.error('[get-users] Unexpected error:', error)
     return NextResponse.json(

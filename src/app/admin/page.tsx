@@ -21,6 +21,7 @@ interface User {
   last_sign_in_at: string;
   status?: string; // Calculated from auth data, not stored in DB
   role?: string;
+  email_confirmed_at?: string | null; // From Supabase auth
 }
 
 interface AllowedDomain {
@@ -182,29 +183,18 @@ export default function AdminPage() {
       const { users: usersData } = await response.json();
       console.log('[fetchUsers] Received', usersData?.length || 0, 'users from API');
 
-      // Get current user's auth data to check their verification status
-      const {
-        data: { user: currentUser },
-      } = await supabase.auth.getUser();
-
-      // Map users with email verification status
+      // Map users with real-time email verification status from Supabase auth
       const usersWithStatus =
         usersData?.map((user: any) => {
-          const isCurrentUser = currentUser && user.email === currentUser.email;
-          let emailVerified = true;
-
-          if (isCurrentUser) {
-            emailVerified = !!currentUser.email_confirmed_at;
-          }
-
           return {
             id: user.id,
             email: user.email,
             full_name: user.full_name || user.email.split("@")[0] || "Unknown",
             created_at: user.created_at,
             last_sign_in_at: user.last_sign_in_at || "Never",
-            status: emailVerified ? "verified" : "pending",
+            status: user.email_verified ? "verified" : "pending",
             role: user.role || "user",
+            email_confirmed_at: user.email_confirmed_at,
           };
         }) || [];
 
@@ -454,7 +444,7 @@ export default function AdminPage() {
               REGISTERED USERS
             </h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Users can register directly at the login page. New registrations will appear here after email verification.
+              Users can register directly at the login page. Email verification status is updated in real-time from Supabase.
             </p>
           </div>
 
@@ -508,20 +498,32 @@ export default function AdminPage() {
                           </div>
                         </td>
                         <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                              user.status === "verified"
-                                ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                                : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200"
-                            }`}
-                          >
-                            {user.status === "verified" && (
-                              <CheckCircle className="w-3 h-3 mr-1" />
+                          <div className="flex flex-col">
+                            <span
+                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                user.status === "verified"
+                                  ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
+                                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200"
+                              }`}
+                            >
+                              {user.status === "verified" && (
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                              )}
+                              {user.status === "verified"
+                                ? "Verified"
+                                : "Pending Verification"}
+                            </span>
+                            {user.status === "verified" && user.email_confirmed_at && (
+                              <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                {new Date(user.email_confirmed_at).toLocaleDateString()}
+                              </span>
                             )}
-                            {user.status === "verified"
-                              ? "Verified"
-                              : "Unverified"}
-                          </span>
+                            {user.status === "pending" && (
+                              <span className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                Awaiting email confirmation
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                           <span
