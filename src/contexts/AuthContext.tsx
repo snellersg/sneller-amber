@@ -184,7 +184,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (session?.user) {
           setUser(session.user);
           setUserEmail(session.user.email || null);
-          await checkAdminStatus(session.user);
+          // Check admin status in background - don't await
+          checkAdminStatus(session.user);
         } else {
           setUser(null);
           setUserEmail(null);
@@ -286,15 +287,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (session?.user) {
         setUser(session.user);
         setUserEmail(session.user.email || null);
-        await checkAdminStatus(session.user);
+        
+        // CRITICAL: Set loading to false IMMEDIATELY so UI can render
+        setIsLoading(false);
+        
+        // Check admin status in background (don't block UI)
+        checkAdminStatus(session.user);
         
         // Update last sign in for SIGNED_IN events (not TOKEN_REFRESHED or INITIAL_SESSION)
         if (event === "SIGNED_IN") {
-          await updateLastSignIn(session.user);
+          updateLastSignIn(session.user);
         }
       }
-
-      setIsLoading(false);
     });
 
     subscription = authSubscription;
