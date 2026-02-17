@@ -181,16 +181,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         await refreshAuth();
       } catch (error) {
         console.error("Error during initial auth:", error);
-      } finally {
-        setIsLoading(false);
+        setIsLoading(false); // Ensure loading is set to false on error
       }
+      // Note: Don't set loading to false here as the auth state change handler will do it
     };
 
-    // Set a maximum timeout for initialization (10 seconds)
+    // Set a maximum timeout for initialization (15 seconds)
     initTimeout = setTimeout(() => {
       console.warn("Auth initialization timeout - forcing loading to false");
       setIsLoading(false);
-    }, 10000);
+    }, 15000); // Increased to 15 seconds to give more time
+
+    // Add an additional emergency timeout as absolute fallback (30 seconds)
+    const emergencyTimeout = setTimeout(() => {
+      console.error("Emergency timeout: forcing loading to false after 30 seconds");
+      setIsLoading(false);
+    }, 30000);
 
     initAuth().then(() => {
       // Clear the timeout if init completes successfully
@@ -198,6 +204,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         clearTimeout(initTimeout);
         initTimeout = null;
       }
+      clearTimeout(emergencyTimeout);
+    }).catch((error) => {
+      console.error("InitAuth failed:", error); 
+      setIsLoading(false);
+      if (initTimeout) {
+        clearTimeout(initTimeout);
+        initTimeout = null;
+      }
+      clearTimeout(emergencyTimeout);
     });
 
     // Set up session refresh (every 30 minutes) - only in browser
@@ -277,9 +292,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (event === "SIGNED_IN") {
           await updateLastSignIn(session.user);
         }
+        
+        // Ensure loading is set to false after processing user session
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     });
 
     subscription = authSubscription;

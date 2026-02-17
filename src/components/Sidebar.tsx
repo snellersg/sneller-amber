@@ -36,12 +36,6 @@ const sidebarSections = [
     items: [
       { label: 'Platforms', icon: Wrench, path: '/tools-platforms' },
       {
-        label: 'Ops Hub',
-        icon: Waypoints,
-        external: true,
-        href: 'https://sites.google.com/snellerslandscaping.com/opshub/home'
-      },
-      {
         label: 'Customer Call Log',
         icon: Phone,
         external: true,
@@ -52,6 +46,12 @@ const sidebarSections = [
         icon: FileText,
         external: true,
         href: 'https://docs.google.com/forms/d/e/1FAIpQLSe-LCaB9ZgoQjoYbJ0Hhd2yfAqTJOdWW9sKsdfIxXRJ1fdV5Q/viewform'
+      },
+      {
+        label: 'Ops Hub',
+        icon: Waypoints,
+        external: true,
+        href: 'https://sites.google.com/snellerslandscaping.com/opshub/home'
       }
     ]
   },
