@@ -32,6 +32,11 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
+  // Invitation state
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRole, setInviteRole] = useState<'user' | 'admin'>('user')
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [inviteMessage, setInviteMessage] = useState('')
 
   // Check if current user is admin before allowing access
   useEffect(() => {
@@ -288,6 +293,60 @@ export default function AdminPage() {
     }
   }
 
+  const inviteUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inviteEmail.trim()) return
+
+    setInviteLoading(true)
+    setInviteMessage('')
+
+    try {
+      // Get current user's session token for admin verification
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        setInviteMessage('You must be logged in to invite users.')
+        return
+      }
+
+      // Call the API route to create the user
+      const response = await fetch('/api/admin/invite-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          email: inviteEmail.toLowerCase().trim(),
+          role: inviteRole
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        console.error('API error:', result)
+        setInviteMessage(`Failed to create user: ${result.error || 'Unknown error'}`)
+        return
+      }
+
+      if (result.success && result.user) {
+        setInviteMessage(`✅ User invited successfully! Credentials:\n\nEmail: ${result.user.email}\nPassword: ${result.user.tempPassword}\n\n⚠️ Share these credentials securely and ask them to change the password immediately.`)
+        setInviteEmail('')
+        setInviteRole('user')
+        fetchUsers()
+      } else {
+        setInviteMessage('Failed to create user: Invalid response from server.')
+      }
+
+    } catch (error) {
+      console.error('Error in inviteUser:', error)
+      setInviteMessage('Failed to invite user. Please try again.')
+    } finally {
+      setInviteLoading(false)
+    }
+  }
+
   useEffect(() => {
     // Only fetch data if user is confirmed admin
     if (isAdmin && !authLoading) {
@@ -329,6 +388,78 @@ export default function AdminPage() {
               <RefreshCw className="h-4 w-4" />
               Refresh
             </button>
+          </div>
+
+          {/* User Invitation Form */}
+          <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              Invite New User
+            </h3>
+            
+            <form onSubmit={inviteUser} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="inviteEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="inviteEmail"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="user@example.com"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="inviteRole" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Role
+                  </label>
+                  <select
+                    id="inviteRole"
+                    value={inviteRole}
+                    onChange={(e) => setInviteRole(e.target.value as 'user' | 'admin')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                
+                <div className="flex items-end">
+                  <button
+                    type="submit"
+                    disabled={inviteLoading}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {inviteLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="h-4 w-4" />
+                        Invite User
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+              
+              {inviteMessage && (
+                <div className={`mt-4 p-3 rounded-lg text-sm whitespace-pre-line ${
+                  inviteMessage.includes('✅') 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200' 
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200'
+                }`}>
+                  {inviteMessage}
+                </div>
+              )}
+            </form>
           </div>
 
           {users.length === 0 ? (
