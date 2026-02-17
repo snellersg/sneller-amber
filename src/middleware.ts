@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Simple proxy/middleware for protected routes
 export async function middleware(_req: NextRequest) {
   // During build time or when environment variables are missing, just continue
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.next()
   }
 
-  // Skip middleware for build-time and static assets
+  // Skip middleware for build-time and static assets  
   if (process.env.NODE_ENV === 'production' && !process.env.NETLIFY_DEV) {
     return NextResponse.next()
   }
@@ -19,7 +20,7 @@ export const config = {
     '/admin/:path*',
     '/profile/:path*',
     '/calculators/:path*',
-    '/core-services/:path*',
+    '/core-services/:path*', 
     '/add-on-services/:path*',
     '/product-knowledge/:path*',
     '/core-processes/:path*',
