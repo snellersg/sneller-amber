@@ -37,6 +37,10 @@ export default function AdminPage() {
   const [inviteRole, setInviteRole] = useState<'user' | 'admin'>('user')
   const [inviteLoading, setInviteLoading] = useState(false)
   const [inviteMessage, setInviteMessage] = useState('')
+  // Database diagnostics state
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false)
+  const [diagnosticsData, setDiagnosticsData] = useState<any>(null)
+  const [diagnosticsLoading, setDiagnosticsLoading] = useState(false)
 
   // Check if current user is admin before allowing access
   useEffect(() => {
@@ -383,6 +387,35 @@ export default function AdminPage() {
     }
   }
 
+  const runDiagnostics = async () => {
+    setDiagnosticsLoading(true)
+    setDiagnosticsOpen(true)
+    setDiagnosticsData(null)
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        setDiagnosticsData({ error: 'Not authenticated' })
+        return
+      }
+
+      const response = await fetch('/api/admin/db-diagnostics', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      const result = await response.json()
+      setDiagnosticsData(result)
+    } catch (error) {
+      console.error('Error running diagnostics:', error)
+      setDiagnosticsData({ error: 'Failed to run diagnostics' })
+    } finally {
+      setDiagnosticsLoading(false)
+    }
+  }
+
   const inviteUser = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!inviteEmail.trim()) return
@@ -471,13 +504,23 @@ export default function AdminPage() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               REGISTERED USERS
             </h2>
-            <button
-              onClick={fetchUsers}
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={runDiagnostics}
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-yellow-300 dark:border-yellow-600 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors"
+                title="Check database configuration"
+              >
+                <Shield className="h-4 w-4" />
+                Diagnostics
+              </button>
+              <button
+                onClick={fetchUsers}
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </button>
+            </div>
           </div>
 
           {/* User Invitation Form */}
@@ -863,6 +906,79 @@ export default function AdminPage() {
         </>
         )}
       </div>
+
+      {/* Database Diagnostics Modal */}
+      {diagnosticsOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-3xl max-h-[80vh] overflow-y-auto p-6 relative">
+            <button
+              onClick={() => setDiagnosticsOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
+            >
+              ✕
+            </button>
+            
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+              Database Diagnostics
+            </h2>
+
+            {diagnosticsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : diagnosticsData ? (
+              <div className="space-y-4">
+                {diagnosticsData.error ? (
+                  <div className="bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 p-4 rounded-lg">
+                    <strong>Error:</strong> {diagnosticsData.error}
+                  </div>
+                ) : (
+                  <>
+                    <div className={`p-4 rounded-lg ${
+                      diagnosticsData.overallStatus === 'healthy' 
+                        ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
+                        : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
+                    }`}>
+                      <strong>Overall Status:</strong> {diagnosticsData.overallStatus}
+                      <br />
+                      <span className="text-sm">{diagnosticsData.recommendation}</span>
+                    </div>
+
+                    {diagnosticsData.checks && Object.entries(diagnosticsData.checks).map(([key, check]: [string, any]) => (
+                      <div key={key} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          {check.status === 'ok' || check.status === 'configured' ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : (
+                            <Shield className="h-5 w-5 text-yellow-500" />
+                          )}
+                          <h3 className="font-semibold text-gray-900 dark:text-white capitalize">
+                            {key.replace(/([A-Z])/g, ' $1').trim()}
+                          </h3>
+                        </div>
+                        <pre className="text-xs bg-gray-100 dark:bg-gray-900 p-3 rounded overflow-x-auto">
+                          {JSON.stringify(check, null, 2)}
+                        </pre>
+                      </div>
+                    ))}
+
+                    {diagnosticsData.overallStatus !== 'healthy' && (
+                      <div className="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 p-4 rounded-lg">
+                        <strong>Next Steps:</strong>
+                        <ol className="list-decimal list-inside mt-2 space-y-1 text-sm">
+                          <li>Open <code className="bg-blue-200 dark:bg-blue-800 px-1 rounded">DATABASE_FIX_GUIDE.md</code> in your project root</li>
+                          <li>Follow the instructions to run <code className="bg-blue-200 dark:bg-blue-800 px-1 rounded">supabase_setup.sql</code></li>
+                          <li>Run diagnostics again to verify the fix</li>
+                        </ol>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
     </Layout>
   )
 }
