@@ -90,7 +90,23 @@ export class ErrorBoundary extends Component<Props, State> {
       /supabase/i,
       /auth/i,
       /session/i,
+      /Invalid Refresh Token/i,
+      /refresh_token_not_found/i,
+      /session_not_found/i,
     ]
+
+    // If it's a session/auth error, check if we should redirect to login
+    const isSessionError = /session|auth|refresh.*token|Invalid.*Token/i.test(
+      error.message || error.stack || ''
+    )
+    
+    if (isSessionError) {
+      console.log('[ErrorBoundary] Detected session error, redirecting to login')
+      setTimeout(() => {
+        window.location.href = '/login'
+      }, 2000)
+      return false // Don't auto-retry session errors
+    }
 
     return recoverablePatterns.some(
       pattern => pattern.test(error.message) || pattern.test(error.stack || '')

@@ -70,6 +70,12 @@ export default function AdminPage() {
         errorMessage = 'You do not have permission to perform this action.'
       } else if (error.message.includes('timeout')) {
         errorMessage = 'Request timed out. Please try again.'
+      } else if (error.message.includes('Invalid Refresh Token') || error.message.includes('session')) {
+        errorMessage = 'Your session has expired. Please log in again.'
+        // Redirect to login after a short delay
+        setTimeout(() => {
+          router.push('/login')
+        }, 2000)
       } else {
         errorMessage = error.message
       }
@@ -221,13 +227,34 @@ export default function AdminPage() {
     }
   }, [])
 
-  // Load data when authenticated as admin
+  // Periodic session refresh for long-running admin sessions
   useEffect(() => {
-    if (!authLoading && user && isAdmin) {
-      fetchUsers()
-      fetchAllowedDomains()
-    }
-  }, [authLoading, user, isAdmin])
+    if (!user || !isAdmin) return
+
+    const refreshInterval = setInterval(async () => {
+      try {
+        // Check if session is still valid
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser()
+        
+        if (error || !currentUser) {
+          console.log('[Admin] Session expired, redirecting to login')
+          router.push('/login')
+          return
+        }
+        
+        // Refresh data if page has been open for a while
+        const pageOpenTime = Date.now() - lastFetchAttemptRef.current
+        if (pageOpenTime > 300000) { // 5 minutes
+          console.log('[Admin] Refreshing data for long-running session')
+          fetchAllData()
+        }
+      } catch (error) {
+        console.error('[Admin] Session check error:', error)
+      }
+    }, 60000) // Check every minute
+
+    return () => clearInterval(refreshInterval)
+  }, [user, isAdmin, router, fetchAllData])
 
   // Show loading while checking authentication
   if (authLoading) {
@@ -641,20 +668,18 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    // Only fetch data if user is confirmed admin
-    if (isAdmin && !authLoading) {
-      fetchUsers()
-      fetchAllowedDomains()
-    }
-  }, [isAdmin, authLoading])
-
-  useEffect(() => {
     if (!isAdmin || authLoading) return
 
     if (activeTab === 'users') {
-      fetchUsers()
+      // Users data is already loaded via fetchAllData, just ensure it's current
+      if (users.length === 0) {
+        fetchUsers()
+      }
     } else if (activeTab === 'domains') {
-      fetchAllowedDomains()
+      // Domains data is already loaded via fetchAllData, just ensure it's current  
+      if (allowedDomains.length === 0) {
+        fetchAllowedDomains()
+      }
     }
   }, [activeTab, isAdmin, authLoading])
 
