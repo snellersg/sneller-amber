@@ -38,13 +38,23 @@ interface AllowedDomain {
 
 export default function AdminPage() {
   const router = useRouter();
-  const { user, isAdmin, userEmail, isLoading: authLoading } = useAuth();
+  const { user, isAdmin, userEmail, isLoading: authLoading, connectionStatus, forceReconnect } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [allowedDomains, setAllowedDomains] = useState<AllowedDomain[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"users" | "domains">("users");
   const [newDomain, setNewDomain] = useState("");
   const [domainNotes, setDomainNotes] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Refs for component lifecycle and network state
+  const isComponentMountedRef = useRef(true);
+  const lastFetchAttemptRef = useRef(0);
+  const isNetworkAvailable = useNetworkState();
+  
+  // Derive network status description
+  const statusDescription = isNetworkAvailable ? 'Online' : 'Offline';
 
   // Enhanced error handling and retry logic
   const handleError = useCallback((error: any, operation: string) => {
@@ -60,7 +70,40 @@ export default function AdminPage() {
       } else if (error.message.includes('unauthorized') || error.message.includes('403')) {
         errorMessage = 'You do not have permission to perform this action.';
       } else if (error.message.includes('timeout')) {
-     Redirect if not authenticated or not admin
+        errorMessage = 'Request timed out. Please try again.';
+      } else {
+        errorMessage = error.message;
+      }
+    }
+    
+    setError(errorMessage);
+    setLoading(false);
+  }, []);
+  
+  // Retry with exponential backoff
+  const retryWithBackoff = useCallback(async (operation: () => Promise<void>, maxRetries = 3) => {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        await operation();
+        setRetryCount(0); // Reset on success
+        return;
+      } catch (error) {
+        console.log(`[Admin] Attempt ${attempt}/${maxRetries} failed:`, error);
+        
+        if (attempt === maxRetries) {
+          handleError(error, 'Operation');
+          return;
+        }
+        
+        // Exponential backoff: wait longer between retries
+        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+        console.log(`[Admin] Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }, [handleError]);
+
+  // Redirect if not authenticated or not admin
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -68,7 +111,13 @@ export default function AdminPage() {
         return;
       }
       if (!isAdmin) {
-     Enhanced data fetching with better error handling
+        router.push("/");
+        return;
+      }
+    }
+  }, [authLoading, user, isAdmin, router]);
+
+  // Enhanced data fetching with better error handling
   const fetchAllData = useCallback(async () => {
     if (!user || !isAdmin || !isComponentMountedRef.current) {
       console.log('[Admin] Skipping data fetch - user not admin or component unmounted');
@@ -132,9 +181,6 @@ export default function AdminPage() {
       fetchAllData();
     }
   }, [authLoading, user, isAdmin, fetchAllData]);
-      }
-    }
-  }, [authLoading, user, isAdmin, router]);
 
   // Handle app lifecycle changes
   useEffect(() => {
@@ -171,32 +217,7 @@ export default function AdminPage() {
     return () => {
       isComponentMountedRef.current = false;
     };
-  }, [
-    setLoading(false);
   }, []);
-  
-  // Retry with exponential backoff
-  const retryWithBackoff = useCallback(async (operation: () => Promise<void>, maxRetries = 3) => {
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        await operation();
-        setRetryCount(0); // Reset on success
-        return;
-      } catch (error) {
-        console.log(`[Admin] Attempt ${attempt}/${maxRetries} failed:`, error);
-        
-        if (attempt === maxRetries) {
-          handleError(error, 'Operation');
-          return;
-        }
-        
-        // Exponential backoff: wait longer between retries
-        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
-        console.log(`[Admin] Waiting ${delay}ms before retry...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
-  }, [handleError]);
 
   // Load data when authenticated as admin
   useEffect(() => {
@@ -453,34 +474,6 @@ export default function AdminPage() {
       throw error; // Re-throw to be handled by retry logic
     }
   }, [isAdmin, isNetworkAvailable]);
-      const existingDomains = domains.map((d) => d.domain);
-      const missingDomains = requiredDomains.filter(
-        (domain) => !existingDomains.includes(domain),
-      );
-
-      if (missingDomains.length > 0) {
-        console.log("Missing required domains, adding:", missingDomains);
-        await ensureRequiredDomains(missingDomains);
-        // Refetch after adding missing domains
-        const { data: updatedData } = await supabase
-          .from("allowed_domains")
-          .select("*")
-          .order("added_at", { ascending: false });
-        setAllowedDomains(updatedData || []);
-      } else {
-        setAllowedDomains(domains);
-      }
-
-      // Bootstrap default domains if none exist
-      if (domains.length === 0) {
-        await bootstrapDefaultDomains();
-      }
-    } catch (error) {
-      console.error("Error in fetchAllowedDomains:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const ensureRequiredDomains = async (missingDomains: string[]) => {
     const domainData = missingDomains.map((domain) => ({

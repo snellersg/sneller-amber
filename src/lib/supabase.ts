@@ -55,7 +55,7 @@ export const supabase = createBrowserClient(
     },
     global: {
       // Add retry logic for failed requests
-      fetch: async (url: string, options: any = {}) => {
+      fetch: async (url: URL | RequestInfo, options: any = {}) => {
         let lastError: Error | null = null;
         
         // Retry logic for network requests

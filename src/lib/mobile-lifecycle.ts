@@ -164,9 +164,9 @@ export const appLifecycle = new MobileAppLifecycle();
  * React hook for using app lifecycle
  */
 export function useAppLifecycle() {
-  [appState, setAppState] = useState<'active' | 'inactive' | 'background'>('active');
+  const [appState, setAppState] = useState<'active' | 'inactive' | 'background'>('active');
   
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = appLifecycle.addListener(setAppState);
     
     // Set initial state

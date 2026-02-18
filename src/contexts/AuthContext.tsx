@@ -24,34 +24,20 @@ interface AuthContextType {
   forceReconnect: () => Promise<void>;
 }
 
-interface UserRoleData {
-  role?: string;
-}
-
-interface SupabaseQueryResult<T> {
-  data: T | null;
-  error: {
-    message?: string;
-    code?: string;
-    details?: string;
-  } | null;
-}
-
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    // Return safe defaults instead of throwing to prevent app crashes
     console.warn("useAuth called outside AuthProvider - returning safe defaults");
     return {
       user: null,
       isAdmin: false,
+      isLoading: false,
+      userEmail: null,
       connectionStatus: 'unhealthy' as const,
       refreshAuth: async () => {},
-      forceReconnectfalse,
-      userEmail: null,
-      refreshAuth: async () => {},
+      forceReconnect: async () => {},
     };
   }
   return context;
@@ -61,10 +47,24 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'healthy' | 'unhealthy' | 'recovering'>('healthy');
   const [hasError, setHasError] = useState(false);
-  useCallback(async (authUser: User) => {
+  
+  const isInitializedRef = useRef(false);
+  const currentUserRef = useRef<User | null>(null);
+  const recoveryInProgressRef = useRef(false);
+
+  // Update the ref when user changes
+  useEffect(() => {
+    currentUserRef.current = user;
+  }, [user]);
+
+  const checkAdminStatus = useCallback(async (authUser: User) => {
     if (!authUser) return;
     
     try {
@@ -101,6 +101,126 @@ interface AuthProviderProps {
       // Silently handle timeouts and network errors - just set to non-admin
       if (error instanceof Error) {
         if (error.message.includes('timeout') || error.message.includes('Network')) {
+          console.log('Network/timeout error during admin check - setting non-admin');
+        } else {
+          console.error('Unexpected error during admin check:', error);
+        }
+      }
+      setIsAdmin(false);
+    }
+  }, []);
+
+  const updateLastSignIn = useCallback(async (authUser: User) => {
+    if (!authUser) return;
+    
+    try {
+      // Only update if network is available
+      if (!networkMonitor.isNetworkAvailable()) {
+        console.log('[Auth] Skipping last sign in update - network unavailable');
+        return;
+      }
+      
+      // Update last_sign_in_at timestamp silently
+      const { error } = await supabase
+        .from("users")
+        .update({ 
+          last_sign_in_at: new Date().toISOString()
+        })
+        .eq("id", authUser.id);
+      
+      if (error) {
+        // Silent failure - don't disrupt user experience
+        console.log("Could not update last sign in:", error.message);
+      }
+    } catch (error) {
+      // Silent failure
+      console.log("Error updating last sign in:", error);
+    }
+  }, []);
+
+  const refreshAuth = useCallback(async () => {
+    if (recoveryInProgressRef.current) {
+      console.log('[Auth] Recovery already in progress, skipping refresh');
+      return;
+    }
+    
+    try {
+      setConnectionStatus('recovering');
+      console.log('[Auth] Starting auth refresh...');
+      
+      // Wait for network to be available first
+      try {
+        await waitForNetwork(10000); // 10 second timeout
+      } catch (networkError) {
+        console.log('[Auth] Network not available for auth refresh');
+        setConnectionStatus('unhealthy');
+        return;
+      }
+
+      const {
+        data: { user: authUser },
+        error,
+      } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error('[Auth] Refresh error:', error.message);
+        
+        // Handle invalid refresh token errors gracefully
+        if (
+          error.message?.includes("Invalid Refresh Token") ||
+          error.message?.includes("Refresh Token Not Found") ||
+          error.message?.includes("refresh_token_not_found")
+        ) {
+          console.warn("Invalid refresh token detected, clearing auth state");
+          await supabase.auth.signOut({ scope: "local" });
+          setUser(null);
+          setIsAdmin(false);
+          setUserEmail(null);
+        }
+        
+        setConnectionStatus('unhealthy');
+        return;
+      }
+
+      if (!authUser) {
+        console.log('[Auth] No user from refresh');
+        setUser(null);
+        setIsAdmin(false);
+        setUserEmail(null);
+        setConnectionStatus('healthy');
+        return;
+      }
+
+      console.log('[Auth] Auth refresh successful');
+      setUser(authUser);
+      setUserEmail(authUser.email || null);
+      setConnectionStatus('healthy');
+      
+      // Check admin status in background - don't wait
+      checkAdminStatus(authUser).catch(err => 
+        console.error("Background admin check failed during refresh:", err)
+      );
+      
+    } catch (error: unknown) {
+      // Handle different types of errors appropriately
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('[Auth] Critical refresh error:', errorMessage);
+      
+      if (
+        errorMessage.includes("Invalid Refresh Token") ||
+        errorMessage.includes("Refresh Token Not Found")
+      ) {
+        console.warn("Invalid refresh token detected, clearing auth state");
+        await supabase.auth.signOut({ scope: "local" });
+        setUser(null);
+        setIsAdmin(false);
+        setUserEmail(null);
+      }
+      
+      setConnectionStatus('unhealthy');
+    }
+  }, [checkAdminStatus]);
+
   // Enhanced force reconnect function for mobile scenarios
   const forceReconnect = useCallback(async () => {
     if (recoveryInProgressRef.current) {
@@ -157,55 +277,16 @@ interface AuthProviderProps {
     } finally {
       recoveryInProgressRef.current = false;
     }
-  }, [refreshAuth, checkAdminStatus])     }
-      }
-      setIsAdmin(false);useCallback(async (authUser: User) => {
-    if (!authUser) return;
-    
-    try {
-      // Only update if network is available
-      if (!networkMonitor.isNetworkAvailable()) {
-        console.log('[Auth] Skipping last sign in update - network unavailable');
-        return;
-      }
-      
-      // Update last_sign_in_at timestamp silently
-      const { error } = await supabase
-        .from("users")
-        .update({ 
-          last_sign_in_at: new Date().toISOString()
-        })
-        .eq("id", authUser.id);
-      
-      if (error) {
-        // Silent failure - don't disrupt user experience
-        console.log("CuseCallback(async () => {
-    if (recoveryInProgressRef.current) {
-      console.log('[Auth] Recovery already in progress, skipping refresh');
-      return;
-    }
-    
-    try {
-      setConnectionStatus('recovering');
-      console.log('[Auth] Starting auth refresh...');
-      
-      // Wait for network to be available first
-      try {
-        await waitForNetwork(10000); // 10 second timeout
-      } catch (networkError) {
-        console.log('[Auth] Network not available for auth refresh');
-        setConnectionStatus('unhealthy');
-        return;
-      }
+  }, [refreshAuth, checkAdminStatus]);
 
-      const {
-        data: { user: authUser },
-        error,
-      } = await supabase.auth.getUser();
+  useEffect(() => {
+    let refreshInterval: NodeJS.Timeout | null = null;
+    let subscription: ReturnType<typeof supabase.auth.onAuthStateChange>['data']['subscription'] | null = null;
+    let initTimeout: NodeJS.Timeout | null = null;
 
-      if (error) {
-        console.error('[Auth] Refresh error:', error.message);
-        Enhanced initialization with better mobile support
+    // Wrap everything in try-catch to prevent provider crashes
+    try {
+      // Enhanced initialization with better mobile support
       const initAuth = async () => {
         console.log("Starting enhanced auth initialization...");
         
@@ -291,9 +372,11 @@ interface AuthProviderProps {
       };
       
       // Add event listeners
-      window.addEventListener('app-return-from-background', handleAppReturnFromBackground);
-      window.addEventListener('network-reconnected', handleNetworkReconnected);
-      window.addEventListener('supabase-auth-recovery-needed', handleSupabaseAuthRecoveryNeeded);
+      if (typeof window !== 'undefined') {
+        window.addEventListener('app-return-from-background', handleAppReturnFromBackground);
+        window.addEventListener('network-reconnected', handleNetworkReconnected);
+        window.addEventListener('supabase-auth-recovery-needed', handleSupabaseAuthRecoveryNeeded);
+      }
 
       // Set up session refresh (every 25 minutes) - more frequent for mobile
       if (typeof window !== "undefined") {
@@ -428,9 +511,11 @@ interface AuthProviderProps {
           }
           
           // Remove event listeners
-          window.removeEventListener('app-return-from-background', handleAppReturnFromBackground);
-          window.removeEventListener('network-reconnected', handleNetworkReconnected);
-          window.removeEventListener('supabase-auth-recovery-needed', handleSupabaseAuthRecoveryNeeded);
+          if (typeof window !== 'undefined') {
+            window.removeEventListener('app-return-from-background', handleAppReturnFromBackground);
+            window.removeEventListener('network-reconnected', handleNetworkReconnected);
+            window.removeEventListener('supabase-auth-recovery-needed', handleSupabaseAuthRecoveryNeeded);
+          }
           
         } catch (error) {
           console.error("Error in auth cleanup:", error);
@@ -443,7 +528,7 @@ interface AuthProviderProps {
       setConnectionStatus('unhealthy');
       setHasError(true);
     }
-  }, [refreshAuth, checkAdminStatus, updateLastSignIn, forceReconnect]); // Dependencies for useCallback functions
+  }, [refreshAuth, checkAdminStatus, updateLastSignIn, forceReconnect]);
 
   // If there was a critical error, still render children with safe defaults
   if (hasError) {
@@ -460,93 +545,6 @@ interface AuthProviderProps {
         connectionStatus,
         refreshAuth,
         forceReconnect
-              }
-            } else {
-              console.log("Session refreshed successfully");
-            }
-          } catch (error) {
-            console.error("Error during session refresh:", error);
-          }
-        },
-        30 * 60 * 1000,
-      ); // 30 minutes - more frequent to prevent timeouts
-    }
-
-      // Listen for auth state changes
-      const {
-        data: { subscription: authSubscription },
-      } = supabase.auth.onAuthStateChange(async (event, session) => {
-        try {
-          console.log("Auth state change:", event, !!session?.user);
-
-          if (event === "SIGNED_OUT" || !session?.user) {
-            setUser(null);
-            setIsAdmin(false);
-            setUserEmail(null);
-            setIsLoading(false);
-            return;
-          }
-
-          if (session?.user) {
-            setUser(session.user);
-            setUserEmail(session.user.email || null);
-            
-            // CRITICAL: Set loading to false IMMEDIATELY so UI can render
-            setIsLoading(false);
-            
-            // Check admin status in background (don't block UI)
-            checkAdminStatus(session.user).catch(err =>
-              console.error("Background admin check failed:", err)
-            );
-            
-            // Update last sign in for SIGNED_IN events (not TOKEN_REFRESHED or INITIAL_SESSION)
-            if (event === "SIGNED_IN") {
-              updateLastSignIn(session.user).catch(err =>
-                console.error("Failed to update last sign in:", err)
-              );
-            }
-          }
-        } catch (error) {
-          console.error("Error in auth state change handler:", error);
-          setIsLoading(false);
-        }
-      });
-
-      subscription = authSubscription;
-    } catch (error) {
-      console.error("Critical error in auth setup:", error);
-      setIsLoading(false);
-      setHasError(true);
-    }
-
-    return () => {
-      try {
-        subscription?.unsubscribe();
-        if (refreshInterval) {
-          clearInterval(refreshInterval);
-        }
-        if (initTimeout) {
-          clearTimeout(initTimeout);
-        }
-      } catch (error) {
-        console.error("Error in auth cleanup:", error);
-      }
-    };
-  }, []); // Empty dependency array to prevent infinite re-renders
-
-  // If there was a critical error, still render children with safe defaults
-  if (hasError) {
-    console.warn("AuthProvider encountered an error but continuing with safe defaults");
-  }
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAdmin,
-        isLoading,
-        userEmail,
-        refreshAuth,
       }}
     >
       {children}
