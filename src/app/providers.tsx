@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
-import { ThemeProvider } from "@/components/theme-provider";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState } from 'react'
+import { ThemeProvider } from '@/components/theme-provider'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -16,8 +16,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             retry: 2,
           },
         },
-      }),
-  );
+      })
+  )
 
   return (
     <ErrorBoundary>
@@ -32,5 +32,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
-  );
+  )
 }

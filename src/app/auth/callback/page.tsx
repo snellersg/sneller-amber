@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { User, SupabaseClient, PostgrestError } from "@supabase/supabase-js";
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { User, SupabaseClient, PostgrestError } from '@supabase/supabase-js'
 
 // Type definitions
 interface Admin {
-  id?: string;
-  email: string;
-  role?: string;
+  id?: string
+  email: string
+  role?: string
 }
 
 // Helper function to notify admins of new user registration
@@ -19,151 +19,146 @@ const notifyAdmins = async (newUser: User, supabase: SupabaseClient) => {
       data: admins,
       error: adminError,
     }: { data: Admin[] | null; error: PostgrestError | null } = await supabase
-      .from("users")
-      .select("email")
-      .eq("role", "admin");
+      .from('users')
+      .select('email')
+      .eq('role', 'admin')
 
     if (adminError) {
-      console.error("Error fetching admin users:", adminError);
-      return;
+      console.error('Error fetching admin users:', adminError)
+      return
     }
 
     if (!admins || admins.length === 0) {
-      console.warn("No admin users found to notify");
-      return;
+      console.warn('No admin users found to notify')
+      return
     }
 
     // For now, we'll log the notification
     // In production, you might want to send emails or create in-app notifications
-    console.log("🚨 NEW USER REGISTRATION ALERT 🚨");
-    console.log("New user registered:", {
+    console.log('🚨 NEW USER REGISTRATION ALERT 🚨')
+    console.log('New user registered:', {
       email: newUser.email,
       id: newUser.id,
       created_at: new Date().toISOString(),
-    });
+    })
     console.log(
-      "Admins to notify:",
-      admins.map((admin: Admin) => admin.email),
-    );
-    console.log("👆 Please review and approve this user in the admin panel");
+      'Admins to notify:',
+      admins.map((admin: Admin) => admin.email)
+    )
+    console.log('👆 Please review and approve this user in the admin panel')
 
     // TODO: Implement actual notification system (email, in-app notifications, etc.)
     // Example: await sendEmailNotification(admins, newUser)
   } catch (error) {
-    console.error("Error notifying admins:", error);
+    console.error('Error notifying admins:', error)
   }
-};
+}
 
 // Helper function to ensure user record exists in database
 const ensureUserRecord = async (authUser: User, supabase: SupabaseClient) => {
   try {
     const { data: existing, error: existingError } = await supabase
-      .from("users")
-      .select("id")
-      .eq("id", authUser.id)
-      .maybeSingle();
+      .from('users')
+      .select('id')
+      .eq('id', authUser.id)
+      .maybeSingle()
 
     if (existingError) {
-      console.error("Error checking user record:", existingError);
-      return false;
+      console.error('Error checking user record:', existingError)
+      return false
     }
 
     if (existing) {
-      console.log("User record already exists for:", authUser.email);
-      return true;
+      console.log('User record already exists for:', authUser.email)
+      return true
     }
 
     const payload = {
       id: authUser.id,
       email: authUser.email,
-      full_name: authUser.user_metadata?.full_name || "",
-      role: "user",
-    };
-
-    const { error: insertError } = await supabase.from("users").insert(payload);
-
-    if (insertError) {
-      if (insertError.code === "23505") {
-        // Duplicate key error - user already exists
-        console.log(
-          "User record already exists (duplicate key):",
-          authUser.email,
-        );
-        return true;
-      }
-      console.error("Error creating user record:", insertError);
-      return false;
+      full_name: authUser.user_metadata?.full_name || '',
+      role: 'user',
     }
 
-    console.log("User record created successfully for:", authUser.email);
+    const { error: insertError } = await supabase.from('users').insert(payload)
+
+    if (insertError) {
+      if (insertError.code === '23505') {
+        // Duplicate key error - user already exists
+        console.log('User record already exists (duplicate key):', authUser.email)
+        return true
+      }
+      console.error('Error creating user record:', insertError)
+      return false
+    }
+
+    console.log('User record created successfully for:', authUser.email)
 
     // Notify admins of new user registration
-    await notifyAdmins(authUser, supabase);
-    return true;
+    await notifyAdmins(authUser, supabase)
+    return true
   } catch (error) {
-    console.error("Unexpected error in ensureUserRecord:", error);
-    return false;
+    console.error('Unexpected error in ensureUserRecord:', error)
+    return false
   }
-};
+}
 
 export default function AuthCallback() {
-  const router = useRouter();
-  const [status, setStatus] = useState<"loading" | "error" | "success">(
-    "loading",
-  );
+  const router = useRouter()
+  const [status, setStatus] = useState<'loading' | 'error' | 'success'>('loading')
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
         // Dynamic import to avoid SSR issues
-        const { supabase } = await import("@/lib/supabase");
+        const { supabase } = await import('@/lib/supabase')
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get("code");
+        const urlParams = new URLSearchParams(window.location.search)
+        const code = urlParams.get('code')
 
         if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          const { error } = await supabase.auth.exchangeCodeForSession(code)
 
           if (error) {
-            console.error("Auth callback error:", error);
-            setStatus("error");
-            setTimeout(() => router.push("/login"), 3000);
-            return;
+            console.error('Auth callback error:', error)
+            setStatus('error')
+            setTimeout(() => router.push('/login'), 3000)
+            return
           }
 
           // Ensure user record exists in database after successful auth
           try {
             const {
               data: { user },
-            } = await supabase.auth.getUser();
+            } = await supabase.auth.getUser()
             if (user) {
-              const success = await ensureUserRecord(user, supabase);
+              const success = await ensureUserRecord(user, supabase)
               if (!success) {
                 console.warn(
-                  "Warning: Could not create user database record. User can still proceed.",
-                );
+                  'Warning: Could not create user database record. User can still proceed.'
+                )
                 // Don't block the auth flow - user can still access the app
               }
             }
           } catch (userErr) {
-            console.warn("Warning: Could not create user record:", userErr);
+            console.warn('Warning: Could not create user record:', userErr)
             // Don't block login for this error - user can still proceed
           }
         }
 
-        setStatus("success");
-        router.push("/sheets-and-docs");
+        setStatus('success')
+        router.push('/sheets-and-docs')
       } catch (err) {
-        console.error("Auth callback error:", err);
-        setStatus("error");
-        setTimeout(() => router.push("/login"), 3000);
+        console.error('Auth callback error:', err)
+        setStatus('error')
+        setTimeout(() => router.push('/login'), 3000)
       }
-    };
+    }
 
-    handleAuthCallback();
-  }, [router]);
+    handleAuthCallback()
+  }, [router])
 
-  if (status === "error") {
+  if (status === 'error') {
     return (
       <div className="flex flex-col justify-center min-h-screen py-12 bg-gray-50 dark:bg-gray-900 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -195,7 +190,7 @@ export default function AuthCallback() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -214,5 +209,5 @@ export default function AuthCallback() {
         </div>
       </div>
     </div>
-  );
+  )
 }

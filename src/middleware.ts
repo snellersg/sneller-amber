@@ -7,7 +7,7 @@ export async function middleware(_req: NextRequest) {
     return NextResponse.next()
   }
 
-  // Skip middleware for build-time and static assets  
+  // Skip middleware for build-time and static assets
   if (process.env.NODE_ENV === 'production' && !process.env.NETLIFY_DEV) {
     return NextResponse.next()
   }
@@ -20,12 +20,12 @@ export const config = {
     '/admin/:path*',
     '/profile/:path*',
     '/calculators/:path*',
-    '/core-services/:path*', 
+    '/core-services/:path*',
     '/add-on-services/:path*',
     '/product-knowledge/:path*',
     '/core-processes/:path*',
     '/kam-club/:path*',
     '/sheets-and-docs/:path*',
-    '/login'
-  ]
+    '/login',
+  ],
 }

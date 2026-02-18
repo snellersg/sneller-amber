@@ -8,9 +8,7 @@ export default function ThemeTestPage() {
   return (
     <div className="container max-w-4xl mx-auto p-8 space-y-8">
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-heading font-bold text-foreground">
-          AMBER Theme System
-        </h1>
+        <h1 className="text-4xl font-heading font-bold text-foreground">AMBER Theme System</h1>
         <p className="text-lg text-muted-foreground">
           Production-grade Light/Dark mode using next-themes + CSS variables
         </p>
@@ -21,9 +19,7 @@ export default function ThemeTestPage() {
         <Card>
           <CardHeader>
             <CardTitle>Sneller 2026 Color Palette</CardTitle>
-            <CardDescription>
-              All colors automatically adapt to light/dark mode
-            </CardDescription>
+            <CardDescription>All colors automatically adapt to light/dark mode</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
@@ -47,9 +43,7 @@ export default function ThemeTestPage() {
         <Card>
           <CardHeader>
             <CardTitle>UI Components</CardTitle>
-            <CardDescription>
-              All components use semantic theme tokens
-            </CardDescription>
+            <CardDescription>All components use semantic theme tokens</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex gap-2 flex-wrap">
@@ -57,13 +51,13 @@ export default function ThemeTestPage() {
               <Button variant="secondary">Secondary</Button>
               <Button variant="outline">Outline</Button>
             </div>
-            
+
             <div className="flex gap-2 flex-wrap">
               <Badge>Default Badge</Badge>
               <Badge variant="secondary">Secondary</Badge>
               <Badge variant="outline">Outline</Badge>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="Enter your email" />
@@ -75,9 +69,7 @@ export default function ThemeTestPage() {
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>🎨 Theme System Features</CardTitle>
-            <CardDescription>
-              Professional-grade theming with next-themes
-            </CardDescription>
+            <CardDescription>Professional-grade theming with next-themes</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">

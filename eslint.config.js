@@ -15,10 +15,10 @@ export default [
       '**/*.min.js',
       'coverage/**',
       '.git/**',
-      'netlify/**'
+      'netlify/**',
     ],
   },
-  
+
   // JavaScript files
   {
     files: ['**/*.{js,jsx}'],
@@ -28,8 +28,8 @@ export default [
       sourceType: 'module',
       parserOptions: {
         ecmaFeatures: {
-          jsx: true
-        }
+          jsx: true,
+        },
       },
       globals: {
         React: 'readonly',
@@ -38,20 +38,23 @@ export default [
         window: 'readonly',
         document: 'readonly',
         module: 'readonly',
-        process: 'readonly'
-      }
+        process: 'readonly',
+      },
     },
     rules: {
-      'no-unused-vars': ['warn', { 
-        varsIgnorePattern: '^(React|[A-Z][a-zA-Z]*Component)$',
-        argsIgnorePattern: '^_'
-      }],
+      'no-unused-vars': [
+        'warn',
+        {
+          varsIgnorePattern: '^(React|[A-Z][a-zA-Z]*Component)$',
+          argsIgnorePattern: '^_',
+        },
+      ],
       'prefer-const': 'warn',
-      'no-var': 'error'
-    }
+      'no-var': 'error',
+    },
   },
 
-  // TypeScript files  
+  // TypeScript files
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -60,9 +63,9 @@ export default [
         ecmaVersion: 2021,
         sourceType: 'module',
         ecmaFeatures: {
-          jsx: true
+          jsx: true,
         },
-        project: './tsconfig.json'
+        project: './tsconfig.json',
       },
       globals: {
         React: 'readonly',
@@ -71,31 +74,34 @@ export default [
         window: 'readonly',
         document: 'readonly',
         module: 'readonly',
-        process: 'readonly'
-      }
+        process: 'readonly',
+      },
     },
     plugins: {
-      '@typescript-eslint': typescriptEslint
+      '@typescript-eslint': typescriptEslint,
     },
     rules: {
       // TypeScript-specific rules
-      '@typescript-eslint/no-unused-vars': ['warn', { 
-        varsIgnorePattern: '^(React|[A-Z][a-zA-Z]*Component)$',
-        argsIgnorePattern: '^_'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          varsIgnorePattern: '^(React|[A-Z][a-zA-Z]*Component)$',
+          argsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-var-requires': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-interface': 'warn',
-      
+
       // Use base ESLint rules for general patterns
       'prefer-const': 'warn',
       'no-var': 'error',
-      
+
       // Disable base ESLint rules that are covered by TypeScript equivalents
       'no-unused-vars': 'off',
-      'no-undef': 'off'
-    }
-  }
+      'no-undef': 'off',
+    },
+  },
 ]

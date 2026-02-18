@@ -8,8 +8,8 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 )
 
@@ -19,22 +19,19 @@ export async function GET(request: Request) {
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
       console.error('[get-users] No authorization header')
-      return NextResponse.json(
-        { error: 'No authorization header' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'No authorization header' }, { status: 401 })
     }
 
     // Verify the user is an admin by checking their user record
     const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseAdmin.auth.getUser(token)
+
     if (authError || !user) {
       console.error('[get-users] Auth error:', authError?.message)
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     console.log('[get-users] Checking admin status for user:', user.id)
@@ -50,10 +47,7 @@ export async function GET(request: Request) {
 
     if (userError || !userData || userData.role !== 'admin') {
       console.error('[get-users] Admin access denied:', { userData, userError })
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
     }
 
     console.log('[get-users] Admin verified, fetching all users')
@@ -76,7 +70,7 @@ export async function GET(request: Request) {
 
     // Fetch auth users to get email verification status
     const { data: authData, error: authFetchError } = await supabaseAdmin.auth.admin.listUsers()
-    
+
     if (authFetchError) {
       console.error('[get-users] Error fetching auth users:', authFetchError)
       return NextResponse.json(
@@ -90,24 +84,24 @@ export async function GET(request: Request) {
     // Merge profile data with auth verification status
     const usersWithVerificationStatus = (allUsers || []).map(profileUser => {
       const authUser = authData.users.find(authUser => authUser.id === profileUser.id)
-      
+
       // Use the more recent last_sign_in_at timestamp (database is usually more current)
-      let lastSignInAt = profileUser.last_sign_in_at;
+      let lastSignInAt = profileUser.last_sign_in_at
       if (authUser?.last_sign_in_at && profileUser.last_sign_in_at) {
         // Compare timestamps and use the more recent one
-        const authTime = new Date(authUser.last_sign_in_at);
-        const dbTime = new Date(profileUser.last_sign_in_at);
-        lastSignInAt = authTime > dbTime ? authUser.last_sign_in_at : profileUser.last_sign_in_at;
+        const authTime = new Date(authUser.last_sign_in_at)
+        const dbTime = new Date(profileUser.last_sign_in_at)
+        lastSignInAt = authTime > dbTime ? authUser.last_sign_in_at : profileUser.last_sign_in_at
       } else if (authUser?.last_sign_in_at && !profileUser.last_sign_in_at) {
         // Use auth timestamp if database doesn't have one
-        lastSignInAt = authUser.last_sign_in_at;
+        lastSignInAt = authUser.last_sign_in_at
       }
-      
+
       return {
         ...profileUser,
         email_confirmed_at: authUser?.email_confirmed_at || null,
         email_verified: !!authUser?.email_confirmed_at,
-        last_sign_in_at: lastSignInAt
+        last_sign_in_at: lastSignInAt,
       }
     })
 
@@ -115,7 +109,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ users: usersWithVerificationStatus })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('[get-users] Unexpected error:', error)
     return NextResponse.json(
       { error: 'Internal server error', details: errorMessage },

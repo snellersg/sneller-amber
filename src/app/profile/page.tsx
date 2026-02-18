@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
-import { User } from "@supabase/supabase-js";
-import Layout from "@/components/Layout";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
+import { User } from '@supabase/supabase-js'
+import Layout from '@/components/Layout'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   User as UserIcon,
   Mail,
@@ -16,58 +16,58 @@ import {
   Check,
   XCircle,
   Loader2,
-} from "lucide-react";
+} from 'lucide-react'
 
 interface UserProfileData {
-  id: string;
-  email: string;
-  full_name: string;
-  created_at: string;
-  last_sign_in_at: string;
-  status: string;
-  role: string;
-  approved_by?: string;
-  approved_at?: string;
+  id: string
+  email: string
+  full_name: string
+  created_at: string
+  last_sign_in_at: string
+  status: string
+  role: string
+  approved_by?: string
+  approved_at?: string
 }
 
 export default function UserProfile() {
-  const router = useRouter();
-  const { user, isLoading: authLoading } = useAuth();
-  const [profile, setProfile] = useState<UserProfileData | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const router = useRouter()
+  const { user, isLoading: authLoading } = useAuth()
+  const [profile, setProfile] = useState<UserProfileData | null>(null)
+  const [editing, setEditing] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
   // Profile form state
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState('')
 
   // Password change state
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/login");
+      router.push('/login')
     }
-  }, [authLoading, user, router]);
+  }, [authLoading, user, router])
 
   // Initialize profile data when user is available
   useEffect(() => {
     if (user) {
-      setFullName(user.user_metadata?.full_name || "");
+      setFullName(user.user_metadata?.full_name || '')
     }
-  }, [user]);
+  }, [user])
 
   useEffect(() => {
     if (user?.id) {
-      fetchProfile(user.id);
+      fetchProfile(user.id)
     }
-  }, [user?.id]);
+  }, [user?.id])
 
   // Show loading while checking authentication
   if (authLoading) {
@@ -80,180 +80,178 @@ export default function UserProfile() {
           </div>
         </div>
       </Layout>
-    );
+    )
   }
 
   // Don't render anything if user is null (will redirect to login)
   if (!user) {
-    return null;
+    return null
   }
 
   const ensureUserRecord = async (authUser: User) => {
     const { data: existing, error: existingError } = await supabase
-      .from("users")
-      .select("id")
-      .eq("id", authUser.id)
-      .maybeSingle();
+      .from('users')
+      .select('id')
+      .eq('id', authUser.id)
+      .maybeSingle()
 
     if (existingError) {
-      return;
+      return
     }
 
-    if (existing) return;
+    if (existing) return
 
     const payload = {
       id: authUser.id,
       email: authUser.email,
-      full_name: authUser.user_metadata?.full_name || "",
-      role: "user",
-    };
+      full_name: authUser.user_metadata?.full_name || '',
+      role: 'user',
+    }
 
-    const { error: insertError } = await supabase.from("users").insert(payload);
+    const { error: insertError } = await supabase.from('users').insert(payload)
 
-    if (insertError && insertError.code !== "23505") {
+    if (insertError && insertError.code !== '23505') {
       // Silent error handling for user record creation
     }
-  };
+  }
 
   const fetchProfile = async (userId: string) => {
     try {
       // Since IDs now match between auth and public.users, direct fetch should work
       const { data: profile, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle();
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle()
 
       if (error) {
-        console.error("Error fetching profile:", error);
-        return;
+        console.error('Error fetching profile:', error)
+        return
       }
 
       if (profile) {
-        setProfile(profile);
-        setFullName(profile.full_name || "");
+        setProfile(profile)
+        setFullName(profile.full_name || '')
       } else {
-        console.log("No profile found for user ID:", userId);
+        console.log('No profile found for user ID:', userId)
         // If no profile exists, create one (this shouldn't happen after ID repair)
         if (user) {
-          await ensureUserRecord(user);
+          await ensureUserRecord(user)
           // Retry fetch after creating record
           const { data: newProfile } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", userId)
-            .maybeSingle();
-          
+            .from('users')
+            .select('*')
+            .eq('id', userId)
+            .maybeSingle()
+
           if (newProfile) {
-            setProfile(newProfile);
-            setFullName(newProfile.full_name || "");
+            setProfile(newProfile)
+            setFullName(newProfile.full_name || '')
           }
         }
       }
     } catch (err: unknown) {
-      console.error("Profile fetch exception:", err);
+      console.error('Profile fetch exception:', err)
     }
-  };
+  }
 
   const handleUpdateProfile = async () => {
-    if (!user) return;
+    if (!user) return
 
-    setLoading(true);
-    setError("");
-    setMessage("");
+    setLoading(true)
+    setError('')
+    setMessage('')
 
     try {
       // Update auth metadata
       const { error: authUpdateError } = await supabase.auth.updateUser({
         data: { full_name: fullName },
-      });
+      })
 
-      if (authUpdateError) throw authUpdateError;
+      if (authUpdateError) throw authUpdateError
 
       // Update profile table - IDs now match, so this should always work
       const { error: profileUpdateError } = await supabase
-        .from("users")
+        .from('users')
         .update({
           full_name: fullName,
         })
-        .eq("id", user.id);
+        .eq('id', user.id)
 
-      if (profileUpdateError) throw profileUpdateError;
+      if (profileUpdateError) throw profileUpdateError
 
-      setMessage("Profile updated successfully!");
-      setEditing(false);
+      setMessage('Profile updated successfully!')
+      setEditing(false)
 
       // Refresh profile data
-      await fetchProfile(user.id);
+      await fetchProfile(user.id)
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update profile";
-      setError(errorMessage);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update profile'
+      setError(errorMessage)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
-      return "Password must be at least 8 characters long";
+      return 'Password must be at least 8 characters long'
     }
     if (!/[A-Za-z]/.test(password)) {
-      return "Password must contain at least one letter";
+      return 'Password must contain at least one letter'
     }
     if (!/[0-9]/.test(password)) {
-      return "Password must contain at least one number";
+      return 'Password must contain at least one number'
     }
-    return null;
-  };
+    return null
+  }
 
   const handleChangePassword = async () => {
-    setLoading(true);
-    setError("");
-    setMessage("");
+    setLoading(true)
+    setError('')
+    setMessage('')
 
-    const passwordError = validatePassword(newPassword);
+    const passwordError = validatePassword(newPassword)
     if (passwordError) {
-      setError(passwordError);
-      setLoading(false);
-      return;
+      setError(passwordError)
+      setLoading(false)
+      return
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
+      setError('Passwords do not match')
+      setLoading(false)
+      return
     }
 
     try {
       const { error: passwordError } = await supabase.auth.updateUser({
         password: newPassword,
-      });
+      })
 
-      if (passwordError) throw passwordError;
+      if (passwordError) throw passwordError
 
-      setMessage("Password updated successfully!");
-      setShowPasswordForm(false);
-      setNewPassword("");
-      setConfirmPassword("");
+      setMessage('Password updated successfully!')
+      setShowPasswordForm(false)
+      setNewPassword('')
+      setConfirmPassword('')
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update password";
-      setError(errorMessage);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update password'
+      setError(errorMessage)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            Loading profile...
-          </p>
+          <p className="text-lg text-gray-600 dark:text-gray-400">Loading profile...</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -298,10 +296,10 @@ export default function UserProfile() {
               <button
                 onClick={() => {
                   if (editing) {
-                    handleUpdateProfile();
+                    handleUpdateProfile()
                   } else {
-                    setEditing(true);
-                    setFullName(profile?.full_name || "");
+                    setEditing(true)
+                    setFullName(profile?.full_name || '')
                   }
                 }}
                 disabled={loading}
@@ -318,7 +316,7 @@ export default function UserProfile() {
                     Save
                   </>
                 ) : (
-                  "Edit"
+                  'Edit'
                 )}
               </button>
             </div>
@@ -334,9 +332,7 @@ export default function UserProfile() {
                     Email Address
                   </span>
                 </div>
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  {user?.email}
-                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.email}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Email cannot be changed
                 </p>
@@ -356,7 +352,7 @@ export default function UserProfile() {
                   <input
                     type="text"
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    onChange={e => setFullName(e.target.value)}
                     className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter your full name"
                   />
@@ -364,11 +360,11 @@ export default function UserProfile() {
                   <p
                     className={
                       !fullName
-                        ? "text-sm text-gray-500 dark:text-gray-400 italic"
-                        : "text-sm font-medium text-gray-900 dark:text-white"
+                        ? 'text-sm text-gray-500 dark:text-gray-400 italic'
+                        : 'text-sm font-medium text-gray-900 dark:text-white'
                     }
                   >
-                    {fullName || "Not set"}
+                    {fullName || 'Not set'}
                   </p>
                 )}
               </div>
@@ -414,7 +410,7 @@ export default function UserProfile() {
                     ? new Date(profile.created_at).toLocaleDateString()
                     : user?.created_at
                       ? new Date(user.created_at).toLocaleDateString()
-                      : "Unknown"}
+                      : 'Unknown'}
                 </p>
               </div>
 
@@ -433,7 +429,7 @@ export default function UserProfile() {
                     ? new Date(profile.last_sign_in_at).toLocaleDateString()
                     : user?.last_sign_in_at
                       ? new Date(user.last_sign_in_at).toLocaleDateString()
-                      : "Never"}
+                      : 'Never'}
                 </p>
               </div>
 
@@ -450,13 +446,11 @@ export default function UserProfile() {
                 <span
                   className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                     user?.email_confirmed_at
-                      ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200"
-                      : "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200"
+                      ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
+                      : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
                   }`}
                 >
-                  {user?.email_confirmed_at
-                    ? "Verified"
-                    : "Pending Verification"}
+                  {user?.email_confirmed_at ? 'Verified' : 'Pending Verification'}
                 </span>
               </div>
             </div>
@@ -475,7 +469,7 @@ export default function UserProfile() {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <Lock className="h-3 w-3" />
-                {showPasswordForm ? "Cancel" : "Change"}
+                {showPasswordForm ? 'Cancel' : 'Change'}
               </button>
             </div>
 
@@ -494,9 +488,9 @@ export default function UserProfile() {
                     </div>
                     <div className="relative">
                       <input
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
+                        onChange={e => setNewPassword(e.target.value)}
                         className="w-full px-2 py-1.5 pr-10 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Enter new password"
                       />
@@ -526,17 +520,15 @@ export default function UserProfile() {
                     </div>
                     <div className="relative">
                       <input
-                        type={showConfirmPassword ? "text" : "password"}
+                        type={showConfirmPassword ? 'text' : 'password'}
                         value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        onChange={e => setConfirmPassword(e.target.value)}
                         className="w-full px-2 py-1.5 pr-10 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Confirm new password"
                       />
                       <button
                         type="button"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
                         {showConfirmPassword ? (
@@ -569,9 +561,9 @@ export default function UserProfile() {
                     </button>
                     <button
                       onClick={() => {
-                        setShowPasswordForm(false);
-                        setNewPassword("");
-                        setConfirmPassword("");
+                        setShowPasswordForm(false)
+                        setNewPassword('')
+                        setConfirmPassword('')
                       }}
                       className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
@@ -595,5 +587,5 @@ export default function UserProfile() {
         </div>
       </div>
     </Layout>
-  );
+  )
 }

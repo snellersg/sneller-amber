@@ -3,11 +3,14 @@
 This directory contains images and videos for the guide system.
 
 ## Directory Structure
+
 - `images/` - Screenshots, diagrams, and other images
 - `videos/` - Tutorial videos and screen recordings
 
 ## File Organization
+
 Organize files by guide slug for easy maintenance:
+
 ```
 images/
 ├── meeting-agenda/
@@ -26,6 +29,7 @@ videos/
 ```
 
 ## Usage in Guides
+
 Add images and videos to any section:
 
 ```typescript
@@ -41,7 +45,7 @@ Add images and videos to any section:
   ],
   videos: [
     {
-      src: "/media/guides/videos/guide-name/video.mp4", 
+      src: "/media/guides/videos/guide-name/video.mp4",
       title: "Video Title",
       description: "Optional video description"
     }
@@ -51,6 +55,7 @@ Add images and videos to any section:
 ```
 
 ## Best Practices
+
 1. Use descriptive filenames
 2. Optimize images for web (WebP preferred, PNG/JPG acceptable)
 3. Keep video files under 50MB when possible

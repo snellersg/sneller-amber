@@ -6,7 +6,7 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
@@ -17,114 +17,124 @@
   }
 
   /* Typography Scale - Sneller 2026 */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading font-semibold tracking-tight;
   }
-  
+
   h1 {
     @apply text-4xl leading-tight; /* 36/44 */
   }
-  
+
   h2 {
     @apply text-3xl leading-9; /* 28/36 */
   }
-  
+
   h3 {
     @apply text-xl leading-7; /* 22/30 */
   }
-  
-  h4, h5, h6 {
+
+  h4,
+  h5,
+  h6 {
     @apply text-lg leading-6; /* 18/24 */
   }
-  
+
   /* Body text uses Nunito Sans by default via font-sans */
-  p, span, div {
+  p,
+  span,
+  div {
     @apply text-base leading-6; /* 16/24 */
   }
-  
+
   /* Button and label text */
-  button, label {
+  button,
+  label {
     @apply font-sans font-semibold;
   }
 }
 
-  :root {
-    /* Sneller 2026 Brand Palette (Base Colors - HSL Format) */
-    --sneller-blue: 199 89% 44%;        /* #0A94D5 */
-    --rock-salt: 37 48% 76%;            /* #DDC6A6 */  
-    --midnight-asphalt: 213 27% 14%;    /* #121820 */
-    --storm-charcoal: 213 18% 26%;     /* #2F3944 */
-    --steel-blade: 215 13% 44%;        /* #5B6775 */
-    --winter-frost: 215 26% 85%;       /* #D9E1EA */
-    --snow-drift: 213 33% 97%;         /* #F7FAFC */
-    --blizzard-white: 0 0% 100%;       /* #FFFFFF */
+:root {
+  /* Sneller 2026 Brand Palette (Base Colors - HSL Format) */
+  --sneller-blue: 199 89% 44%; /* #0A94D5 */
+  --rock-salt: 37 48% 76%; /* #DDC6A6 */
+  --midnight-asphalt: 213 27% 14%; /* #121820 */
+  --storm-charcoal: 213 18% 26%; /* #2F3944 */
+  --steel-blade: 215 13% 44%; /* #5B6775 */
+  --winter-frost: 215 26% 85%; /* #D9E1EA */
+  --snow-drift: 213 33% 97%; /* #F7FAFC */
+  --blizzard-white: 0 0% 100%; /* #FFFFFF */
 
-    /* Light Theme Semantic Mappings */
-    --background: var(--snow-drift);
-    --foreground: var(--midnight-asphalt);
-    --card: var(--blizzard-white);
-    --card-foreground: var(--midnight-asphalt);
-    --popover: var(--blizzard-white);
-    --popover-foreground: var(--midnight-asphalt);
-    --primary: var(--sneller-blue);
-    --primary-foreground: var(--blizzard-white);
-    --secondary: var(--blizzard-white);
-    --secondary-foreground: var(--storm-charcoal);
-    --muted: var(--winter-frost);
-    --muted-foreground: var(--steel-blade);
-    --accent: var(--rock-salt);
-    --accent-foreground: var(--midnight-asphalt);
-    --destructive: 0 73% 41%;
-    --destructive-foreground: var(--blizzard-white);
-    --border: var(--winter-frost);
-    --input: var(--winter-frost);
-    --ring: var(--sneller-blue);
-    
-    /* Chart colors using brand palette */
-    --chart-1: var(--sneller-blue);
-    --chart-2: var(--rock-salt);
-    --chart-3: var(--storm-charcoal);
-    --chart-4: var(--steel-blade);
-    --chart-5: var(--winter-frost);
+  /* Light Theme Semantic Mappings */
+  --background: var(--snow-drift);
+  --foreground: var(--midnight-asphalt);
+  --card: var(--blizzard-white);
+  --card-foreground: var(--midnight-asphalt);
+  --popover: var(--blizzard-white);
+  --popover-foreground: var(--midnight-asphalt);
+  --primary: var(--sneller-blue);
+  --primary-foreground: var(--blizzard-white);
+  --secondary: var(--blizzard-white);
+  --secondary-foreground: var(--storm-charcoal);
+  --muted: var(--winter-frost);
+  --muted-foreground: var(--steel-blade);
+  --accent: var(--rock-salt);
+  --accent-foreground: var(--midnight-asphalt);
+  --destructive: 0 73% 41%;
+  --destructive-foreground: var(--blizzard-white);
+  --border: var(--winter-frost);
+  --input: var(--winter-frost);
+  --ring: var(--sneller-blue);
 
-    /* Success/Warning/Info states */
-    --success: 142 76% 36%;
-    --success-foreground: var(--blizzard-white);
-    --warning: 38 92% 50%;
-    --warning-foreground: var(--midnight-asphalt);
-    --info: var(--sneller-blue);
-    --info-foreground: var(--blizzard-white);
-  }
+  /* Chart colors using brand palette */
+  --chart-1: var(--sneller-blue);
+  --chart-2: var(--rock-salt);
+  --chart-3: var(--storm-charcoal);
+  --chart-4: var(--steel-blade);
+  --chart-5: var(--winter-frost);
 
-  .dark {
-    /* Dark Theme Semantic Mappings - Optimized for Contrast */
-    --background: var(--midnight-asphalt);
-    --foreground: var(--snow-drift);
-    --card: var(--storm-charcoal);
-    --card-foreground: var(--snow-drift);
-    --popover: var(--storm-charcoal);
-    --popover-foreground: var(--snow-drift);
-    --primary: var(--sneller-blue);
-    --primary-foreground: var(--blizzard-white);
-    --secondary: var(--storm-charcoal);
-    --secondary-foreground: var(--winter-frost);
-    --muted: 213 18% 22%;                  /* Darker variant for better contrast */
-    --muted-foreground: var(--winter-frost);
-    --accent: var(--rock-salt);
-    --accent-foreground: var(--midnight-asphalt);
-    --destructive: 0 73% 48%;              /* Slightly brighter for dark mode */
-    --destructive-foreground: var(--snow-drift);
-    --border: var(--storm-charcoal);
-    --input: var(--storm-charcoal);
-    --ring: var(--sneller-blue);
-    
-    /* Dark mode chart variants - improved visibility */
-    --chart-1: 199 89% 55%;                /* Brighter sneller blue */
-    --chart-2: 37 58% 82%;                 /* Brighter rock salt */
-    --chart-3: var(--winter-frost);
-    --chart-4: 215 20% 60%;                /* Brighter steel blade */
-    --chart-5: var(--storm-charcoal);
-  }
+  /* Success/Warning/Info states */
+  --success: 142 76% 36%;
+  --success-foreground: var(--blizzard-white);
+  --warning: 38 92% 50%;
+  --warning-foreground: var(--midnight-asphalt);
+  --info: var(--sneller-blue);
+  --info-foreground: var(--blizzard-white);
+}
+
+.dark {
+  /* Dark Theme Semantic Mappings - Optimized for Contrast */
+  --background: var(--midnight-asphalt);
+  --foreground: var(--snow-drift);
+  --card: var(--storm-charcoal);
+  --card-foreground: var(--snow-drift);
+  --popover: var(--storm-charcoal);
+  --popover-foreground: var(--snow-drift);
+  --primary: var(--sneller-blue);
+  --primary-foreground: var(--blizzard-white);
+  --secondary: var(--storm-charcoal);
+  --secondary-foreground: var(--winter-frost);
+  --muted: 213 18% 22%; /* Darker variant for better contrast */
+  --muted-foreground: var(--winter-frost);
+  --accent: var(--rock-salt);
+  --accent-foreground: var(--midnight-asphalt);
+  --destructive: 0 73% 48%; /* Slightly brighter for dark mode */
+  --destructive-foreground: var(--snow-drift);
+  --border: var(--storm-charcoal);
+  --input: var(--storm-charcoal);
+  --ring: var(--sneller-blue);
+
+  /* Dark mode chart variants - improved visibility */
+  --chart-1: 199 89% 55%; /* Brighter sneller blue */
+  --chart-2: 37 58% 82%; /* Brighter rock salt */
+  --chart-3: var(--winter-frost);
+  --chart-4: 215 20% 60%; /* Brighter steel blade */
+  --chart-5: var(--storm-charcoal);
+}
 
 /* Sneller 2026 Design System Utilities */
 .card-highlight {

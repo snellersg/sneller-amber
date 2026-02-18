@@ -1,38 +1,38 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
-import Sidebar from "./Sidebar";
-import TopBar from "./TopBar";
-import TableOfContents from "./TableOfContents";
+import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
+import Sidebar from './Sidebar'
+import TopBar from './TopBar'
+import TableOfContents from './TableOfContents'
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isAdmin } = useAuth();
-  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isAdmin } = useAuth()
+  const pathname = usePathname()
 
   const handleSidebarToggle = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+    setSidebarOpen(!sidebarOpen)
+  }
 
   const handleSidebarClose = () => {
-    setSidebarOpen(false);
-  };
+    setSidebarOpen(false)
+  }
 
   // Check if current page should show special layout (documentation pages)
   const isDocumentationPage =
-    pathname.startsWith("/core-services") ||
-    pathname.startsWith("/add-on-services") ||
-    pathname.startsWith("/product-knowledge") ||
-    pathname.startsWith("/guides") ||
-    pathname.startsWith("/core-processes") ||
-    pathname.startsWith("/tools") ||
-    pathname.startsWith("/sheets-and-docs");
+    pathname.startsWith('/core-services') ||
+    pathname.startsWith('/add-on-services') ||
+    pathname.startsWith('/product-knowledge') ||
+    pathname.startsWith('/guides') ||
+    pathname.startsWith('/core-processes') ||
+    pathname.startsWith('/tools') ||
+    pathname.startsWith('/sheets-and-docs')
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -50,14 +50,11 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Mobile Sidebar Overlay */}
         {sidebarOpen && (
-          <div
-            className="fixed inset-0 z-50 top-16 md:hidden"
-            onClick={handleSidebarClose}
-          >
+          <div className="fixed inset-0 z-50 top-16 md:hidden" onClick={handleSidebarClose}>
             <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
             <div
               className="relative flex flex-col w-64 h-full overflow-y-auto bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 custom-scrollbar"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               <Sidebar onClose={handleSidebarClose} isAdmin={isAdmin} />
             </div>
@@ -71,8 +68,8 @@ export default function Layout({ children }: LayoutProps) {
             <div
               className={
                 isDocumentationPage
-                  ? "max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:px-8"
-                  : "max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:px-8"
+                  ? 'max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:px-8'
+                  : 'max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:px-8'
               }
             >
               {/* Mobile Table of Contents */}
@@ -96,5 +93,5 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

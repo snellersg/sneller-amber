@@ -29,7 +29,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
 
       const headingElements = mainContent.querySelectorAll('h1, h2, h3, h4, h5, h6')
       const headingArray = Array.from(headingElements)
-        .filter((heading) => {
+        .filter(heading => {
           const text = heading.textContent || ''
           return (
             text !== 'Sneller Contract Service Description' &&
@@ -56,12 +56,10 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
           return {
             id,
             text,
-            level: parseInt(heading.tagName[1])
+            level: parseInt(heading.tagName[1]),
           }
         })
 
-
-      
       setHeadings(headingArray)
     }
 
@@ -101,7 +99,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
 
     // Add scroll listener
     window.addEventListener('scroll', handleScroll, { passive: true })
-    
+
     // Set initial heading
     handleScroll()
 
@@ -116,7 +114,7 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
 
       window.scrollTo({
         top: elementPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
 
       // Close mobile dropdown after navigation
@@ -136,7 +134,9 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-600 rounded-lg"
         >
-          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">On This Page</span>
+          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">
+            On This Page
+          </span>
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </button>
 
@@ -148,18 +148,29 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
                   <button
                     onClick={() => scrollToHeading(heading.id)}
                     className={`text-left w-full px-2 py-1 rounded transition-colors cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                      heading.level === 1 ? 'text-xs font-bold' : heading.level === 2 ? 'text-xs pl-4 font-medium' : 'text-xs pl-8 font-normal'
+                      heading.level === 1
+                        ? 'text-xs font-bold'
+                        : heading.level === 2
+                          ? 'text-xs pl-4 font-medium'
+                          : 'text-xs pl-8 font-normal'
                     } ${
                       activeId === heading.id
                         ? 'font-medium text-white bg-primary'
                         : heading.level === 1
-                        ? 'text-gray-900 dark:text-gray-100'
-                        : heading.level === 2
-                        ? 'text-gray-900 dark:text-gray-100'
-                        : 'text-gray-600 dark:text-gray-400'
+                          ? 'text-gray-900 dark:text-gray-100'
+                          : heading.level === 2
+                            ? 'text-gray-900 dark:text-gray-100'
+                            : 'text-gray-600 dark:text-gray-400'
                     }`}
                   >
-                    <span className={heading.text === 'Ice Melt Products' || heading.text === 'Lawn Care Products' ? 'uppercase' : ''}>
+                    <span
+                      className={
+                        heading.text === 'Ice Melt Products' ||
+                        heading.text === 'Lawn Care Products'
+                          ? 'uppercase'
+                          : ''
+                      }
+                    >
                       {heading.text}
                     </span>
                   </button>
@@ -177,7 +188,9 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
     <div className="hidden xl:block fixed right-6 top-24 w-72 z-30">
       <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-lg overflow-hidden">
         <div className="px-4 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">On This Page</h4>
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">
+            On This Page
+          </h4>
         </div>
         <nav className="max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar p-3">
           <ul className="space-y-1">
@@ -186,18 +199,28 @@ export default function TableOfContents({ mobile = false }: TableOfContentsProps
                 <button
                   onClick={() => scrollToHeading(heading.id)}
                   className={`text-left w-full px-2 py-1 rounded transition-colors cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    heading.level === 1 ? 'text-xs font-bold' : heading.level === 2 ? 'text-xs pl-4 font-medium' : 'text-xs pl-8 font-normal'
+                    heading.level === 1
+                      ? 'text-xs font-bold'
+                      : heading.level === 2
+                        ? 'text-xs pl-4 font-medium'
+                        : 'text-xs pl-8 font-normal'
                   } ${
                     activeId === heading.id
                       ? 'font-medium text-white bg-primary'
                       : heading.level === 1
-                      ? 'text-gray-900 dark:text-gray-100'
-                      : heading.level === 2
-                      ? 'text-gray-900 dark:text-gray-100'
-                      : 'text-gray-600 dark:text-gray-400'
+                        ? 'text-gray-900 dark:text-gray-100'
+                        : heading.level === 2
+                          ? 'text-gray-900 dark:text-gray-100'
+                          : 'text-gray-600 dark:text-gray-400'
                   }`}
                 >
-                  <span className={heading.text === 'Ice Melt Products' || heading.text === 'Lawn Care Products' ? 'uppercase' : ''}>
+                  <span
+                    className={
+                      heading.text === 'Ice Melt Products' || heading.text === 'Lawn Care Products'
+                        ? 'uppercase'
+                        : ''
+                    }
+                  >
                     {heading.text}
                   </span>
                 </button>

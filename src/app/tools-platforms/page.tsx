@@ -6,76 +6,77 @@ import Layout from '../../components/Layout'
 
 const tools = [
   {
-    title: "Asana",
-    description: "Primary platform for internal collaboration, task tracking, and project management.",
-    url: "https://asana.com/apps",
-    img: "/tools/asana.png",
+    title: 'Asana',
+    description:
+      'Primary platform for internal collaboration, task tracking, and project management.',
+    url: 'https://asana.com/apps',
+    img: '/tools/asana.png',
   },
   {
-    title: "BossLM",
-    description: "Central business platform for managing accounts, jobs, and client data.",
-    url: "https://sneller.bosslm.com/LoginWindow.aspx?ReturnUrl=%2f",
-    img: "/tools/boss.png",
+    title: 'BossLM',
+    description: 'Central business platform for managing accounts, jobs, and client data.',
+    url: 'https://sneller.bosslm.com/LoginWindow.aspx?ReturnUrl=%2f',
+    img: '/tools/boss.png',
   },
   {
-    title: "ChatGPT",
-    description: "AI assistant for brainstorming, email writing, and task support.",
-    url: "https://openai.com/chatgpt",
-    img: "/tools/chatgpt.png",
+    title: 'ChatGPT',
+    description: 'AI assistant for brainstorming, email writing, and task support.',
+    url: 'https://openai.com/chatgpt',
+    img: '/tools/chatgpt.png',
   },
   {
-    title: "Freshdesk",
-    description: "Helpdesk platform for managing customer support requests and communication.",
-    url: "https://freshdesk.com/mobile",
-    img: "/tools/freshdesk.png",
+    title: 'Freshdesk',
+    description: 'Helpdesk platform for managing customer support requests and communication.',
+    url: 'https://freshdesk.com/mobile',
+    img: '/tools/freshdesk.png',
   },
   {
-    title: "Google Drive",
-    description: "Shared storage platform for company files and folders.",
-    url: "https://www.google.com/drive/download/",
-    img: "/tools/google-drive.png",
+    title: 'Google Drive',
+    description: 'Shared storage platform for company files and folders.',
+    url: 'https://www.google.com/drive/download/',
+    img: '/tools/google-drive.png',
   },
   {
-    title: "Google Calendar",
-    description: "Tool for managing events, meetings, and shared schedules.",
-    url: "https://calendar.google.com",
-    img: "/tools/google-calendar.png",
+    title: 'Google Calendar',
+    description: 'Tool for managing events, meetings, and shared schedules.',
+    url: 'https://calendar.google.com',
+    img: '/tools/google-calendar.png',
   },
   {
-    title: "Gmail",
-    description: "Primary service for internal emailing.",
-    url: "https://mail.google.com",
-    img: "/tools/gmail.png",
+    title: 'Gmail',
+    description: 'Primary service for internal emailing.',
+    url: 'https://mail.google.com',
+    img: '/tools/gmail.png',
   },
   {
-    title: "Kisi",
-    description: "App-based key system for accessing secure facilities.",
-    url: "https://www.getkisi.com/mobile-app",
-    img: "/tools/kisi.png",
+    title: 'Kisi',
+    description: 'App-based key system for accessing secure facilities.',
+    url: 'https://www.getkisi.com/mobile-app',
+    img: '/tools/kisi.png',
   },
   {
-    title: "Paychex",
-    description: "HR platform for managing payroll, time off, and employee data.",
-    url: "https://www.paychex.com/apps",
-    img: "/tools/paychex.png",
+    title: 'Paychex',
+    description: 'HR platform for managing payroll, time off, and employee data.',
+    url: 'https://www.paychex.com/apps',
+    img: '/tools/paychex.png',
   },
   {
-    title: "Ramp",
-    description: "Platform used to upload receipts and track purchases for company cards.",
-    url: "https://ramp.com/mobile",
-    img: "/tools/ramp.png",
+    title: 'Ramp',
+    description: 'Platform used to upload receipts and track purchases for company cards.',
+    url: 'https://ramp.com/mobile',
+    img: '/tools/ramp.png',
   },
   {
-    title: "Reolink",
-    description: "Live camera platform used for monitoring sites during snow events.",
-    url: "https://reolink.com/app/",
-    img: "/tools/reolink.png",
+    title: 'Reolink',
+    description: 'Live camera platform used for monitoring sites during snow events.',
+    url: 'https://reolink.com/app/',
+    img: '/tools/reolink.png',
   },
   {
-    title: "Sitefotos",
-    description: "Mapping and photo tracking tool for job sites and property documentation.",
-    url: "https://www.sitefotos.com",
-    img: "/tools/sitefotos.png",
+    title: 'Sitefotos',
+    description: 'Mapping and photo tracking tool for job sites and property documentation.',
+    url: 'https://www.sitefotos.com',
+    img: '/tools/sitefotos.png',
   },
 ]
 
@@ -123,16 +124,16 @@ export default function ToolsPlatformsPage() {
                     className="w-6 h-6 rounded object-contain shrink-0"
                   />
                 )}
-                
+
                 {/* Title */}
                 <span className="font-medium text-sm text-gray-900 dark:text-white truncate">
                   {tool.title}
                 </span>
-                
+
                 {/* Info Button */}
                 <div className="relative">
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation()
                       toggleTooltip(index)
                     }}
@@ -141,12 +142,12 @@ export default function ToolsPlatformsPage() {
                   >
                     <HelpCircle className="h-4 w-4" />
                   </button>
-                  
+
                   {/* Tooltip */}
                   {openTooltip === index && (
                     <div
                       className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-3 text-xs leading-relaxed text-white bg-gray-900 dark:bg-gray-700 rounded-lg shadow-lg min-w-[18rem] max-w-3xl whitespace-normal"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={e => e.stopPropagation()}
                     >
                       <p>{tool.description}</p>
                       <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>

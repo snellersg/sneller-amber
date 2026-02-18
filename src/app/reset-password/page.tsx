@@ -51,13 +51,13 @@ function ResetPasswordForm() {
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password: password,
       })
 
       if (error) throw error
 
       setSuccess(true)
-      
+
       // Redirect to login after 3 seconds
       setTimeout(() => {
         router.push('/login')
@@ -77,7 +77,8 @@ function ResetPasswordForm() {
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-foreground">Password Updated!</h2>
             <p className="mt-2 text-muted-foreground">
-              Your password has been successfully updated. You will be redirected to the login page shortly.
+              Your password has been successfully updated. You will be redirected to the login page
+              shortly.
             </p>
           </div>
         </div>
@@ -89,15 +90,9 @@ function ResetPasswordForm() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="max-w-md w-full space-y-8 p-8 bg-card rounded-lg shadow-lg border border-border">
         <div className="text-center">
-          <img
-            src="/logo512.png"
-            alt="Amber Logo"
-            className="h-16 w-16 mx-auto mb-4"
-          />
+          <img src="/logo512.png" alt="Amber Logo" className="h-16 w-16 mx-auto mb-4" />
           <h2 className="text-3xl font-bold">Reset Password</h2>
-          <p className="mt-2 text-muted-foreground">
-            Enter your new password below
-          </p>
+          <p className="mt-2 text-muted-foreground">Enter your new password below</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -114,14 +109,12 @@ function ResetPasswordForm() {
                   type="password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Enter your new password"
                 />
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Minimum 8 characters
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Minimum 8 characters</p>
             </div>
 
             {/* Confirm Password Field */}
@@ -136,7 +129,7 @@ function ResetPasswordForm() {
                   type="password"
                   required
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={e => setConfirmPassword(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Confirm your new password"
                 />
@@ -146,9 +139,7 @@ function ResetPasswordForm() {
 
           {/* Error Message */}
           {error && (
-            <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-              {error}
-            </div>
+            <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>
           )}
 
           {/* Submit Button */}
@@ -180,16 +171,18 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-          <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-            <p>Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+              <p>Loading...</p>
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <ResetPasswordForm />
     </Suspense>
   )

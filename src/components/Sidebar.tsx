@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  Table, 
-  Phone, 
+import {
+  Table,
+  Phone,
   FileText,
   Settings,
   ExternalLink,
@@ -15,7 +15,7 @@ import {
   ListTodo,
   Wrench,
   Waypoints,
-  ShieldCheck
+  ShieldCheck,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -28,8 +28,8 @@ const sidebarSections = [
     title: 'Quick Access',
     items: [
       { label: 'Sheets & Docs', icon: Table, path: '/sheets-and-docs' },
-      { label: 'Process Guides', icon: ListTodo, path: '/guides' }
-    ]
+      { label: 'Process Guides', icon: ListTodo, path: '/guides' },
+    ],
   },
   {
     title: 'Resources',
@@ -39,21 +39,21 @@ const sidebarSections = [
         label: 'Customer Call Log',
         icon: Phone,
         external: true,
-        href: 'https://docs.google.com/a/snellerslandscaping.com/forms/d/e/1FAIpQLSeXUYSgm1wqnY2nrTV2jmprBaikGoVcsOskGfEyrIQGiQk02w/viewform'
+        href: 'https://docs.google.com/a/snellerslandscaping.com/forms/d/e/1FAIpQLSeXUYSgm1wqnY2nrTV2jmprBaikGoVcsOskGfEyrIQGiQk02w/viewform',
       },
       {
         label: 'Equipment Form',
         icon: FileText,
         external: true,
-        href: 'https://docs.google.com/forms/d/e/1FAIpQLSe-LCaB9ZgoQjoYbJ0Hhd2yfAqTJOdWW9sKsdfIxXRJ1fdV5Q/viewform'
+        href: 'https://docs.google.com/forms/d/e/1FAIpQLSe-LCaB9ZgoQjoYbJ0Hhd2yfAqTJOdWW9sKsdfIxXRJ1fdV5Q/viewform',
       },
       {
         label: 'Ops Hub',
         icon: Waypoints,
         external: true,
-        href: 'https://sites.google.com/snellerslandscaping.com/opshub/home'
-      }
-    ]
+        href: 'https://sites.google.com/snellerslandscaping.com/opshub/home',
+      },
+    ],
   },
   {
     title: 'Information',
@@ -61,9 +61,9 @@ const sidebarSections = [
       { label: 'Core Processes', icon: Settings, path: '/core-processes' },
       { label: 'Core Services', icon: Shield, path: '/core-services' },
       { label: 'Add-On Services', icon: Plus, path: '/add-on-services' },
-      { label: 'Product Info', icon: FlaskConical, path: '/product-knowledge' }
-    ]
-  }
+      { label: 'Product Info', icon: FlaskConical, path: '/product-knowledge' },
+    ],
+  },
 ]
 
 export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
@@ -96,7 +96,7 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Admin Panel
             </h3>
-            
+
             <ul className="space-y-1">
               <li>
                 <Link
@@ -108,9 +108,11 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
                   }`}
                   onClick={onClose}
                 >
-                  <ShieldCheck className={`h-5 w-5 ${
-                    isActive('/admin') ? 'text-foreground' : 'text-muted-foreground'
-                  }`} />
+                  <ShieldCheck
+                    className={`h-5 w-5 ${
+                      isActive('/admin') ? 'text-foreground' : 'text-muted-foreground'
+                    }`}
+                  />
                   <span>Admin Panel</span>
                 </Link>
               </li>
@@ -118,14 +120,14 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
           </div>
         )}
 
-        {sidebarSections.map((section) => (
+        {sidebarSections.map(section => (
           <div key={section.title}>
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               {section.title}
             </h3>
-            
+
             <ul className="space-y-1">
-              {section.items.map((item) => {
+              {section.items.map(item => {
                 const Icon = item.icon
 
                 if (item.external) {
@@ -149,7 +151,7 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
                 // Internal links
                 if (item.path) {
                   const isItemActive = isActive(item.path)
-                  
+
                   // Regular clickable items
                   return (
                     <li key={item.label} className="relative">
@@ -162,9 +164,11 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
                         }`}
                         onClick={onClose}
                       >
-                        <Icon className={`h-5 w-5 ${
-                          isItemActive ? 'text-foreground' : 'text-muted-foreground'
-                        }`} />
+                        <Icon
+                          className={`h-5 w-5 ${
+                            isItemActive ? 'text-foreground' : 'text-muted-foreground'
+                          }`}
+                        />
                         <span className="whitespace-nowrap">{item.label}</span>
                       </Link>
                     </li>
@@ -179,13 +183,11 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
       {/* Footer */}
       <div className="p-4 border-t border-border">
         <div className="flex items-center space-x-2">
-          <div 
+          <div
             className="w-3 h-3 rounded-full bg-green-500"
             title="Connected - Native routing active"
           />
-          <span className="text-xs text-muted-foreground">
-            Connected
-          </span>
+          <span className="text-xs text-muted-foreground">Connected</span>
         </div>
       </div>
     </div>
