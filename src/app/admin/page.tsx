@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { supabase, waitForHealthyConnection, isSupabaseHealthy } from "@/lib/supabase";
+import { useNetworkState } from "@/lib/network-monitor";
+import { useAppLifecycle } from "@/lib/mobile-lifecycle";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
@@ -44,7 +46,21 @@ export default function AdminPage() {
   const [newDomain, setNewDomain] = useState("");
   const [domainNotes, setDomainNotes] = useState("");
 
-  // Redirect if not authenticated or not admin
+  // Enhanced error handling and retry logic
+  const handleError = useCallback((error: any, operation: string) => {
+    console.error(`[Admin] ${operation} failed:`, error);
+    
+    if (!isComponentMountedRef.current) return;
+    
+    let errorMessage = 'An unexpected error occurred';
+    
+    if (error?.message) {
+      if (error.message.includes('network') || error.message.includes('fetch')) {
+        errorMessage = 'Network connection issue. Please check your connection.';
+      } else if (error.message.includes('unauthorized') || error.message.includes('403')) {
+        errorMessage = 'You do not have permission to perform this action.';
+      } else if (error.message.includes('timeout')) {
+     Redirect if not authenticated or not admin
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -52,11 +68,135 @@ export default function AdminPage() {
         return;
       }
       if (!isAdmin) {
-        router.push("/");
-        return;
+     Enhanced data fetching with better error handling
+  const fetchAllData = useCallback(async () => {
+    if (!user || !isAdmin || !isComponentMountedRef.current) {
+      console.log('[Admin] Skipping data fetch - user not admin or component unmounted');
+      return;
+    }
+    
+    // Prevent too frequent fetches
+    const now = Date.now();
+    if (now - lastFetchAttemptRef.current < 5000) { // 5 second minimum between attempts
+      console.log('[Admin] Skipping fetch - too soon since last attempt');
+      return;
+    }
+    lastFetchAttemptRef.current = now;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Wait for network and Supabase to be healthy
+      if (!isNetworkAvailable) {
+        throw new Error('Network not available');
+      }
+      
+      if (!isSupabaseHealthy()) {
+        console.log('[Admin] Waiting for Supabase to be healthy...');
+        await waitForHealthyConnection(10000);
+      }
+      
+      // Fetch data in parallel
+      const [usersResult, domainsResult] = await Promise.allSettled([
+        fetchUsers(),
+        fetchAllowedDomains()
+      ]);
+      
+      // Handle results
+      if (usersResult.status === 'rejected') {
+        console.error('[Admin] Users fetch failed:', usersResult.reason);
+      }
+      
+      if (domainsResult.status === 'rejected') {
+        console.error('[Admin] Domains fetch failed:', domainsResult.reason);
+      }
+      
+      // If both failed, show error
+      if (usersResult.status === 'rejected' && domainsResult.status === 'rejected') {
+        throw new Error('Failed to load admin data. Please check your connection and try again.');
+      }
+      
+    } catch (error) {
+      handleError(error, 'Data fetch');
+    } finally {
+      if (isComponentMountedRef.current) {
+        setLoading(false);
+      }
+    }
+  }, [user, isAdmin, isNetworkAvailable, handleError]);
+  
+  // Load data when authenticated as admin
+  useEffect(() => {
+    if (!authLoading && user && isAdmin) {
+      fetchAllData();
+    }
+  }, [authLoading, user, isAdmin, fetchAllData]);
       }
     }
   }, [authLoading, user, isAdmin, router]);
+
+  // Handle app lifecycle changes
+  useEffect(() => {
+    const handleAppReturnFromBackground = () => {
+      console.log('[Admin] App returned from background - refreshing data');
+      if (user && isAdmin && isComponentMountedRef.current) {
+        // Small delay to let connections stabilize
+        setTimeout(() => {
+          fetchAllData();
+        }, 2000);
+      }
+    };
+    
+    const handleNetworkReconnected = () => {
+      console.log('[Admin] Network reconnected - refreshing data');
+      if (user && isAdmin && isComponentMountedRef.current) {
+        setTimeout(() => {
+          fetchAllData();
+        }, 1000);
+      }
+    };
+    
+    window.addEventListener('app-return-from-background', handleAppReturnFromBackground);
+    window.addEventListener('network-reconnected', handleNetworkReconnected);
+    
+    return () => {
+      window.removeEventListener('app-return-from-background', handleAppReturnFromBackground);
+      window.removeEventListener('network-reconnected', handleNetworkReconnected);
+    };
+  }, [user, isAdmin]);
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isComponentMountedRef.current = false;
+    };
+  }, [
+    setLoading(false);
+  }, []);
+  
+  // Retry with exponential backoff
+  const retryWithBackoff = useCallback(async (operation: () => Promise<void>, maxRetries = 3) => {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        await operation();
+        setRetryCount(0); // Reset on success
+        return;
+      } catch (error) {
+        console.log(`[Admin] Attempt ${attempt}/${maxRetries} failed:`, error);
+        
+        if (attempt === maxRetries) {
+          handleError(error, 'Operation');
+          return;
+        }
+        
+        // Exponential backoff: wait longer between retries
+        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+        console.log(`[Admin] Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }, [handleError]);
 
   // Load data when authenticated as admin
   useEffect(() => {
@@ -73,7 +213,45 @@ export default function AdminPage() {
         <div className="min-h-screen flex items-center justify-center">
           <div className="flex flex-col items-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-            <p className="text-gray-600">Checking admin access...</p>
+            <p className="text-gray-600">
+              {connectionStatus === 'recovering' ? 'Reconnecting...' : 'Checking admin access...'}
+            </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show connection issues
+  if (connectionStatus === 'unhealthy' && !authLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="max-w-md w-full text-center">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+              <div className="text-yellow-600 dark:text-yellow-400 mb-4">
+                <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Connection Issue
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Unable to connect to the server. {!isNetworkAvailable ? 'Please check your internet connection.' : 'Please try again.'}
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => retryWithBackoff(() => forceReconnect())}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Try to Reconnect
+                </button>
+                <p className="text-sm text-gray-500">
+                  Network: {statusDescription} • Connection: {connectionStatus}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </Layout>
@@ -85,36 +263,96 @@ export default function AdminPage() {
     return null;
   }
 
-  const fetchUsers = async () => {
-    if (!isAdmin) {
-      console.log('[fetchUsers] Skipping - user is not admin');
+  // Show error state with retry option
+  if (error) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="max-w-md w-full text-center">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+              <div className="text-red-600 dark:text-red-400 mb-4">
+                <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Something went wrong
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {error}
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setError(null);
+                    retryWithBackoff(() => fetchAllData());
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Try Again
+                </button>
+                <button
+                  onClick={() => {
+                    setError(null);
+                    retryWithBackoff(() => forceReconnect()).then(() => {
+                      setTimeout(() => retryWithBackoff(() => fetchAllData()), 1000);
+                    });
+                  }}
+                  className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Force Reconnect
+                </button>
+                <p className="text-sm text-gray-500">
+                  Retry attempt: {retryCount}/3
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const fetchUsers = useCallback(async () => {
+    if (!isAdmin || !isComponentMountedRef.current) {
+      console.log('[fetchUsers] Skipping - user not admin or component unmounted');
       return;
     }
 
-    setLoading(true);
     try {
+      // Check network and Supabase health
+      if (!isNetworkAvailable) {
+        throw new Error('Network not available');
+      }
+      
+      if (!isSupabaseHealthy()) {
+        await waitForHealthyConnection(10000);
+      }
+      
       // Get auth session for API call
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        console.error('[fetchUsers] No session available');
-        setLoading(false);
-        return;
+        throw new Error('No session available');
       }
 
       console.log('[fetchUsers] Fetching users from API...');
 
-      // Fetch users from API route (uses service role key to bypass RLS)
+      // Fetch users from API route with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
       const response = await fetch('/api/admin/get-users', {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
-        }
+        },
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error('[fetchUsers] API error:', error);
-        setLoading(false);
-        return;
+        const error = await response.text();
+        throw new Error(`API error: ${response.status} - ${error}`);
       }
 
       const { users: usersData } = await response.json();
@@ -136,33 +374,85 @@ export default function AdminPage() {
         }) || [];
 
       console.log('[fetchUsers] Setting', usersWithStatus.length, 'users to state');
-      setUsers(usersWithStatus);
+      if (isComponentMountedRef.current) {
+        setUsers(usersWithStatus);
+      }
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('[fetchUsers] Request was aborted');
+        throw new Error('Request timed out');
+      }
       console.error("[fetchUsers] Exception:", error);
-    } finally {
-      setLoading(false);
+      throw error; // Re-throw to be handled by retry logic
     }
-  };
+  }, [isAdmin, isNetworkAvailable]);
 
-  const fetchAllowedDomains = async () => {
-    if (!isAdmin) return;
+  const fetchAllowedDomains = useCallback(async () => {
+    if (!isAdmin || !isComponentMountedRef.current) {
+      console.log('[fetchAllowedDomains] Skipping - user not admin or component unmounted');
+      return;
+    }
 
-    setLoading(true);
     try {
+      // Check network and Supabase health
+      if (!isNetworkAvailable) {
+        throw new Error('Network not available');
+      }
+      
+      if (!isSupabaseHealthy()) {
+        await waitForHealthyConnection(10000);
+      }
+
       const { data, error } = await supabase
         .from("allowed_domains")
         .select("*")
         .order("added_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching allowed domains:", error);
-        return;
+        throw error;
       }
 
       const domains = data || [];
 
       // Check if required domains exist (with @ prefix)
       const requiredDomains = ["@snellersg.com", "@snellerslandscaping.com"];
+      const existingDomains = domains.map(d => d.domain);
+      const missingDomains = requiredDomains.filter(d => !existingDomains.includes(d));
+
+      // Add missing required domains silently
+      for (const domain of missingDomains) {
+        if (isComponentMountedRef.current) {
+          try {
+            console.log(`[fetchAllowedDomains] Adding missing required domain: ${domain}`);
+            await supabase.from("allowed_domains").insert({
+              domain: domain,
+              notes: "Required company domain"
+            });
+            
+            // Re-fetch to get the complete list
+            const { data: updatedData } = await supabase
+              .from("allowed_domains")
+              .select("*")
+              .order("added_at", { ascending: false });
+              
+            if (updatedData && isComponentMountedRef.current) {
+              setAllowedDomains(updatedData);
+              return;
+            }
+          } catch (insertError) {
+            console.warn(`[fetchAllowedDomains] Could not add required domain ${domain}:`, insertError);
+          }
+        }
+      }
+
+      if (isComponentMountedRef.current) {
+        setAllowedDomains(domains);
+      }
+    } catch (error) {
+      console.error("[fetchAllowedDomains] Exception:", error);
+      throw error; // Re-throw to be handled by retry logic
+    }
+  }, [isAdmin, isNetworkAvailable]);
       const existingDomains = domains.map((d) => d.domain);
       const missingDomains = requiredDomains.filter(
         (domain) => !existingDomains.includes(domain),
