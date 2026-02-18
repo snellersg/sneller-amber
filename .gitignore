@@ -115,4 +115,6 @@ logs
 # Turbo
 .turbo
 
+# Internal documentation (not for public repo)
+docs/
 
