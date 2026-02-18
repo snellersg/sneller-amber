@@ -24,6 +24,7 @@ interface User {
   status?: string; // Calculated from auth data, not stored in DB
   role?: string;
   email_confirmed_at?: string | null; // From Supabase auth
+  email_verified?: boolean; // From Supabase auth
 }
 
 interface AllowedDomain {
@@ -121,7 +122,7 @@ export default function AdminPage() {
 
       // Map users with real-time email verification status from Supabase auth
       const usersWithStatus =
-        usersData?.map((user: any) => {
+        usersData?.map((user: User) => {
           return {
             id: user.id,
             email: user.email,

@@ -14,7 +14,7 @@ interface TopBarProps {
 
 export default function TopBar({ onSidebarToggle }: TopBarProps) {
   const router = useRouter();
-  const { user, userEmail } = useAuth();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 

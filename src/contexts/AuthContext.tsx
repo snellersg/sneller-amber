@@ -18,6 +18,19 @@ interface AuthContextType {
   refreshAuth: () => Promise<void>;
 }
 
+interface UserRoleData {
+  role?: string;
+}
+
+interface SupabaseQueryResult<T> {
+  data: T | null;
+  error: {
+    message?: string;
+    code?: string;
+    details?: string;
+  } | null;
+}
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
@@ -63,7 +76,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { data: userData, error: userError } = (await Promise.race([
         queryPromise,
         timeoutPromise,
-      ])) as any;
+      ])) as SupabaseQueryResult<UserRoleData>;
 
       // Only process real errors (not empty objects)
       const hasRealError = userError && typeof userError === 'object' && 
@@ -123,7 +136,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const {
         data: { user: authUser },
         error,
-      } = (await Promise.race([authPromise, timeoutPromise])) as any;
+      } = (await Promise.race([authPromise, timeoutPromise])) as Awaited<ReturnType<typeof supabase.auth.getUser>>;
 
       if (error) {
         // Handle invalid refresh token errors gracefully
@@ -154,17 +167,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(authUser);
       setUserEmail(authUser.email || null);
       await checkAdminStatus(authUser);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle different types of errors appropriately
-      if (error.message === "Auth refresh timeout") {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (errorMessage === "Auth refresh timeout") {
         console.log("Auth refresh timed out, preserving current state");
         // Don't clear auth state on timeout - just continue with current state
         return;
       }
       
       if (
-        error.message?.includes("Invalid Refresh Token") ||
-        error.message?.includes("Refresh Token Not Found")
+        errorMessage.includes("Invalid Refresh Token") ||
+        errorMessage.includes("Refresh Token Not Found")
       ) {
         console.warn("Invalid refresh token detected, clearing auth state");
         await supabase.auth.signOut({ scope: "local" });
@@ -173,14 +187,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUserEmail(null);
       } else {
         // For other errors (network issues, etc.), just log and preserve state
-        console.log("Auth refresh error (preserving current state):", error.message);
+        console.log("Auth refresh error (preserving current state):", errorMessage);
       }
     }
   };
 
   useEffect(() => {
     let refreshInterval: NodeJS.Timeout | null = null;
-    let subscription: any = null;
+    let subscription: ReturnType<typeof supabase.auth.onAuthStateChange>['data']['subscription'] | null = null;
     let initTimeout: NodeJS.Timeout | null = null;
 
     // Wrap everything in try-catch to prevent provider crashes

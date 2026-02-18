@@ -150,7 +150,7 @@ export default function UserProfile() {
           }
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Profile fetch exception:", err);
     }
   };
@@ -185,8 +185,9 @@ export default function UserProfile() {
 
       // Refresh profile data
       await fetchProfile(user.id);
-    } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to update profile";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -234,8 +235,9 @@ export default function UserProfile() {
       setShowPasswordForm(false);
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: any) {
-      setError(err.message || "Failed to update password");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to update password";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

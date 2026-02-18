@@ -127,7 +127,6 @@ export default function Sidebar({ onClose, isAdmin = false }: SidebarProps) {
             <ul className="space-y-1">
               {section.items.map((item) => {
                 const Icon = item.icon
-                const isItemActive = item.path && isActive(item.path)
 
                 if (item.external) {
                   return (

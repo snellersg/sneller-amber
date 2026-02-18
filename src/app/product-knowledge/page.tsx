@@ -2,7 +2,36 @@
 
 import Layout from '../../components/Layout'
 
-const products = [
+// Type definitions
+interface Composition {
+  component?: string;
+  nutrient?: string;
+  percentage: string;
+  function: string;
+}
+
+interface Round {
+  round: string;
+  fertilizer: string;
+  description: string;
+}
+
+interface ProductItem {
+  title: string;
+  badge: string;
+  productName?: string;
+  description: string;
+  composition?: Composition[];
+  keyProperties?: string[];
+  rounds?: Round[];
+}
+
+interface ProductCategory {
+  category: string;
+  items: ProductItem[];
+}
+
+const products: ProductCategory[] = [
   {
     category: "Ice Melt Products",
     items: [
@@ -171,10 +200,10 @@ export default function ProductKnowledgePage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {product.composition.map((comp, compIdx) => (
+                              {product.composition?.map((comp, compIdx) => (
                                 <tr key={compIdx}>
                                   <td className="px-4 py-2 text-sm text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
-                                    {(comp as any).component || (comp as any).nutrient}
+                                    {comp.component || comp.nutrient}
                                   </td>
                                   <td className="px-4 py-2 text-sm text-gray-900 border border-gray-300 dark:border-gray-600 dark:text-white">
                                     {comp.percentage}
@@ -212,13 +241,13 @@ export default function ProductKnowledgePage() {
                     )}
 
                     {/* Program Rounds */}
-                    {(product as any).rounds && (
+                    {product.rounds && (
                       <div className="mb-6">
                         <h4 className="mb-3 text-sm font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
                           Application Schedule
                         </h4>
                         <div className="space-y-3">
-                          {(product as any).rounds.map((round: any, roundIdx: number) => (
+                          {product.rounds.map((round, roundIdx) => (
                             <div key={roundIdx} className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
                               <h5 className="mb-2 font-semibold text-gray-900 dark:text-white">
                                 {round.round}

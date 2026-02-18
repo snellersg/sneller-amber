@@ -114,10 +114,11 @@ export async function GET(request: Request) {
     console.log('[get-users] Merged verification status for all users')
 
     return NextResponse.json({ users: usersWithVerificationStatus })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('[get-users] Unexpected error:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: errorMessage },
       { status: 500 }
     )
   }

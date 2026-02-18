@@ -1,32 +1,34 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import { Loader2 } from 'lucide-react'
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
         // Authenticated users go to Sheets & Docs, unauthenticated to login
         if (user) {
-          router.push('/sheets-and-docs')
+          router.push("/sheets-and-docs");
         } else {
-          router.push('/login')
+          router.push("/login");
         }
       } catch {
         // On error, redirect to login
-        router.push('/login')
+        router.push("/login");
       }
-    }
+    };
 
-    checkAuthAndRedirect()
-  }, [router])
+    checkAuthAndRedirect();
+  }, [router]);
 
   // Show loading state while redirecting
   return (
@@ -38,5 +40,5 @@ export default function HomePage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

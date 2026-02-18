@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Lock, Loader2, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -13,7 +13,6 @@ function ResetPasswordForm() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     // Handle the password reset token from URL

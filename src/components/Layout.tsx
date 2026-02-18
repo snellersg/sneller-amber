@@ -13,7 +13,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isAdmin, user } = useAuth();
+  const { isAdmin } = useAuth();
   const pathname = usePathname();
 
   const handleSidebarToggle = () => {

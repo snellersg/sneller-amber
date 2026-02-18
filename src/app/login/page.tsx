@@ -67,7 +67,7 @@ export default function LoginPage() {
       console.log("Allowed domains check:", { domains, domainsError });
 
       // Check if users table exists
-      const { data: users, error: usersError } = await supabase
+      const { error: usersError } = await supabase
         .from("users")
         .select("count")
         .limit(1);
@@ -110,7 +110,7 @@ export default function LoginPage() {
           return;
         }
 
-        const { data, error: signUpError } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email: normalizedEmail,
           password,
           options: {

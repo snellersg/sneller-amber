@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "@supabase/supabase-js";
+import { User, SupabaseClient, PostgrestError } from "@supabase/supabase-js";
 
 // Type definitions
 interface Admin {
@@ -12,13 +12,13 @@ interface Admin {
 }
 
 // Helper function to notify admins of new user registration
-const notifyAdmins = async (newUser: User, supabase: any) => {
+const notifyAdmins = async (newUser: User, supabase: SupabaseClient) => {
   try {
     // Get all admin users
     const {
       data: admins,
       error: adminError,
-    }: { data: Admin[] | null; error: any } = await supabase
+    }: { data: Admin[] | null; error: PostgrestError | null } = await supabase
       .from("users")
       .select("email")
       .eq("role", "admin");
@@ -55,7 +55,7 @@ const notifyAdmins = async (newUser: User, supabase: any) => {
 };
 
 // Helper function to ensure user record exists in database
-const ensureUserRecord = async (authUser: User, supabase: any) => {
+const ensureUserRecord = async (authUser: User, supabase: SupabaseClient) => {
   try {
     const { data: existing, error: existingError } = await supabase
       .from("users")

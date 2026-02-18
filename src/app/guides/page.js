@@ -12,23 +12,6 @@ import {
   Construction,
 } from "lucide-react";
 
-// Simple Badge component
-const Badge = ({ children, variant = "default", className = "" }) => {
-  const variants = {
-    default: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-    outline:
-      "border border-gray-300 dark:border-gray-600 bg-transparent text-gray-700 dark:text-gray-300",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold ${variants[variant]} ${className}`}
-    >
-      {children}
-    </span>
-  );
-};
-
 // Simple Button component
 const Button = ({ children, className = "", onClick, href, ...props }) => {
   const baseClasses =
