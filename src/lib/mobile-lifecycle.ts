@@ -20,33 +20,45 @@ class MobileAppLifecycle {
   }
 
   private setupListeners() {
-    // Page visibility API for tab/app switching
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        this.setState('background')
-        this.lastActiveTime = Date.now()
-      } else {
-        // Delay setting to active to avoid rapid state changes
-        if (this.visibilityChangeTimer) {
-          clearTimeout(this.visibilityChangeTimer)
-        }
-
-        this.visibilityChangeTimer = setTimeout(() => {
-          const timeInBackground = Date.now() - this.lastActiveTime
-
-          // If app was in background for more than 30 seconds, consider it a fresh return
-          if (timeInBackground > 30000) {
-            console.log(
-              '[AppLifecycle] App returned from background after',
-              timeInBackground + 'ms'
-            )
-            this.setState('active', true)
+    try {
+      // Page visibility API for tab/app switching
+      document.addEventListener('visibilitychange', () => {
+        try {
+          if (document.hidden) {
+            this.setState('background')
+            this.lastActiveTime = Date.now()
           } else {
-            this.setState('active')
+            // Delay setting to active to avoid rapid state changes
+            if (this.visibilityChangeTimer) {
+              clearTimeout(this.visibilityChangeTimer)
+            }
+
+            this.visibilityChangeTimer = setTimeout(() => {
+              try {
+                const timeInBackground = Date.now() - this.lastActiveTime
+
+                // If app was in background for more than 30 seconds, consider it a fresh return
+                if (timeInBackground > 30000) {
+                  console.log(
+                    '[AppLifecycle] App returned from background after',
+                    timeInBackground + 'ms'
+                  )
+                  this.setState('active', true)
+                } else {
+                  this.setState('active')
+                }
+              } catch (error) {
+                console.error('[AppLifecycle] Error in visibility timeout:', error)
+              }
+            }, 100)
           }
-        }, 100)
-      }
-    })
+        } catch (error) {
+          console.error('[AppLifecycle] Error in visibility change handler:', error)
+        }
+      })
+    } catch (error) {
+      console.error('[AppLifecycle] Error setting up visibility listener:', error)
+    }
 
     // Window focus/blur events for additional detection
     window.addEventListener('focus', () => {

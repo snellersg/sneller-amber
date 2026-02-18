@@ -48,11 +48,15 @@ export class ErrorBoundary extends Component<Props, State> {
     // Listen for network and connection recovery events
     window.addEventListener('network-reconnected', this.handleNetworkRecovery)
     window.addEventListener('supabase-connection-recovered', this.handleConnectionRecovery)
+    
+    // Listen for global app errors
+    window.addEventListener('app-error', this.handleGlobalError)
   }
 
   componentWillUnmount() {
     window.removeEventListener('network-reconnected', this.handleNetworkRecovery)
     window.removeEventListener('supabase-connection-recovered', this.handleConnectionRecovery)
+    window.removeEventListener('app-error', this.handleGlobalError)
 
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout)
@@ -143,6 +147,21 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError && isSupabaseHealthy()) {
       this.handleRetry(false)
     }
+  }
+
+  private handleGlobalError = (event: any) => {
+    console.log('[ErrorBoundary] Global error received:', event.detail)
+    
+    const { error, source } = event.detail
+    
+    // Treat global errors the same as caught errors
+    this.setState({
+      hasError: true,
+      error: error,
+      errorInfo: { componentStack: `Global error from ${source}` }
+    })
+    
+    this.analyzeAndReportError(error, { componentStack: `Global error from ${source}` })
   }
 
   private handleRetry = (isAutoRetry = false) => {
