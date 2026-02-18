@@ -200,10 +200,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUserEmail(authUser.email || null)
       setConnectionStatus('healthy')
 
-      // Check admin status in background - don't wait
-      checkAdminStatus(authUser).catch(err =>
-        console.error('Background admin check failed during refresh:', err)
-      )
+      // Check admin status synchronously to prevent race conditions
+      try {
+        await checkAdminStatus(authUser)
+      } catch (err) {
+        console.error('Refresh admin check failed:', err)
+        setIsAdmin(false)
+      }
     } catch (error: unknown) {
       // Handle different types of errors appropriately
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -312,10 +315,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setUserEmail(session.user.email || null)
             setConnectionStatus('healthy')
 
-            // Check admin status in background - don't await
-            checkAdminStatus(session.user).catch(err =>
-              console.error('Background admin check failed:', err)
-            )
+            // Check admin status synchronously to prevent race conditions
+            try {
+              await checkAdminStatus(session.user)
+            } catch (err) {
+              console.error('Initial admin check failed:', err)
+              setIsAdmin(false)
+            }
           } else {
             setUser(null)
             setUserEmail(null)
@@ -480,10 +486,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               setIsLoading(false)
             }
 
-            // Check admin status in background (don't block UI)
-            checkAdminStatus(session.user).catch(err =>
-              console.error('Background admin check failed:', err)
-            )
+            // Only recheck admin status if user changed or on initial sign in
+            // Preserve admin status during token refresh to prevent race conditions
+            const shouldRecheckAdmin = 
+              event === 'SIGNED_IN' || 
+              (currentUserRef.current?.id !== session.user.id)
+
+            if (shouldRecheckAdmin) {
+              console.log('[Auth] Rechecking admin status due to:', event)
+              try {
+                await checkAdminStatus(session.user)
+              } catch (err) {
+                console.error('State change admin check failed:', err)
+                setIsAdmin(false)
+              }
+            } else {
+              console.log('[Auth] Preserving admin status during', event)
+            }
 
             // Update last sign in for SIGNED_IN events only
             if (event === 'SIGNED_IN') {

@@ -32,22 +32,28 @@ interface UserProfileData {
 
 export default function UserProfile() {
   const router = useRouter()
-  const { user, isLoading: authLoading } = useAuth()
+  const { user, isLoading: authLoading, isAdmin: isUserAdmin } = useAuth()
   const [profile, setProfile] = useState<UserProfileData | null>(null)
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [preservedAdminStatus, setPreservedAdminStatus] = useState(false)
 
   // Profile form state
   const [fullName, setFullName] = useState('')
 
-  // Password change state
+  // Password change state  
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // Store admin status when component mounts
+  useEffect(() => {
+    setPreservedAdminStatus(isUserAdmin)
+  }, [isUserAdmin])
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -163,6 +169,9 @@ export default function UserProfile() {
     setMessage('')
 
     try {
+      // Preserve admin status during auth update
+      setPreservedAdminStatus(isUserAdmin)
+      
       // Update auth metadata
       const { error: authUpdateError } = await supabase.auth.updateUser({
         data: { full_name: fullName },
@@ -225,6 +234,9 @@ export default function UserProfile() {
     }
 
     try {
+      // Preserve admin status during password change
+      setPreservedAdminStatus(isUserAdmin)
+      
       const { error: passwordError } = await supabase.auth.updateUser({
         password: newPassword,
       })
