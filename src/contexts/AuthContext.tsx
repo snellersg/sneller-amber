@@ -70,15 +70,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!authUser) return
 
     try {
-      // Wait for network and Supabase to be healthy before checking admin status
+      // Shorter timeouts to prevent blocking
       await Promise.race([
-        waitForNetwork(5000),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Network timeout')), 5000)),
+        waitForNetwork(3000),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Network timeout')), 3000)),
       ])
 
       await Promise.race([
-        waitForHealthyConnection(5000),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), 5000)),
+        waitForHealthyConnection(3000),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), 3000)),
       ])
 
       const { data: userData, error: userError } = await supabase
@@ -200,13 +200,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUserEmail(authUser.email || null)
       setConnectionStatus('healthy')
 
-      // Check admin status synchronously to prevent race conditions
-      try {
-        await checkAdminStatus(authUser)
-      } catch (err) {
-        console.error('Refresh admin check failed:', err)
+      // Check admin status with timeout to prevent blocking
+      Promise.race([
+        checkAdminStatus(authUser),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Admin check timeout')), 5000))
+      ]).catch(err => {
+        console.error('Refresh admin check failed or timed out:', err)
         setIsAdmin(false)
-      }
+      })
     } catch (error: unknown) {
       // Handle different types of errors appropriately
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -315,13 +316,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setUserEmail(session.user.email || null)
             setConnectionStatus('healthy')
 
-            // Check admin status synchronously to prevent race conditions
-            try {
-              await checkAdminStatus(session.user)
-            } catch (err) {
-              console.error('Initial admin check failed:', err)
+            // Check admin status asynchronously to prevent blocking
+            // Use timeout to prevent hanging
+            Promise.race([
+              checkAdminStatus(session.user),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('Admin check timeout')), 3000))
+            ]).catch(err => {
+              console.error('Initial admin check failed or timed out:', err)
               setIsAdmin(false)
-            }
+            })
           } else {
             setUser(null)
             setUserEmail(null)
@@ -341,13 +344,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       }
 
-      // Emergency timeout - 8 seconds max for mobile
+      // Emergency timeout - 5 seconds max (reduced from 8 for faster loading)
       initTimeout = setTimeout(() => {
         console.warn('EMERGENCY: Auth timeout - forcing loading off')
         setIsLoading(false)
         setConnectionStatus('unhealthy')
         isInitializedRef.current = true
-      }, 8000)
+      }, 5000)
 
       // Start initialization
       initAuth()
@@ -494,12 +497,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             if (shouldRecheckAdmin) {
               console.log('[Auth] Rechecking admin status due to:', event)
-              try {
-                await checkAdminStatus(session.user)
-              } catch (err) {
-                console.error('State change admin check failed:', err)
+              // Use timeout to prevent blocking the auth state change
+              Promise.race([
+                checkAdminStatus(session.user),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Admin check timeout')), 3000))
+              ]).catch(err => {
+                console.error('State change admin check failed or timed out:', err)
                 setIsAdmin(false)
-              }
+              })
             } else {
               console.log('[Auth] Preserving admin status during', event)
             }
