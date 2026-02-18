@@ -23,7 +23,15 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    // Return safe defaults instead of throwing to prevent app crashes
+    console.warn("useAuth called outside AuthProvider - returning safe defaults");
+    return {
+      user: null,
+      isAdmin: false,
+      isLoading: false,
+      userEmail: null,
+      refreshAuth: async () => {},
+    };
   }
   return context;
 };
@@ -37,6 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
 
   const checkAdminStatus = async (authUser: User) => {
     try {
@@ -174,47 +183,54 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let subscription: any = null;
     let initTimeout: NodeJS.Timeout | null = null;
 
-    // Simplified initialization - no complex auth checking
-    const initAuth = async () => {
-      console.log("Starting auth initialization...");
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log("Got session:", !!session?.user);
-        
-        if (session?.user) {
-          setUser(session.user);
-          setUserEmail(session.user.email || null);
-          // Check admin status in background - don't await
-          checkAdminStatus(session.user);
-        } else {
+    // Wrap everything in try-catch to prevent provider crashes
+    try {
+      // Simplified initialization - no complex auth checking
+      const initAuth = async () => {
+        console.log("Starting auth initialization...");
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          console.log("Got session:", !!session?.user);
+          
+          if (session?.user) {
+            setUser(session.user);
+            setUserEmail(session.user.email || null);
+            // Check admin status in background - don't await
+            checkAdminStatus(session.user).catch(err => 
+              console.error("Background admin check failed:", err)
+            );
+          } else {
+            setUser(null);
+            setUserEmail(null);
+            setIsAdmin(false);
+          }
+        } catch (error) {
+          console.error("Auth init error:", error);
           setUser(null);
           setUserEmail(null);
           setIsAdmin(false);
+        } finally {
+          console.log("Setting loading to false");
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Auth init error:", error);
-        setUser(null);
-        setUserEmail(null);
-        setIsAdmin(false);
-      } finally {
-        console.log("Setting loading to false");
+      };
+
+      // Emergency timeout - 5 seconds max
+      initTimeout = setTimeout(() => {
+        console.warn("EMERGENCY: Auth timeout - forcing loading off");
         setIsLoading(false);
-      }
-    };
+      }, 5000);
 
-    // Emergency timeout - 5 seconds max
-    initTimeout = setTimeout(() => {
-      console.warn("EMERGENCY: Auth timeout - forcing loading off");
-      setIsLoading(false);
-    }, 5000);
-
-    // Start initialization
-    initAuth().finally(() => {
-      if (initTimeout) {
-        clearTimeout(initTimeout);
-        initTimeout = null;
-      }
-    });
+      // Start initialization
+      initAuth().catch(error => {
+        console.error("Init auth failed:", error);
+        setIsLoading(false);
+      }).finally(() => {
+        if (initTimeout) {
+          clearTimeout(initTimeout);
+          initTimeout = null;
+        }
+      });
 
     // Set up session refresh (every 30 minutes) - only in browser
     // More frequent refresh to prevent session timeouts causing hangs
@@ -270,49 +286,72 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       ); // 30 minutes - more frequent to prevent timeouts
     }
 
-    // Listen for auth state changes
-    const {
-      data: { subscription: authSubscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state change:", event, !!session?.user);
+      // Listen for auth state changes
+      const {
+        data: { subscription: authSubscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        try {
+          console.log("Auth state change:", event, !!session?.user);
 
-      if (event === "SIGNED_OUT" || !session?.user) {
-        setUser(null);
-        setIsAdmin(false);
-        setUserEmail(null);
-        setIsLoading(false);
-        return;
-      }
+          if (event === "SIGNED_OUT" || !session?.user) {
+            setUser(null);
+            setIsAdmin(false);
+            setUserEmail(null);
+            setIsLoading(false);
+            return;
+          }
 
-      if (session?.user) {
-        setUser(session.user);
-        setUserEmail(session.user.email || null);
-        
-        // CRITICAL: Set loading to false IMMEDIATELY so UI can render
-        setIsLoading(false);
-        
-        // Check admin status in background (don't block UI)
-        checkAdminStatus(session.user);
-        
-        // Update last sign in for SIGNED_IN events (not TOKEN_REFRESHED or INITIAL_SESSION)
-        if (event === "SIGNED_IN") {
-          updateLastSignIn(session.user);
+          if (session?.user) {
+            setUser(session.user);
+            setUserEmail(session.user.email || null);
+            
+            // CRITICAL: Set loading to false IMMEDIATELY so UI can render
+            setIsLoading(false);
+            
+            // Check admin status in background (don't block UI)
+            checkAdminStatus(session.user).catch(err =>
+              console.error("Background admin check failed:", err)
+            );
+            
+            // Update last sign in for SIGNED_IN events (not TOKEN_REFRESHED or INITIAL_SESSION)
+            if (event === "SIGNED_IN") {
+              updateLastSignIn(session.user).catch(err =>
+                console.error("Failed to update last sign in:", err)
+              );
+            }
+          }
+        } catch (error) {
+          console.error("Error in auth state change handler:", error);
+          setIsLoading(false);
         }
-      }
-    });
+      });
 
-    subscription = authSubscription;
+      subscription = authSubscription;
+    } catch (error) {
+      console.error("Critical error in auth setup:", error);
+      setIsLoading(false);
+      setHasError(true);
+    }
 
     return () => {
-      subscription?.unsubscribe();
-      if (refreshInterval) {
-        clearInterval(refreshInterval);
-      }
-      if (initTimeout) {
-        clearTimeout(initTimeout);
+      try {
+        subscription?.unsubscribe();
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+        }
+        if (initTimeout) {
+          clearTimeout(initTimeout);
+        }
+      } catch (error) {
+        console.error("Error in auth cleanup:", error);
       }
     };
   }, []); // Empty dependency array to prevent infinite re-renders
+
+  // If there was a critical error, still render children with safe defaults
+  if (hasError) {
+    console.warn("AuthProvider encountered an error but continuing with safe defaults");
+  }
 
   return (
     <AuthContext.Provider
