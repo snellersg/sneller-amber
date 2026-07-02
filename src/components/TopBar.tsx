@@ -82,7 +82,7 @@ export default function TopBar({ onSidebarToggle }: TopBarProps) {
           {/* Logo and title */}
           <div className="flex items-center space-x-3">
             <img src="/logo512.png" alt="Sneller Logo" className="w-8 h-8" />
-            <span className="text-xl font-heading font-bold text-foreground">AMBER v2.0</span>
+            <span className="text-xl font-heading font-bold text-foreground">AMBER</span>
           </div>
         </div>
 
