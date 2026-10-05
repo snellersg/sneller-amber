@@ -9,67 +9,70 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    overflow-x: hidden;
   }
 
-  html {
-    overflow-x: hidden;
-  }
-
-  /* Typography Scale - Sneller 2026 */
+  /* Typography scale */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    @apply font-heading font-semibold tracking-tight;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    @apply font-heading;
   }
 
   h1 {
-    @apply text-4xl leading-tight; /* 36/44 */
+    @apply text-4xl; /* 36/44 */
   }
 
   h2 {
-    @apply text-3xl leading-9; /* 28/36 */
+    @apply text-3xl; /* 28/36 */
   }
 
   h3 {
-    @apply text-xl leading-7; /* 22/30 */
+    @apply text-xl; /* 22/30 */
   }
 
   h4,
   h5,
   h6 {
-    @apply text-lg leading-6; /* 18/24 */
+    font-size: 18px;
+    line-height: 24px; /* 18/24 */
   }
 
-  /* Body text uses Nunito Sans by default via font-sans */
-  p,
-  span,
-  div {
-    @apply text-base leading-6; /* 16/24 */
-  }
-
-  /* Button and label text */
+  /* Lato has no 600 weight: buttons and labels use 700 */
   button,
   label {
-    @apply font-sans font-semibold;
+    @apply font-sans font-bold;
+  }
+
+  /* Inline links in body copy are underlined */
+  /* Navigation menus are not inline links, so they stay un-underlined */
+  p a:not(nav a),
+  li a:not(nav a) {
+    @apply underline underline-offset-2;
   }
 }
 
+/*
+ * Sneller Snow & Grounds theme (brand brief 2026.2).
+ * Colors are stored as RGB channels so Tailwind opacity modifiers (bg-primary/20) work;
+ * every value is the exact brand hex noted beside it.
+ */
 :root {
-  /* Sneller 2026 Brand Palette (Base Colors - HSL Format) */
-  --sneller-blue: 199 89% 44%; /* #0A94D5 */
-  --rock-salt: 37 48% 76%; /* #DDC6A6 */
-  --midnight-asphalt: 213 27% 14%; /* #121820 */
-  --storm-charcoal: 213 18% 26%; /* #2F3944 */
-  --steel-blade: 215 13% 44%; /* #5B6775 */
-  --winter-frost: 215 26% 85%; /* #D9E1EA */
-  --snow-drift: 213 33% 97%; /* #F7FAFC */
-  --blizzard-white: 0 0% 100%; /* #FFFFFF */
+  /* Brand palette */
+  --sneller-blue: 10 148 213; /* #0A94D5 */
+  --rock-salt: 236 233 228; /* #ECE9E4 */
+  --midnight-asphalt: 18 24 32; /* #121820 */
+  --storm-charcoal: 47 57 68; /* #2F3944 */
+  --steel-blade: 91 103 117; /* #5B6775 */
+  --winter-frost: 217 225 234; /* #D9E1EA */
+  --snow-drift: 247 250 252; /* #F7FAFC */
+  --blizzard-white: 255 255 255; /* #FFFFFF */
 
-  /* Light Theme Semantic Mappings */
+  /* Roles: light */
   --background: var(--snow-drift);
   --foreground: var(--midnight-asphalt);
   --card: var(--blizzard-white);
@@ -84,259 +87,64 @@
   --muted-foreground: var(--steel-blade);
   --accent: var(--rock-salt);
   --accent-foreground: var(--midnight-asphalt);
-  --destructive: 0 73% 41%;
-  --destructive-foreground: var(--blizzard-white);
   --border: var(--winter-frost);
   --input: var(--winter-frost);
   --ring: var(--sneller-blue);
+  --success: 22 162 73; /* #16A249 */
+  --success-foreground: var(--blizzard-white);
+  --warning: 245 159 10; /* #F59F0A */
+  --warning-foreground: var(--midnight-asphalt); /* amber always gets dark text */
+  --destructive: 181 28 28; /* #B51C1C */
+  --destructive-foreground: var(--blizzard-white);
 
-  /* Chart colors using brand palette */
+  /* Chart order: Sneller Blue, Rock Salt, Storm Charcoal, Steel Blade, Winter Frost */
   --chart-1: var(--sneller-blue);
   --chart-2: var(--rock-salt);
   --chart-3: var(--storm-charcoal);
   --chart-4: var(--steel-blade);
   --chart-5: var(--winter-frost);
 
-  /* Success/Warning/Info states */
-  --success: 142 76% 36%;
-  --success-foreground: var(--blizzard-white);
-  --warning: 38 92% 50%;
-  --warning-foreground: var(--midnight-asphalt);
-  --info: var(--sneller-blue);
-  --info-foreground: var(--blizzard-white);
+  /* Spacing (8pt grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
 }
 
 .dark {
-  /* Dark Theme Semantic Mappings - Optimized for Contrast */
   --background: var(--midnight-asphalt);
   --foreground: var(--snow-drift);
   --card: var(--storm-charcoal);
   --card-foreground: var(--snow-drift);
   --popover: var(--storm-charcoal);
   --popover-foreground: var(--snow-drift);
-  --primary: var(--sneller-blue);
-  --primary-foreground: var(--blizzard-white);
   --secondary: var(--storm-charcoal);
   --secondary-foreground: var(--winter-frost);
-  --muted: 213 18% 22%; /* Darker variant for better contrast */
+  --muted: 46 55 66; /* #2E3742 */
   --muted-foreground: var(--winter-frost);
-  --accent: var(--rock-salt);
-  --accent-foreground: var(--midnight-asphalt);
-  --destructive: 0 73% 48%; /* Slightly brighter for dark mode */
-  --destructive-foreground: var(--snow-drift);
   --border: var(--storm-charcoal);
   --input: var(--storm-charcoal);
-  --ring: var(--sneller-blue);
+  --destructive: 212 33 33; /* #D42121 */
+  --destructive-foreground: var(--snow-drift);
 
-  /* Dark mode chart variants - improved visibility */
-  --chart-1: 199 89% 55%; /* Brighter sneller blue */
-  --chart-2: 37 58% 82%; /* Brighter rock salt */
-  --chart-3: var(--winter-frost);
-  --chart-4: 215 20% 60%; /* Brighter steel blade */
-  --chart-5: var(--storm-charcoal);
+  /* On-dark chart values */
+  --chart-1: 43 176 238; /* #2BB0EE */
+  --chart-4: 138 150 168; /* #8A96A8 */
 }
 
-/* Sneller 2026 Design System Utilities */
-.card-highlight {
-  @apply bg-accent/20 border border-accent/30 shadow-sm;
-}
-
-.status-success {
-  @apply bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800;
-}
-
-.status-warning {
-  @apply bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 border-amber-200 dark:border-amber-800;
-}
-
-.status-error {
-  @apply bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800;
-}
-
-.status-info {
-  @apply bg-primary/10 text-primary border-primary/20;
-}
-
-/* Card variants with Sneller design principles */
-.card-featured {
-  @apply bg-card border border-primary/20 shadow-md;
-}
-
-/* Button variants using design system */
-.btn-sneller {
-  @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold;
-}
-
-.btn-sneller-outline {
-  @apply border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors font-semibold;
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Custom scrollbar styling */
-.custom-scrollbar {
-  /* Reserve space for scrollbar to prevent layout shift */
-  scrollbar-gutter: stable;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.2);
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.3);
-}
-
-/* Firefox scrollbar */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
-}
-
-/* Additional component styles */
-.prose {
-  @apply text-foreground;
-}
-
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
-  @apply text-foreground;
-}
-
-@layer components {
-  .page-content {
-    @apply pt-20 pb-24 px-4;
-  }
-
-  /* Fix mobile scrolling issues with fixed elements */
-  .mobile-fixed-top {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    transform: translateZ(0); /* Force GPU acceleration */
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  .mobile-fixed-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    transform: translateZ(0); /* Force GPU acceleration */
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* Additional iOS Safari fixes */
-  @supports (-webkit-touch-callout: none) {
-    .mobile-fixed-top,
-    .mobile-fixed-bottom {
-      position: -webkit-sticky;
-      position: sticky;
-    }
-
-    .mobile-fixed-top {
-      top: 0;
-    }
-
-    .mobile-fixed-bottom {
-      bottom: 0;
-    }
-  }
-
-  /* Brand color for list markers */
-  .brand-marker li::marker {
-    color: hsl(var(--primary));
-  }
-}
-
-/* Custom gradient backgrounds */
-.gradient-bg {
-  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
-}
-
-/* Focus styles */
-.focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-}
-
-/* Card hover effects */
-.card-hover {
-  @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
-}
-
-/* Button loading state */
-.btn-loading {
-  @apply opacity-50 pointer-events-none;
-}
-
-/* Table styles */
-.table-responsive {
-  @apply overflow-x-auto;
-}
-
-.table-responsive table {
-  @apply min-w-full divide-y divide-border;
-}
-
-.table-responsive thead {
-  @apply bg-muted;
-}
-
-.table-responsive th {
-  @apply px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider;
-}
-
-.table-responsive td {
-  @apply px-6 py-4 whitespace-nowrap text-sm text-foreground;
-}
-
-.table-responsive tbody tr:nth-child(even) {
-  @apply bg-muted/20;
-}
-
-.table-responsive tbody tr:hover {
-  @apply bg-muted/40;
-}
-
-/* Sneller-blue bullets for Information section pages only */
-.page-core-processes ul li::marker,
-.page-core-services ul li::marker,
-.page-add-on-services ul li::marker,
-.page-product-knowledge ul li::marker {
-  color: hsl(var(--primary));
-}
-
-.page-core-processes ul li,
-.page-core-services ul li,
-.page-add-on-services ul li,
-.page-product-knowledge ul li {
-  list-style-type: disc;
-  margin-left: 1rem;
+/* Focus: never removed. 2px Sneller Blue ring, 2px offset. */
+:focus-visible {
+  outline: 2px solid rgb(var(--ring));
+  outline-offset: 2px;
 }

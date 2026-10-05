@@ -1,57 +1,55 @@
-import type { Metadata } from 'next'
-import { Roboto, Nunito_Sans } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Roboto, Lato } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
+import SiteHeader from '@/components/SiteHeader'
 import './globals.css'
-import { Providers } from './providers'
 
 const roboto = Roboto({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['600', '700'],
   variable: '--font-heading',
   display: 'swap',
 })
 
-const nunitoSans = Nunito_Sans({
+const lato = Lato({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '700'],
   variable: '--font-sans',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'AMBER',
-  description: 'Professional property management platform with advanced analytics and tools',
+  description: 'Sneller Snow & Grounds sheets, docs, and process guides',
   manifest: '/manifest.json',
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: 'any' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-64x64.png', sizes: '64x64', type: 'image/png' },
     ],
     apple: [{ url: '/logo192.png', sizes: '192x192', type: 'image/png' }],
-    other: [{ url: '/logo512.png', sizes: '512x512', type: 'image/png' }],
   },
-  appleWebApp: {
-    title: 'AMBER',
-    statusBarStyle: 'default',
-    capable: true,
-  },
+  appleWebApp: { title: 'AMBER', statusBarStyle: 'default', capable: true },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#0A94D5',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
-        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
-        <link rel="apple-touch-icon" href="/logo192.png" />
-        <meta name="theme-color" content="#0A94D5" />
-      </head>
-      <body
-        className={`${roboto.variable} ${nunitoSans.variable} font-sans antialiased`}
-        suppressHydrationWarning={true}
-      >
-        <Providers>{children}</Providers>
+      <body className={`${roboto.variable} ${lato.variable} font-sans antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SiteHeader />
+          <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   )

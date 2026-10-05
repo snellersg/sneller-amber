@@ -1,22 +1,7 @@
 {
   "short_name": "AMBER",
-  "name": "AMBER - Property Management Platform",
+  "name": "AMBER - Sneller Knowledge Portal",
   "icons": [
-    {
-      "src": "favicon-16x16.png",
-      "type": "image/png",
-      "sizes": "16x16"
-    },
-    {
-      "src": "favicon-32x32.png",
-      "type": "image/png",
-      "sizes": "32x32"
-    },
-    {
-      "src": "favicon-64x64.png",
-      "type": "image/png",
-      "sizes": "64x64"
-    },
     {
       "src": "logo192.png",
       "type": "image/png",
@@ -30,8 +15,7 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#0B95D6",
-  "background_color": "#F5F6FA",
-  "scope": "/",
-  "orientation": "portrait-primary"
+  "theme_color": "#0A94D5",
+  "background_color": "#F7FAFC",
+  "scope": "/"
 }

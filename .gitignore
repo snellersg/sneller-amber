@@ -118,3 +118,6 @@ logs
 # Internal documentation (not for public repo)
 docs/
 
+
+# SWC plugin cache
+.swc/
