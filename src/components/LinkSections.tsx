@@ -40,7 +40,7 @@ export default function LinkSections({ intro, sections, emptyMessage }: Props) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${item.title}`}
-                    className="inline-flex shrink-0 items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-bold text-primary-foreground no-underline transition-colors hover:bg-primary/90"
                   >
                     Open
                     <ExternalLink className="h-4 w-4" />
