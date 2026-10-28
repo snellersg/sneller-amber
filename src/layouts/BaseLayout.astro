@@ -1,0 +1,109 @@
+---
+import "@/styles/starwind.css";
+import { Button } from "@/components/starwind/button";
+import SunIcon from "@tabler/icons/outline/sun.svg";
+import MoonIcon from "@tabler/icons/outline/moon.svg";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = "Sneller Snow & Grounds sheets, docs, and process guides" } = Astro.props;
+const pageTitle = title ? `${title} · AMBER` : "AMBER";
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const tabs = [
+  { label: "Sheets & Docs", short: "Docs", href: "/", active: path === "/" },
+  { label: "Process Guides", short: "Guides", href: "/guides", active: path.startsWith("/guides") },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0A94D5" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="AMBER" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      // Same "theme" key/values the previous Next.js app used (light | dark | system).
+      (() => {
+        let pref = "system";
+        try {
+          pref = localStorage.getItem("theme") || "system";
+        } catch {}
+        const dark = pref === "dark" || (pref === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", dark);
+      })();
+    </script>
+  </head>
+  <body class="min-h-dvh antialiased">
+    <header class="bg-card border-border sticky top-0 z-40 border-b">
+      <div class="mx-auto flex h-14 max-w-4xl items-center gap-4 px-4 sm:gap-8 sm:px-6">
+        <a href="/" class="flex shrink-0 items-center gap-2 rounded-sm sm:gap-3">
+          <img src="/logo192.png" alt="Sneller logo" width="28" height="28" />
+          <span class="font-heading text-lg font-semibold tracking-tight">AMBER</span>
+        </a>
+        <nav aria-label="Sections" class="ml-auto flex gap-4 self-stretch sm:gap-6">
+          {
+            tabs.map((tab) => (
+              <a
+                href={tab.href}
+                aria-current={tab.active ? "page" : undefined}
+                class:list={[
+                  "font-heading flex items-center border-y-2 border-t-transparent text-sm font-semibold tracking-tight whitespace-nowrap uppercase transition-colors focus-visible:outline-offset-[-2px]",
+                  tab.active
+                    ? "border-b-primary text-foreground"
+                    : "text-muted-foreground hover:text-foreground border-b-transparent",
+                ]}
+              >
+                <span class="sm:hidden">{tab.short}</span>
+                <span class="hidden sm:inline">{tab.label}</span>
+              </a>
+            ))
+          }
+        </nav>
+        <Button
+          id="theme-toggle"
+          variant="ghost"
+          size="icon-sm"
+          class="text-muted-foreground -mr-2 shrink-0"
+          aria-label="Toggle light/dark mode"
+          title="Toggle light/dark mode"
+        >
+          <SunIcon class="hidden size-5 dark:block" aria-hidden="true" />
+          <MoonIcon class="size-5 dark:hidden" aria-hidden="true" />
+        </Button>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+      <slot />
+    </main>
+
+    <script>
+      document.getElementById("theme-toggle")?.addEventListener("click", () => {
+        const dark = document.documentElement.classList.toggle("dark");
+        try {
+          localStorage.setItem("theme", dark ? "dark" : "light");
+        } catch {}
+      });
+    </script>
+  </body>
+</html>

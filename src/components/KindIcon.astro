@@ -1,0 +1,18 @@
+---
+import SheetIcon from "@tabler/icons/outline/file-spreadsheet.svg";
+import DocIcon from "@tabler/icons/outline/file-text.svg";
+import SlidesIcon from "@tabler/icons/outline/presentation.svg";
+import ReportIcon from "@tabler/icons/outline/chart-bar.svg";
+import LinkIcon from "@tabler/icons/outline/external-link.svg";
+import { linkKindLabel, type LinkKind } from "@/lib/link-kind";
+
+interface Props {
+  kind: LinkKind;
+  class?: string;
+}
+
+const { kind, class: className } = Astro.props;
+const Icon = { sheet: SheetIcon, doc: DocIcon, slides: SlidesIcon, report: ReportIcon, link: LinkIcon }[kind];
+---
+
+<Icon class={className} role="img" aria-label={linkKindLabel[kind]} />

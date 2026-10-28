@@ -1,0 +1,53 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BookIcon from "@tabler/icons/outline/book.svg";
+import ChevronIcon from "@tabler/icons/outline/chevron-right.svg";
+
+const guides = (await getCollection("guides", (g) => import.meta.env.DEV || !g.data.draft)).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+
+const byCategory = Map.groupBy(guides, (g) => g.data.category);
+const categories = [...byCategory.keys()].sort();
+---
+
+<BaseLayout title="Process Guides" description="Step-by-step guides for daily operations and best practices.">
+  <p class="text-muted-foreground mb-4 text-sm">Step-by-step guides for daily operations and best practices.</p>
+
+  {
+    guides.length === 0 ? (
+      <p class="text-muted-foreground text-sm">No guides yet.</p>
+    ) : (
+      <div class="bg-card border-border overflow-hidden rounded-lg border shadow-xs">
+        {categories.map((category) => (
+          <section>
+            <h2 class="bg-background border-border text-muted-foreground border-b px-3 py-1 font-sans text-xs font-bold tracking-wider uppercase">
+              {category}
+            </h2>
+            <ul class="divide-border border-border divide-y border-b">
+              {byCategory.get(category)!.map((guide) => (
+                <li>
+                  <a
+                    href={`/guides/${guide.id}`}
+                    class="group hover:bg-muted/50 flex items-center gap-3 px-3 py-2 transition-colors focus-visible:outline-offset-[-2px]"
+                  >
+                    <BookIcon class="text-muted-foreground size-4 shrink-0" aria-hidden="true" />
+                    <span class="min-w-0 flex-1">
+                      <span class="block text-sm font-bold">
+                        {guide.data.title}
+                        {guide.data.draft && <span class="text-muted-foreground font-normal"> (draft)</span>}
+                      </span>
+                      <span class="text-muted-foreground block truncate text-xs sm:text-sm">{guide.data.description}</span>
+                    </span>
+                    <ChevronIcon class="text-muted-foreground group-hover:text-primary size-4 shrink-0" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    )
+  }
+</BaseLayout>

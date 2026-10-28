@@ -1,78 +1,39 @@
-# AMBER (Sneller Knowledge Portal)
+# AMBER
 
-Internal portal for Sneller Snow & Grounds: quick access to the team's most used sheets and
-docs, plus process guides. Styled to the Sneller brand (brief v2026.2).
+Sneller Snow & Grounds sheets, docs, and process guides. Built with [Astro](https://astro.build) and [Starwind UI](https://starwind.dev), themed with the [Sneller brand](https://github.com/snellersg/sneller-brand).
 
-## Quick Start
+## Develop
 
-```bash
+Requires Node 22.23.4+ (`nvm use` picks up `.nvmrc`).
+
+```sh
 npm install
-npm run dev
+npm run dev      # http://localhost:4321
+npm run build    # static site in dist/
+npm run check    # type-check
 ```
 
-Visit `http://localhost:3000`. No environment variables or backend are needed.
+## Editing content
 
-## What's in the App
+| What | Where |
+|---|---|
+| Sheets & Docs links | `src/data/docs.json`: categories, each with `title`, `description`, `url`. The icon (sheet, doc, slides, report) is picked from the URL. |
+| Process guides | One markdown file per guide in `src/content/guides/`. Copy `_template.md` to start a new one; the file name becomes the URL (`/guides/<file-name>`). |
 
-Two tabs that share one layout:
+Guide frontmatter: `title`, `description`, `category` (required); `updated`, `owner`, `sourceUrl`, `draft` (optional). Drafts show in `npm run dev` but aren't built for production.
 
-- **Sheets & Docs** (`/`): links to the spreadsheets and documents the team uses most.
-- **Process Guides** (`/guides`): the same layout. It shows a placeholder until guides are added.
-
-Both pages are static and pre-rendered at build time. The light/dark toggle is the only
-client-side JavaScript the app adds.
-
-## Editing Content
-
-Content lives in `src/data`. Each tab is a list of sections, each with a `title` and `items`:
-
-```ts
-{
-  title: 'General',
-  items: [{ title: 'Doc name', url: 'https://...', description: 'What it is for.' }],
-}
-```
-
-| File                 | Tab                            |
-| -------------------- | ------------------------------ |
-| `src/data/sheets.ts` | Sheets & Docs                  |
-| `src/data/guides.ts` | Process Guides (empty for now) |
-
-## Project Structure
+## Project layout
 
 ```
 src/
-  app/
-    layout.tsx        Root layout: fonts, theme provider, header
-    page.tsx          Sheets & Docs tab
-    guides/page.tsx   Process Guides tab
-    not-found.tsx     404 page
-    error.tsx         Error fallback
-    globals.css       Sneller theme tokens and base typography
-  components/
-    SiteHeader.tsx    Logo and theme toggle
-    ThemeToggle.tsx   Light/dark switch (client component)
-    HubTabs.tsx       The two-tab navigation
-    LinkSections.tsx  Section and link list used by both tabs
-  data/               Tab content (see above)
-__tests__/            Data checks (valid, unique https links)
+  components/starwind/   Starwind UI components (manage with `npx starwind add|update`)
+  content/guides/        Process guide markdown
+  data/docs.json         Sheets & Docs list
+  layouts/BaseLayout.astro
+  pages/                 /, /guides, /guides/[slug]
+  styles/starwind.css    Tailwind + brand theme tokens
 ```
 
 ## Brand
 
-Colors, type and radius follow the Sneller brand brief. Use the role classes (`bg-primary`,
-`text-muted-foreground`, `border-border` and so on) rather than raw colors or Tailwind's
-default palette. The tokens live in `src/app/globals.css` and are mapped in
-`tailwind.config.js`.
-
-## Scripts
-
-```bash
-npm run dev           # Development server
-npm run build         # Production build
-npm start             # Serve the production build
-npm run lint          # ESLint (Next.js rules)
-npm run type-check    # TypeScript
-npm test              # Data tests (Jest)
-npm run build:verify  # Type check, lint, then build
-```
+Colors, type, spacing and radius come from `SNELLER_BRAND.md`. Use role classes (`bg-primary`, `text-muted-foreground`, …) instead of raw colors.

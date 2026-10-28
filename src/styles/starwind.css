@@ -1,0 +1,271 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/forms";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Sneller Snow & Grounds brand theme (brief 2026.2).
+ * Source of truth: github.com/snellersg/sneller-brand (tokens.json + SNELLER_BRAND.md).
+ * Starwind's role variables are mapped onto the brand roles below; don't add raw hex in components.
+ */
+
+@theme {
+  --font-sans: "Lato", system-ui, sans-serif;
+  --font-heading: "Roboto", system-ui, sans-serif;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--starwind-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--starwind-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-accent: var(--primary-accent);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-accent: var(--secondary-accent);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-outline: var(--outline);
+
+  /* Brand radius scale: 8 / 12 / 16 / 20 / full */
+  --radius-xs: var(--radius-sm);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 20px;
+  --radius-3xl: 20px;
+
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-outline: var(--sidebar-outline);
+}
+
+:root {
+  /* Brand palette */
+  --sneller-blue: #0a94d5;
+  --rock-salt: #ece9e4;
+  --midnight-asphalt: #121820;
+  --storm-charcoal: #2f3944;
+  --steel-blade: #5b6775;
+  --winter-frost: #d9e1ea;
+  --snow-drift: #f7fafc;
+  --blizzard-white: #ffffff;
+
+  /* Roles: light */
+  --background: var(--snow-drift);
+  --foreground: var(--midnight-asphalt);
+  --card: var(--blizzard-white);
+  --card-foreground: var(--midnight-asphalt);
+  --popover: var(--blizzard-white);
+  --popover-foreground: var(--midnight-asphalt);
+  --primary: var(--sneller-blue);
+  --primary-foreground: var(--blizzard-white);
+  --primary-accent: var(--sneller-blue);
+  --secondary: var(--blizzard-white);
+  --secondary-foreground: var(--storm-charcoal);
+  --secondary-accent: var(--storm-charcoal);
+  --muted: var(--winter-frost);
+  --muted-foreground: var(--steel-blade);
+  --accent: var(--rock-salt);
+  --accent-foreground: var(--midnight-asphalt);
+  --info: var(--sneller-blue);
+  --info-foreground: var(--midnight-asphalt);
+  --success: #16a249;
+  --success-foreground: var(--blizzard-white);
+  --warning: #f59f0a;
+  --warning-foreground: var(--midnight-asphalt);
+  --error: #b51c1c;
+  --error-foreground: var(--blizzard-white);
+  --border: var(--winter-frost);
+  --input: var(--winter-frost);
+  --outline: var(--sneller-blue);
+
+  --sidebar-background: var(--blizzard-white);
+  --sidebar-foreground: var(--midnight-asphalt);
+  --sidebar-primary: var(--sneller-blue);
+  --sidebar-primary-foreground: var(--blizzard-white);
+  --sidebar-accent: var(--winter-frost);
+  --sidebar-accent-foreground: var(--midnight-asphalt);
+  --sidebar-border: var(--winter-frost);
+  --sidebar-outline: var(--sneller-blue);
+}
+
+.dark {
+  --background: var(--midnight-asphalt);
+  --foreground: var(--snow-drift);
+  --card: var(--storm-charcoal);
+  --card-foreground: var(--snow-drift);
+  --popover: var(--storm-charcoal);
+  --popover-foreground: var(--snow-drift);
+  --primary-accent: #2bb0ee;
+  --secondary: var(--storm-charcoal);
+  --secondary-foreground: var(--winter-frost);
+  --secondary-accent: var(--winter-frost);
+  --muted: #2e3742;
+  --muted-foreground: var(--winter-frost);
+  --error: #d42121;
+  --error-foreground: var(--snow-drift);
+  --border: var(--storm-charcoal);
+  --input: var(--storm-charcoal);
+
+  --sidebar-background: var(--storm-charcoal);
+  --sidebar-foreground: var(--snow-drift);
+  --sidebar-accent: #2e3742;
+  --sidebar-accent-foreground: var(--snow-drift);
+  --sidebar-border: var(--storm-charcoal);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-outline/50;
+  }
+  body {
+    @apply bg-background text-foreground scheme-light dark:scheme-dark;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 24px;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  button,
+  label {
+    font-weight: 700;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--outline);
+    outline-offset: 2px;
+  }
+}
+
+/* Long-form markdown (process guides) */
+@layer components {
+  .guide-prose {
+    @apply text-foreground;
+    max-width: 72ch;
+
+    & > * + * {
+      margin-top: 16px;
+    }
+    & h2 {
+      @apply border-border border-t pt-6;
+      margin-top: 32px;
+      font-size: 22px;
+      line-height: 30px;
+    }
+    & h3 {
+      margin-top: 24px;
+      font-size: 18px;
+      line-height: 24px;
+    }
+    & h2 + *,
+    & h3 + * {
+      margin-top: 8px;
+    }
+    & a {
+      @apply text-foreground decoration-primary font-bold underline underline-offset-4;
+    }
+    & ul,
+    & ol {
+      padding-left: 24px;
+    }
+    & ul {
+      @apply marker:text-primary list-disc;
+    }
+    & ol {
+      @apply marker:text-muted-foreground list-decimal marker:font-bold;
+    }
+    & li + li {
+      margin-top: 4px;
+    }
+    & li > ul,
+    & li > ol {
+      margin-top: 4px;
+    }
+    & strong {
+      font-weight: 700;
+    }
+    & code {
+      @apply bg-muted rounded-sm;
+      padding: 0 4px;
+      font-size: 14px;
+    }
+    & blockquote {
+      @apply bg-accent text-accent-foreground border-border rounded-lg border;
+      padding: 12px 16px;
+    }
+    & img {
+      @apply border-border rounded-lg border;
+    }
+    & hr {
+      @apply border-border;
+    }
+    & table {
+      @apply w-full text-sm;
+      display: block;
+      overflow-x: auto;
+      border-collapse: collapse;
+    }
+    & th,
+    & td {
+      @apply border-border border text-left;
+      padding: 8px 12px;
+    }
+    & th {
+      @apply bg-muted font-bold;
+    }
+  }
+}
