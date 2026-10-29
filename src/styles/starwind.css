@@ -13,6 +13,12 @@
   --font-sans: "Lato", system-ui, sans-serif;
   --font-heading: "Roboto", system-ui, sans-serif;
 
+  /* Third-party app logos (Sheets & Docs icons only). Official brand colors, not part of the Sneller palette. */
+  --color-logo-google: #4285f4;
+  --color-logo-sheets: #34a853;
+  --color-logo-slides: #fbbc04;
+  --color-logo-forms: #7248b9;
+
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 

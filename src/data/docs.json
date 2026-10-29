@@ -3,19 +3,29 @@
   "category": "General",
   "items": [
    {
-    "title": "ACM L10 Doc",
-    "description": "Track priorities, issues, and metrics for weekly EOS Level 10 meetings.",
-    "url": "https://docs.google.com/spreadsheets/d/1tsiXNRoYKHpPSj-GsZjh4mB1o9bHYy-8Q0O7jSiivkk/edit?gid=253066623#gid=253066623"
-   },
-   {
     "title": "Compliments/Appreciation From Customers",
     "description": "Living record of positive feedback received about our services and operations team.",
     "url": "https://docs.google.com/document/d/10AUX53jS8q_ynwDgUFaZhlo6iOiryC5bllqRVcbxEgw/edit?tab=t.0"
    },
    {
+    "title": "CrewHQ",
+    "description": "Monday app where crews clock in and out on timecards and access crew tools and information.",
+    "url": "https://snellersg.monday.com/custom_objects/18415062959"
+   },
+   {
     "title": "Customer Master List (CML)",
-    "description": "Master spreadsheet containing detailed information on all current and former accounts.",
-    "url": "https://docs.google.com/spreadsheets/d/1foWuc4sUsoP8lNTq5dVULEQ5iTlLG9jVb1o7EzYJ77w/edit?gid=1491987735#gid=1491987735"
+    "description": "Master board containing detailed information on all current and former accounts.",
+    "url": "https://snellersg.monday.com/boards/18398830517"
+   },
+   {
+    "title": "L10 Agenda",
+    "description": "Track priorities, issues, and metrics for weekly EOS Level 10 meetings.",
+    "url": "https://snellersg.monday.com/custom_objects/18422849233"
+   },
+   {
+    "title": "Tickets",
+    "description": "Customer email inbox where account managers respond to requests and create tickets.",
+    "url": "https://snellersg.monday.com/boards/18409670652/views/255214944"
    },
    {
     "title": "Universal Pricing Sheet",
@@ -27,11 +37,6 @@
  {
   "category": "WR",
   "items": [
-   {
-    "title": "25/26 Data for Customer Reporting",
-    "description": "Looker Studio dashboard with data for 2025/2026 customer reporting and analytics.",
-    "url": "https://lookerstudio.google.com/u/0/reporting/935959fe-0330-4a4d-a088-7ceb4b0757e2/page/p_aywo571rod"
-   },
    {
     "title": "ACM/Steve Snow Convo Cheat Sheet",
     "description": "Cheat sheet for key snow conversation points between ACMs and Steve.",
@@ -48,11 +53,6 @@
     "url": "https://docs.google.com/spreadsheets/d/1fKmMN_cNfEsFcgHaJILRFGpEXLEftVDoFv-5i8EFRxQ/edit?gid=0#gid=0"
    },
    {
-    "title": "Snow Piling and Hauling Prices",
-    "description": "Rate sheet for hauling or relocating snow piles around sites and to dump locations.",
-    "url": "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0"
-   },
-   {
     "title": "Snow and Ice Management Updates",
     "description": "Log of Dan's emails for updating customers each snow event.",
     "url": "https://docs.google.com/spreadsheets/d/16_jDPJg-iK2kQb_TMAQreA8-xAK5wTtlXJ0yq3p42Tw/edit?gid=1964679955#gid=1964679955"
@@ -66,6 +66,16 @@
     "title": "Snow Pile Removal Master Doc",
     "description": "Master tracker for snow pile removal planning, scheduling, and execution.",
     "url": "https://docs.google.com/spreadsheets/d/1Ccjc-G7sTADrnp7fa6KX-rmbIfulJOW0z9xohievZr4/edit?gid=1858114008#gid=1858114008"
+   },
+   {
+    "title": "Snow Piling and Hauling Prices",
+    "description": "Rate sheet for hauling or relocating snow piles around sites and to dump locations.",
+    "url": "https://docs.google.com/spreadsheets/d/1esplPDkliSwdfGSSHDrBbWXdAFKB5xx5mT5F7AFY3cc/edit?gid=0#gid=0"
+   },
+   {
+    "title": "SnowHQ",
+    "description": "Monday app for tracking snow events and routes.",
+    "url": "https://snellersg.monday.com/custom_objects/18433634415"
    },
    {
     "title": "SP Renewals/Retentions",

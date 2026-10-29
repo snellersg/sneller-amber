@@ -1,8 +1,11 @@
 ---
-import SheetIcon from "@tabler/icons/outline/file-spreadsheet.svg";
-import DocIcon from "@tabler/icons/outline/file-text.svg";
-import SlidesIcon from "@tabler/icons/outline/presentation.svg";
-import ReportIcon from "@tabler/icons/outline/chart-bar.svg";
+import SheetsLogo from "simple-icons/icons/googlesheets.svg";
+import DocsLogo from "simple-icons/icons/googledocs.svg";
+import SlidesLogo from "simple-icons/icons/googleslides.svg";
+import FormsLogo from "simple-icons/icons/googleforms.svg";
+import DriveLogo from "simple-icons/icons/googledrive.svg";
+import LookerLogo from "simple-icons/icons/looker.svg";
+import MondayLogo from "@/assets/logos/monday.svg";
 import LinkIcon from "@tabler/icons/outline/external-link.svg";
 import { linkKindLabel, type LinkKind } from "@/lib/link-kind";
 
@@ -12,7 +15,19 @@ interface Props {
 }
 
 const { kind, class: className } = Astro.props;
-const Icon = { sheet: SheetIcon, doc: DocIcon, slides: SlidesIcon, report: ReportIcon, link: LinkIcon }[kind];
+
+// Single-color logos take the app's brand color (tokens in starwind.css); Monday's logo carries its own colors.
+const logos: Record<LinkKind, { icon: typeof LinkIcon; color: string }> = {
+  sheets: { icon: SheetsLogo, color: "fill-logo-sheets" },
+  docs: { icon: DocsLogo, color: "fill-logo-google" },
+  slides: { icon: SlidesLogo, color: "fill-logo-slides" },
+  forms: { icon: FormsLogo, color: "fill-logo-forms" },
+  drive: { icon: DriveLogo, color: "fill-logo-google" },
+  "looker-studio": { icon: LookerLogo, color: "fill-logo-google" },
+  monday: { icon: MondayLogo, color: "" },
+  link: { icon: LinkIcon, color: "text-muted-foreground" },
+};
+const { icon: Icon, color } = logos[kind];
 ---
 
-<Icon class={className} role="img" aria-label={linkKindLabel[kind]} />
+<Icon class:list={[color, className]} role="img" aria-label={linkKindLabel[kind]} />

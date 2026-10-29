@@ -52,7 +52,7 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
                     title={item.description}
                     class="group hover:bg-muted/50 flex items-center gap-3 px-3 py-2 transition-colors focus-visible:outline-offset-[-2px]"
                   >
-                    <KindIcon kind={kind} class="text-muted-foreground size-4 shrink-0" />
+                    <KindIcon kind={kind} class="size-4 shrink-0" />
                     <span class="min-w-0 flex-1 sm:flex sm:items-baseline sm:gap-3">
                       <span class="block truncate text-sm font-bold sm:w-64 sm:shrink-0">{item.title}</span>
                       <span class="text-muted-foreground block truncate text-xs sm:text-sm">{item.description}</span>
