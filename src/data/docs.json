@@ -3,6 +3,11 @@
   "category": "General",
   "items": [
    {
+    "title": "ACM Tasks",
+    "description": "Board where account managers create and track their own general to-dos.",
+    "url": "https://snellersg.monday.com/boards/18410875795/views/261236679"
+   },
+   {
     "title": "Compliments/Appreciation From Customers",
     "description": "Living record of positive feedback received about our services and operations team.",
     "url": "https://docs.google.com/document/d/10AUX53jS8q_ynwDgUFaZhlo6iOiryC5bllqRVcbxEgw/edit?tab=t.0"
@@ -18,9 +23,24 @@
     "url": "https://snellersg.monday.com/boards/18398830517"
    },
    {
+    "title": "Damage Reports",
+    "description": "Report damage caused at properties and follow the related tasks through to resolution.",
+    "url": "https://snellersg.monday.com/boards/18401486206"
+   },
+   {
     "title": "L10 Agenda",
     "description": "Track priorities, issues, and metrics for weekly EOS Level 10 meetings.",
     "url": "https://snellersg.monday.com/custom_objects/18422849233"
+   },
+   {
+    "title": "Master Contacts",
+    "description": "Collection of all our customer contacts.",
+    "url": "https://snellersg.monday.com/boards/18411063480"
+   },
+   {
+    "title": "Operations Task Board",
+    "description": "Board where tasks for the operations team are tracked through to completion.",
+    "url": "https://snellersg.monday.com/boards/18410004213/"
    },
    {
     "title": "Tickets",
@@ -121,6 +141,11 @@
     "title": "Property Estimation Sheet (PES)",
     "description": "Used to estimate lawn maintenance pricing and provides the figures needed for entry into BossLM.",
     "url": "https://docs.google.com/spreadsheets/d/1aEdgfF3gneoxxnxJngI6siX9H7fOYjaonrH8ue9HJW8/edit?gid=960469792#gid=960469792"
+   },
+   {
+    "title": "Site Inspections",
+    "description": "Property QC records for LM services.",
+    "url": "https://snellersg.monday.com/boards/18408377334"
    }
   ]
  }
