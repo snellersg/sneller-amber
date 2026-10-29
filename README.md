@@ -17,7 +17,7 @@ npm run check    # type-check
 
 | What | Where |
 |---|---|
-| Sheets & Docs links | `src/data/docs.json`: categories, each with `title`, `description`, `url`. The icon (sheet, doc, slides, report) is picked from the URL. |
+| Quick Access links | `src/data/docs.json`: categories, each with `title`, `description`, `url`. The app logo (Google Sheets, Docs, Monday.com, …) is picked from the URL. |
 | Process guides | One markdown file per guide in `src/content/guides/`. Copy `_template.md` to start a new one; the file name becomes the URL (`/guides/<file-name>`). |
 
 Guide frontmatter: `title`, `description`, `category` (required); `updated`, `owner`, `sourceUrl`, `draft` (optional). Drafts show in `npm run dev` but aren't built for production.
@@ -28,7 +28,7 @@ Guide frontmatter: `title`, `description`, `category` (required); `updated`, `ow
 src/
   components/starwind/   Starwind UI components (manage with `npx starwind add|update`)
   content/guides/        Process guide markdown
-  data/docs.json         Sheets & Docs list
+  data/docs.json         Quick Access list
   layouts/BaseLayout.astro
   pages/                 /, /guides, /guides/[slug]
   styles/starwind.css    Tailwind + brand theme tokens

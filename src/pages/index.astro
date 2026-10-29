@@ -13,12 +13,12 @@ const total = groups.reduce((n, g) => n + g.items.length, 0);
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 ---
 
-<BaseLayout title="Sheets & Docs">
+<BaseLayout title="Quick Access">
   <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <label class="relative block sm:w-72">
-      <span class="sr-only">Search sheets and docs</span>
+      <span class="sr-only">Search quick access links</span>
       <SearchIcon class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-      <Input id="doc-search" type="search" size="sm" placeholder={`Search ${total} sheets & docs`} class="bg-card pl-8" autocomplete="off" />
+      <Input id="doc-search" type="search" size="sm" placeholder={`Search ${total} links`} class="bg-card pl-8" autocomplete="off" />
     </label>
     <nav aria-label="Jump to category" class="flex flex-wrap gap-2">
       {
@@ -67,7 +67,7 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
         </section>
       ))
     }
-    <p id="doc-empty" hidden class="text-muted-foreground px-3 py-6 text-center text-sm">No sheets or docs match your search.</p>
+    <p id="doc-empty" hidden class="text-muted-foreground px-3 py-6 text-center text-sm">No links match your search.</p>
   </div>
 </BaseLayout>
 

@@ -2,7 +2,7 @@ import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-// Sheets & Docs: one entry per category, edited in src/data/docs.json.
+// Quick Access: one entry per category, edited in src/data/docs.json.
 const docs = defineCollection({
   loader: file("src/data/docs.json", {
     parser: (text) => JSON.parse(text).map((group: { category: string }) => ({ id: group.category, ...group })),
