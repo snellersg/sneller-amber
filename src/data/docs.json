@@ -98,7 +98,12 @@
     "url": "https://snellersg.monday.com/custom_objects/18433634415"
    },
    {
-    "title": "SP Renewals/Retentions",
+    "title": "WR Renewals and ACM New Sales",
+    "description": "Where account managers track winter renewals and new sales opportunities.",
+    "url": "https://snellersg.monday.com/boards/18424580549"
+   },
+   {
+    "title": "WR Renewals/Retentions Status",
     "description": "Tracks the status of winter renewals and retentions for all accounts.",
     "url": "https://docs.google.com/spreadsheets/d/1LRwLfKNUNuxr5LJ0P7ULn-96oA5TLuHI2dJkPwUiNWc/edit?gid=0#gid=0"
    }
