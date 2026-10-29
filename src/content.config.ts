@@ -2,7 +2,7 @@ import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-// Quick Access: one entry per category, edited in src/data/docs.json.
+// Shortcuts: one entry per category, edited in src/data/docs.json.
 const docs = defineCollection({
   loader: file("src/data/docs.json", {
     parser: (text) => JSON.parse(text).map((group: { category: string }) => ({ id: group.category, ...group })),
@@ -19,7 +19,7 @@ const docs = defineCollection({
   }),
 });
 
-// Process Guides: one markdown file per guide in src/content/guides/.
+// Guides: one markdown file per guide in src/content/guides/.
 // Files starting with "_" (like _template.md) are ignored.
 const guides = defineCollection({
   loader: glob({ pattern: ["**/*.md", "!**/_*.md"], base: "src/content/guides" }),

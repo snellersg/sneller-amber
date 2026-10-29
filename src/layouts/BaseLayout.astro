@@ -14,8 +14,8 @@ const pageTitle = title ? `${title} · AMBER` : "AMBER";
 
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const tabs = [
-  { label: "Quick Access", short: "Quick Access", href: "/", active: path === "/" },
-  { label: "Process Guides", short: "Guides", href: "/guides", active: path.startsWith("/guides") },
+  { label: "Shortcuts", href: "/", active: path === "/" },
+  { label: "Guides", href: "/guides", active: path.startsWith("/guides") },
 ];
 ---
 
@@ -55,12 +55,12 @@ const tabs = [
   </head>
   <body class="min-h-dvh antialiased">
     <header class="bg-card border-border sticky top-0 z-40 border-b">
-      <div class="mx-auto flex h-14 max-w-4xl items-center gap-3 px-4 sm:gap-8 sm:px-6">
+      <div class="mx-auto flex h-14 max-w-4xl items-center gap-4 px-4 sm:gap-8 sm:px-6">
         <a href="/" class="flex shrink-0 items-center gap-2 rounded-sm sm:gap-3">
           <img src="/logo192.png" alt="Sneller logo" width="28" height="28" />
-          <span class="font-heading text-lg font-semibold tracking-tight max-[379px]:sr-only">AMBER</span>
+          <span class="font-heading text-lg font-semibold tracking-tight">AMBER</span>
         </a>
-        <nav aria-label="Sections" class="ml-auto flex gap-3 self-stretch sm:gap-6">
+        <nav aria-label="Sections" class="ml-auto flex gap-4 self-stretch sm:gap-6">
           {
             tabs.map((tab) => (
               <a
@@ -73,8 +73,7 @@ const tabs = [
                     : "text-muted-foreground hover:text-foreground border-b-transparent",
                 ]}
               >
-                <span class="sm:hidden">{tab.short}</span>
-                <span class="hidden sm:inline">{tab.label}</span>
+                {tab.label}
               </a>
             ))
           }

@@ -13,7 +13,7 @@
   --font-sans: "Lato", system-ui, sans-serif;
   --font-heading: "Roboto", system-ui, sans-serif;
 
-  /* Third-party app logos (Quick Access icons only). Official brand colors, not part of the Sneller palette. */
+  /* Third-party app logos (Shortcuts icons only). Official brand colors, not part of the Sneller palette. */
   --color-logo-google: #4285f4;
   --color-logo-sheets: #34a853;
   --color-logo-slides: #fbbc04;
