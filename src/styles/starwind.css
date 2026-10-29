@@ -241,6 +241,13 @@
     & li > ol {
       margin-top: 4px;
     }
+    /* Numbered steps with screenshots */
+    & ol > li + li {
+      margin-top: 24px;
+    }
+    & li > p + p {
+      margin-top: 8px;
+    }
     & strong {
       font-weight: 700;
     }
@@ -255,6 +262,8 @@
     }
     & img {
       @apply border-border rounded-lg border;
+      height: auto;
+      max-width: 100%;
     }
     & hr {
       @apply border-border;
