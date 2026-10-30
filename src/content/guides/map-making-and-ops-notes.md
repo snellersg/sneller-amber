@@ -5,8 +5,6 @@ category: WR
 updated: 2026-10-30
 ---
 
-This guide shows how to make a property's combined service map: screenshots of each service area, placed in a Looker Studio report with site-specific notes, then shared and linked in Monday.com.
-
 ## Capture the service maps
 
 1. In Monday.com, open the CRM workspace and click "Deals". Make sure you're on the "Property Measurement" tab, then search for the property.

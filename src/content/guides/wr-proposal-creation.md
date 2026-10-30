@@ -5,8 +5,6 @@ category: WR
 updated: 2026-10-29
 ---
 
-This guide walks through building a winter removal (WR) proposal in Monday.com, from creating the deal to downloading the finished proposal PDF.
-
 ## Create the deal
 
 1. In Monday.com, open the CRM workspace and click "Deals".

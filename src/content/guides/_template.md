@@ -3,15 +3,13 @@
 # The file name becomes the URL: /guides/snow-event-callout
 # Files starting with "_" are ignored, so this template never shows up on the site.
 title: Guide title
-description: One sentence shown in the guide list.
+description: One sentence shown in the guide list and under the guide's title.
 category: WR # General, WR, LM, …
 updated: 2026-10-28 # optional
 owner: Name or role # optional
 sourceUrl: https://docs.google.com/... # optional link to an original doc
 draft: true # drafts show in `npm run dev` but aren't published
 ---
-
-Short intro: what this process is for and when to use it.
 
 ## Before you start
 

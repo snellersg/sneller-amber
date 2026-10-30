@@ -212,6 +212,10 @@
       font-size: 22px;
       line-height: 30px;
     }
+    & > h2:first-child {
+      @apply border-t-0 pt-0;
+      margin-top: 0;
+    }
     & h3 {
       margin-top: 24px;
       font-size: 18px;
